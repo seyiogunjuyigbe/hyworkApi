@@ -1,0 +1,45 @@
+{
+  "name": "zohoproject",
+  "version": "1.0.0",
+  "description": "Human Resource Management Application",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node ./dist/app.js",
+    "build": "rm -rf dist/ && babel src/ -d dist/ --copy-files",
+    "dev": "nodemon --exec babel-node -- ./src/app.js",
+    "lint": "eslint",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Touchcore Team",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.7",
+    "@babel/node": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/register": "^7.8.3",
+    "@babel/runtime": "^7.7.7",
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "cloudinary": "^1.18.1",
+    "cross-env": "^6.0.3",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "method-override": "^3.0.0",
+    "mongoose": "^5.8.9",
+    "multer": "^1.4.2",
+    "multer-storage-cloudinary": "^2.2.1",
+    "nodemailer": "^6.4.2",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^6.0.1",
+    "path": "^0.12.7"    
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
