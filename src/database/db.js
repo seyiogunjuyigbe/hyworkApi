@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-import {DB_URL}  from '../config/constants';
+import {LOCAL_DB_URL}  from '../config/constants';
 export const startDb = () =>{
-    mongoose.connect(DB_URL, {
+    mongoose.connect(LOCAL_DB_URL, {
         useNewUrlParser: true, 
         useFindAndModify: false, 
         useCreateIndex:true,
@@ -11,7 +11,7 @@ export const startDb = () =>{
           if(err){
             console.error(err);
           } else{
-            console.log('Database connected to: ' + DB_URL);
+            console.log('Database connected to: ' + LOCAL_DB_URL);
 
           }
       })
