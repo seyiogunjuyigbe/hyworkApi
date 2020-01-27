@@ -15,5 +15,10 @@ pipelines:
             - npm install
             - npm run build
             - npm run start
-        after-script:
-          - cat /root/.npm/_logs/
+        services: 
+            - mongo
+definitions: 
+  services: 
+    mongo: 
+      image: mongo
+          
