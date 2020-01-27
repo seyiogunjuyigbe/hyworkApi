@@ -8,7 +8,7 @@
  ### Installation
  
 
- 1. Clone this repository by running this on your terminal: `git clone https://seyiogunjuyigbe_touchcore@bitbucket.org/tcore2020/zohoproject.git`
+ 1. Clone this repository by running this on your terminal: `git clone https://seyiogunjuyigbe_touchcore@bitbucket.org/tcore2020/zpclone.git`
  2. Navigate to the project's directory with: `cd zohoproject`
  3. Run `npm install` to install dependencies
  4. You will need to create your environment variables. Create a `.env` file and fill in te variables as seen in the `.env.example` file
