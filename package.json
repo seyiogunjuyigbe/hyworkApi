@@ -20,6 +20,7 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/register": "^7.8.3",
     "@babel/runtime": "^7.7.7",
+    "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
@@ -37,7 +38,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.0.1",
-    "path": "^0.12.7"    
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

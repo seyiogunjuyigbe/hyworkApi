@@ -1,5 +1,4 @@
-
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var assetSchema = new Schema({
   title: {
@@ -7,18 +6,17 @@ var assetSchema = new Schema({
     required: true
   },
   description: {
-    type: String,
-
+    type: String
   },
   acquiredBy: {
-    type: String,
-      },
+    type: String
+  },
   dateAcquired: {
-    type: Date,
-      },
+    type: Date
+  },
   dateReleased: {
     type: Date
   }
 });
 
-export const Asset = mongoose.model('Asset', assetSchema)
+export const Asset = mongoose.model("Asset", assetSchema);
