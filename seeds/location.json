@@ -1,0 +1,16 @@
+[
+    {
+        "streetAddress": "14b Wole Ariyo",
+        "city": "Lekki",
+        "state": "Lagos",
+        "country": "Nigeria",
+        "title": "Office Address"
+    },
+    {
+        "streetAddress": "17 Admiralty Way",
+        "city": "Lekki",
+        "state": "Lagos",
+        "country": "Nigeria",
+        "title": "Home Address"
+    }
+]
