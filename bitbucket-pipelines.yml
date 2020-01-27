@@ -16,4 +16,4 @@ pipelines:
             - npm run build
             - npm run start
         after-script:
-          - cat /root/.npm_logs/
+          - cat /root/.npm/_logs/
