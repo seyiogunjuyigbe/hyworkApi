@@ -4,15 +4,17 @@ var Schema = mongoose.Schema;
 var dependentSchema = new Schema({
   firstName: {
     type: String,
-    required: true
+    required: true, 
+    trim: true
   },
   lastName: {
     type: String,
-    required: true
+    required: true, 
+    trim: true
   },
   relationship: {
     type: String,
-    required: true
+    required: true,
   },
   phoneNumber: {
     type: String,
@@ -20,6 +22,7 @@ var dependentSchema = new Schema({
   },
   email: {
     type: String,
+    trim: true
   
   },
   location: {
