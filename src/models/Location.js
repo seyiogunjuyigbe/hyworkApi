@@ -19,8 +19,7 @@ var locationSchema = new Schema({
     required: true
   },
   zipCode: {
-    type: String,
-    required: true
+    type: String
   },
   title: {
     type: String,
