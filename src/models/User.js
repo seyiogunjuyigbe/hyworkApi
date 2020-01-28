@@ -42,7 +42,9 @@ const userSchema = new Schema(
       type: Date
     },
     maritalStatus: {
-      type: String
+      type: String,
+      enum: ['single', 'married', 'divorced'],
+      default: 'single'
     },
     category: {
       type: String
