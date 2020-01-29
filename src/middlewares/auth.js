@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const response = require("./response");
 const UserModel = require("../models/User");
+import { SECRET_KEY } from '../config/constants';
 
 module.exports = {
   async getUserFromToken(req, res) {
@@ -9,7 +10,7 @@ module.exports = {
       return response.error(res, 401, "Token is required");
     }
     try {
-      const decode = jwt.verify(token, process.env.jwtSecret);
+      const decode = jwt.verify(token, SECRET_KEY);
       return (req.decode = decode);
     } catch (error) {
       return response.error(res, 401, "Error token type");
