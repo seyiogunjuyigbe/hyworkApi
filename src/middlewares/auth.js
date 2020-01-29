@@ -9,20 +9,20 @@ import { SECRET_KEY } from '../config/constants';
 
 /*  Function checks that user is authenticated 
 */
-passport.use(new JWTStrategy({
-  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: SECRET_KEY
-  },
-  function(jwtPayload, cb) {
-    return UserModel.findOneById(jwtPayload.id)
-          .then(user => {
-              return cb(null, user);
-          })
-          .catch(err => {
-              return cb(err);
-          });
-        }
-));
+// passport.use(new JWTStrategy({
+//   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+//   secretOrKey: SECRET_KEY
+//   },
+//   function(jwtPayload, cb) {
+//     return UserModel.findOneById(jwtPayload.id)
+//           .then(user => {
+//               return cb(null, user);
+//           })
+//           .catch(err => {
+//               return cb(err);
+//           });
+//         }
+// ));
 
 module.exports = {
 
