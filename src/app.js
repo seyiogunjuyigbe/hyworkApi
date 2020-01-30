@@ -21,6 +21,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 startDb();
+
+
 initRoutes(app);
 
 const PORT = process.env.PORT
