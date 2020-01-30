@@ -14,8 +14,9 @@ var organizationSchema = new Schema({
     required: true
   },
   category: {
-    type: String,
-    required: true
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Category'
   },
   admin: [{
     type: Schema.Types.ObjectId,
