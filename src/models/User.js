@@ -1,20 +1,27 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const Schema = mongoose.Schema;
+import {Token} from './Token';
+import {SECRET_KEY} from '../config/constants'
 const userSchema = new Schema(
   {
     username: {
       type: String,
       trim: true,
-      unique: true
+      unique: true,
+      required: 'You must have a username'
     },
     firstName: {
       type: String,
-      trim: true
+      trim: true,
+      required: 'You must have a first name'
     },
     lastName: {
       type: String,
-      trim: true
+      trim: true,
+      required: 'You must have a last name'
     },
     phoneNumber: {
       type: String,
@@ -27,7 +34,8 @@ const userSchema = new Schema(
     email: {
       type: String,
       trim: true,
-      unique: true
+      unique: true,
+      required: 'You must have an email'
     },
     email2: {
       type: String,
@@ -35,7 +43,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: 'You need a password',
       minlength: 8
     },
     dob: {
@@ -211,37 +219,77 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: "Travel"
       }
-    ]
+    ],
+    isVerified: {
+      type: Boolean,
+      default: false
+  },
+  
+  resetPasswordToken: {
+      type: String,
+      required: false
+  },
+
+  resetPasswordExpires: {
+      type: Date,
+      required: false
+  }
   },
   { timestamps: true }
 );
 
-userSchema.pre("save", function(next) {
-  if (!this.isModified("password")) {
-    return next();
-  }
 
-  bcrypt.hash(this.password, 8, (err, hash) => {
-    if (err) {
-      return next(err);
-    }
+userSchema.pre('save',  function(next) {
+  const user = this;
 
-    this.password = hash;
-    next();
+  if (!user.isModified('password')) return next();
+
+  bcrypt.genSalt(10, function(err, salt) {
+      if (err) return next(err);
+
+      bcrypt.hash(user.password, salt, function(err, hash) {
+          if (err) return next(err);
+
+          user.password = hash;
+          next();
+      });
   });
 });
 
-userSchema.methods.checkPassword = function(password) {
-  const passwordHash = this.password;
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, passwordHash, (err, same) => {
-      if (err) {
-        return reject(err);
-      }
+userSchema.methods.comparePassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
-      resolve(same);
-    });
+userSchema.methods.generateJWT = function() {
+  const today = new Date();
+  const expirationDate = new Date(today);
+  expirationDate.setDate(today.getDate() + 60);
+
+  let payload = {
+      id: this._id,
+      email: this.email,
+      username: this.username,
+      firstName: this.firstName,
+      lastName: this.lastName,
+  };
+
+  return jwt.sign(payload, SECRET_KEY, {
+      expiresIn: parseInt(expirationDate.getTime() / 1000, 10)
   });
 };
 
-export const User = mongoose.model("User", userSchema);
+userSchema.methods.generatePasswordReset = function() {
+  this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+  this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+};
+
+userSchema.methods.generateVerificationToken = function() {
+  let payload = {
+      userId: this._id,
+      token: crypto.randomBytes(20).toString('hex')
+  };
+
+  return new Token(payload);
+};
+
+export const User = mongoose.model('User', userSchema);

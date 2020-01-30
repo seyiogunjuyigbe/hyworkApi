@@ -8,17 +8,20 @@ var organizationSchema = new Schema({
   },
   location: [{
     type: location,
-    required: true
   }],
   description: {
     type: String,
     required: true
   },
-  admin: {
+  category: {
+    type: String,
+    required: true
+  },
+  admin: [{
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'User'
-  },
+  }],
   users: [{
     type: Schema.Types.ObjectId,
     required: true,
@@ -29,9 +32,9 @@ var organizationSchema = new Schema({
     required: true
   },
   staffStength: {
-    type: Number,
-    required: true
+    type: Number
   },
+
   services: [{
     type: Schema.Types.ObjectId,
     ref: 'Service'
