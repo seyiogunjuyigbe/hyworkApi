@@ -10,13 +10,11 @@ var organizationSchema = new Schema({
     type: location,
   }],
   description: {
-    type: String,
-    required: true
+    type: String
   },
   category: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'Category'
+    type: "String"
+    
   },
   admin: [{
     type: Schema.Types.ObjectId,
