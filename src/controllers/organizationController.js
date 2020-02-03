@@ -32,7 +32,7 @@ module.exports = {
       const { organisationId } = req.params;
       const { email, firstName, lastName, role } = req.body;
       //const updateOrganization = await Organization.findByIdAndUpdate({_id: id}, { $push: { employees: emplo}}   )
-      const user = crudControllers(User).createOne({
+      const user = await User.create({
         email,
         firstName,
         lastName,
