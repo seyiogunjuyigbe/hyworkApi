@@ -11,7 +11,7 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       unique: true,
-      required: 'You must have a username'
+      // required: 'You must have a username'
     },
     firstName: {
       type: String,

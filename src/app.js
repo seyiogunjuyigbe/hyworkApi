@@ -9,6 +9,8 @@ const nodemailer = require('nodemailer');
 const cloudinary = require('cloudinary');
 const cloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
+import { getUserFromToken } from "./middlewares/auth";
+
 
 import path from 'path';
 import {startDb} from './database/db'
@@ -19,6 +21,8 @@ app.use(express.static(path.join(__dirname, '../public'))); // load local css an
 app.set('view engine', 'ejs'); 
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(getUserFromToken);
+
 
 
 startDb();

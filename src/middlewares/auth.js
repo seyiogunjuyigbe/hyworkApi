@@ -35,8 +35,8 @@ module.exports = {
       return response.error(res, 401, "Token is required");
     }
     try {
-      const decode = jwt.verify(token, SECRET_KEY);
-      return (req.decode = decode);
+      const user = jwt.verify(token, SECRET_KEY);
+      return (req.user = user);
     } catch (error) {
       return response.error(res, 401, "Error token type");
     }

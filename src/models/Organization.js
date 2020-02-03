@@ -21,9 +21,8 @@ var organizationSchema = new Schema({
     required: true,
     ref: 'User'
   }],
-  users: [{
+  employees: [{
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'User'
   }],
   telephone: {
