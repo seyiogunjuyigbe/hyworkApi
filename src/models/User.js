@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const Schema = mongoose.Schema;
 import {Token} from './Token';
-import {SECRET_KEY} from '../config/constants'
+import {SECRET_KEY} from '../config/constants';
+const passportLocalMongoose = require('passport-local-mongoose')
 const userSchema = new Schema(
   {
     username: {
@@ -238,7 +239,7 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-
+userSchema.plugin(passportLocalMongoose);
 userSchema.pre('save',  function(next) {
   const user = this;
 
@@ -260,23 +261,23 @@ userSchema.methods.comparePassword = function(password) {
   return bcrypt.compareSync(password, this.password);
 };
 
-userSchema.methods.generateJWT = function() {
-  const today = new Date();
-  const expirationDate = new Date(today);
-  expirationDate.setDate(today.getDate() + 60);
+// userSchema.methods.generateJWT = function() {
+//   const today = new Date();
+//   const expirationDate = new Date(today);
+//   expirationDate.setDate(today.getDate() + 60);
 
-  let payload = {
-      id: this._id,
-      email: this.email,
-      username: this.username,
-      firstName: this.firstName,
-      lastName: this.lastName,
-  };
+//   let payload = {
+//       id: this._id,
+//       email: this.email,
+//       username: this.username,
+//       firstName: this.firstName,
+//       lastName: this.lastName,
+//   };
 
-  return jwt.sign(payload, SECRET_KEY, {
-      expiresIn: parseInt(expirationDate.getTime() / 1000, 10)
-  });
-};
+//   return jwt.sign(payload, SECRET_KEY, {
+//       expiresIn: parseInt(expirationDate.getTime() / 1000, 10)
+//   });
+// };
 
 userSchema.methods.generatePasswordReset = function() {
   this.resetPasswordToken = crypto.randomBytes(20).toString('hex');

@@ -1,7 +1,10 @@
 import {User} from '../models/User';
+import{Token} from '../models/Token'
 const mongoose = require('mongoose');
+const passport = require('passport');
 import {sendTokenMail} from '../middlewares/mail';
-
+import {passportConfig} from '../config/passport';
+// passportConfig();
 
 // Register new User
 // @route POST /user/register
@@ -26,9 +29,14 @@ export const registerNewUser = (req, res) => {
         if(err){
            return res.status(500).json({success: false, message: err.message});
         }else{ 
-            sendTokenMail(newUser,req,res)
-            newUser.save();
-            res.status(200).json({success: true, message: `${newUser.username} has been registered`})
+            passport.authenticate("local")(req, res, function(){
+                sendTokenMail(newUser,req,res)
+                newUser.save();
+                return res.status(200).json({
+                    success: true,
+                    data: newUser
+                })
+               })
         }
             });
         });
@@ -37,30 +45,34 @@ export const registerNewUser = (req, res) => {
     
 // Login Existing User
 // @route POST /user/login
-   export const loginUser = (req, res) => {
-        const { email, password } = req.body;
-        User.findOne({ email }, (err,user)=>{
-            if(err){
-                return res.status(500).json({success: false, message: err.message})
-            }
-            if (!user) {
-                return res.status(401).json({msg: 'The email address ' + email + ' is not assigned to any user'})
-            }
-             //validate password
-             if (!user.comparePassword(password)){
-                 return res.status(401).json({message: 'Invalid email and passsword combination'})
-             }
-             // Make sure the user has been verified
-             if (!user.isVerified) {
-                 return res.status(401).json({ type: 'not-verified', message: 'Your email is not yet verified'})
-             } 
-             // Login successful, write token, and send back user
-           return res.status(200).json({token: user.generateJWT(), user: user});
+   export const loginUser = passport.authenticate('local', {failureRedirect: '/login/failure', successRedirect:"/login/success"}, (req, res) => {
+                    // const { email, password } = req.body;
+                    // User.findOne({ email }, (err,user)=>{
+                    //     if(err){
+                    //         return res.status(500).json({success: false, message: err.message})
+                    //     }
+                    //     if (!user) {
+                    //         return res.status(401).json({msg: 'The email address ' + email + ' is not assigned to any user'})
+                    //     }
+                    //      //validate password
+                    //      if (!user.comparePassword(password)){
+                    //          return res.status(401).json({message: 'Invalid email and passsword combination'})
+                    //      }
+                    //      // Make sure the user has been verified
+                    //      if (!user.isVerified) {
+                    //          return res.status(401).json({ type: 'not-verified', message: 'Your email is not yet verified'})
+                    //      }})
+
         });
+
+// Login Success middleware
+        export const loginSuccess = (req,res)=>{
+            res.json({
+                success: true,
+                message: 'User logged in',
+                user: req.user
+            })
         }
-
-
-
 
 // EMAIL VERIFICATION
 // @route GET /user/verify/:token
@@ -87,6 +99,7 @@ export const verifyToken = (req, res) => {
                          if (err) {
                             return res.status(500).json({message:err.message});
                             }
+                            
                            res.status(200).send("The account has been verified. Please log in.");
                          });
                        });
