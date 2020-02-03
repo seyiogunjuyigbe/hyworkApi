@@ -22,9 +22,8 @@ var locationSchema = new Schema({
     type: String
   },
   title: {
-    type: String,
-    required: true
+    type: String
   }
 });
 
-const Location = mongoose.model('Location', locationSchema)
+export const Location = mongoose.model('Location', locationSchema);
