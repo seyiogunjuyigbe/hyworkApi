@@ -8,37 +8,67 @@ import {
 } from "../config/constants";
 
 export const sendCreateOrganisationEmail = (user, organisation, req, res) => {
-  if (err) {
-    return res.status(500).json({ message: err.message });
-  } else {
-    let transporter = nodemailer.createTransport({
-      service: MAIL_SERVICE,
-      auth: {
-        user: MAIL_USER,
-        pass: MAIL_PASS
-      }
-    });
-    let mailOptions = {
-      from: MAIL_SENDER,
-      to: user.email,
-      subject: `Created Organization ${organisation.name}`,
-      text: `Hello ${user.username} \n 
+  let transporter = nodemailer.createTransport({
+    service: MAIL_SERVICE,
+    auth: {
+      user: MAIL_USER,
+      pass: MAIL_PASS
+    }
+  });
+  let mailOptions = {
+    from: MAIL_SENDER,
+    to: user.email,
+    subject: `Created Organization ${organisation.name}`,
+    text: `Hello ${user.username} \n 
                 You just created the new organisation. You can login to your dashboard and start enjoying the best features of the zpclone app now \n\n 
                 Welcome\n`
-    };
+  };
 
-    transporter.sendMail(mailOptions, function(error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        res
-          .status(200)
-          .json({
+  transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.status(200).json({
+        message: "A welcome email has been sent to " + user.email + "."
+      });
+    }
+  });
+};
+
+export const senduserEmail = (user, organisation, req, res) => {
+  const token = user.generateVerificationToken();
+  token.save(function(err, token) {
+    if (err) {
+      return res.status(500).json({ message: err.message })
+    }else {
+      let link = `http://${req.headers.host}/user/update/${token.token}`
+      let transporter = nodemailer.createTransport({
+        service: MAIL_SERVICE,
+        auth: {
+          user: MAIL_USER,
+          pass: MAIL_PASS
+        }
+      });
+      let mailOptions = {
+        from: MAIL_SENDER,
+        to: user.email,
+        subject: `Joined ${organisation.name}`,
+        text: `Hello ${user.firstName} \n 
+                    You have been added to ${organisation.name}'s workspace. Click on this ${link} to complete your registation\n`
+      };
+    
+      transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          res.status(200).json({
             message: "A welcome email has been sent to " + user.email + "."
           });
-      }
-    });
-  }
+        }
+      });
+    }
+  })
+  
 };
 
 export const sendTokenMail = (user, req, res) => {
@@ -68,12 +98,9 @@ export const sendTokenMail = (user, req, res) => {
         if (error) {
           console.log(error);
         } else {
-          res
-            .status(200)
-            .json({
-              message:
-                "A verification email has been sent to " + user.email + "."
-            });
+          res.status(200).json({
+            message: "A verification email has been sent to " + user.email + "."
+          });
         }
       });
     }

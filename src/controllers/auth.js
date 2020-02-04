@@ -94,6 +94,37 @@ export const verifyToken = (req, res) => {
             });      
     } 
 
+    export const verifyAdminRegistrationToken = (req, res) => {
+        if(!req.params.token){
+          return res.status(400).json({message: "We were unable to find a user for this token."});  
+        } 
+            // Find a matching token
+            Token.findOne({ token: req.params.token }, (err, token)=>{
+                if (!token) {
+                return res.status(400).json({ message: 'We were unable to find a valid token. Your token my have expired.' });
+                   }
+                if(token){
+                    User.findOne({ _id: token.userId }, (err, user) => {
+                        if (!user){
+                            return res.status(400).json({ message: 'We were unable to find a user for this token.' });
+                                }
+                        if (user.isVerified) {
+                            return res.status(400).json({ message: 'This user has already been verified.' });
+                                }
+                             // Verify and save the user
+                         user.isVerified = true;
+                         user.save(function (err) {
+                             if (err) {
+                                return res.status(500).json({message:err.message});
+                                }
+                               res.status(200).send("The account has been verified. Please log in.");
+                               //Redirect to the user's update profile page must be done here
+                             });
+                           });
+                           }
+                });      
+        } 
+
 // Resend Verification Token
 // @route POST user/verify/resend
 export const resendToken = (req, res) => {

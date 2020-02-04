@@ -2,7 +2,7 @@ import { Organization } from "../models/Organization";
 import { User } from "../models/User";
 const response = require("../middlewares/response");
 import { crudControllers } from "../../utils/crud";
-import { sendCreateOrganisationEmail } from "../middlewares/mail";
+import { sendCreateOrganisationEmail, senduserEmail } from "../middlewares/mail";
 
 module.exports = {
   // Controller that creates a new organization. The user that creates the organization is immediately added as the
@@ -16,7 +16,9 @@ module.exports = {
       })
         .lean()
         .exec();
-      const user = crudControllers(User).getOneById(req.user.id);
+      const user = await User.findOne({ _id: req.user.id })
+        .lean()
+        .exec();
       if (newOrganization.name && user.username) {
         sendCreateOrganisationEmail(user, newOrganization, req, res);
         response.success(res, 201, `${organisation.name} has been created`);
@@ -29,7 +31,7 @@ module.exports = {
 
   async addUserToOrganization(req, res) {
     try {
-      const { organisationId } = req.params;
+      const { id } = req.params;
       const { email, firstName, lastName, role } = req.body;
       //const updateOrganization = await Organization.findByIdAndUpdate({_id: id}, { $push: { employees: emplo}}   )
       const user = await User.create({
@@ -39,13 +41,14 @@ module.exports = {
         role
       });
       if (user) {
-        const organisation = await Organization.findByIdAndUpdate(
-          { _id: organisationId },
+        const updatedOrganization = await Organization.findByIdAndUpdate(
+          { _id: id },
           { $push: { employees: user } },
           (error, success) => {
             if (error) {
               return response.error(res, 500, error.message);
             } else {
+
               return response.success(
                 res,
                 201,
@@ -53,7 +56,11 @@ module.exports = {
               );
             }
           }
+
         );
+        if (updatedOrganization) {
+          senduserEmail(user, updatedOrganization, req, res);
+        }
       } else {
         return response.error(res, 500, `User could not be created`);
       }
