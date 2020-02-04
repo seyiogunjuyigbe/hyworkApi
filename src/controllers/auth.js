@@ -3,7 +3,8 @@ import{Token} from '../models/Token'
 const mongoose = require('mongoose');
 const passport = require('passport');
 import {sendTokenMail} from '../middlewares/mail';
-import {passportConfig} from '../config/passport';
+const LocalStrategy = require('passport-local');
+// import {passportConfig} from '../config/passport';
 // passportConfig();
 
 // Register new User
@@ -45,34 +46,20 @@ export const registerNewUser = (req, res) => {
     
 // Login Existing User
 // @route POST /user/login
-   export const loginUser = passport.authenticate('local', {failureRedirect: '/login/failure', successRedirect:"/login/success"}, (req, res) => {
-                    // const { email, password } = req.body;
-                    // User.findOne({ email }, (err,user)=>{
-                    //     if(err){
-                    //         return res.status(500).json({success: false, message: err.message})
-                    //     }
-                    //     if (!user) {
-                    //         return res.status(401).json({msg: 'The email address ' + email + ' is not assigned to any user'})
-                    //     }
-                    //      //validate password
-                    //      if (!user.comparePassword(password)){
-                    //          return res.status(401).json({message: 'Invalid email and passsword combination'})
-                    //      }
-                    //      // Make sure the user has been verified
-                    //      if (!user.isVerified) {
-                    //          return res.status(401).json({ type: 'not-verified', message: 'Your email is not yet verified'})
-                    //      }})
+   export const loginUser =  passport.authenticate('local-login', {
+                                        successRedirect: '/user/login/success', 
+                                        failureRedirect: '/user/login/failure'}) 
 
-        });
-
-// Login Success middleware
-        export const loginSuccess = (req,res)=>{
-            res.json({
-                success: true,
-                message: 'User logged in',
+// Logout User
+// @route GET /user/logout
+        export const logoutUser = (req,res)=>{
+                req.session.destroy();
+                req.logout();
+                return res.status(200).json({
+                message: 'logged out successfully',
                 user: req.user
             })
-        }
+                    }
 
 // EMAIL VERIFICATION
 // @route GET /user/verify/:token
