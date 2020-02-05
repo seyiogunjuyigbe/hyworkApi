@@ -1,12 +1,12 @@
 import { Router } from "express";
 import controllers from "../controllers/locationController";
-import { getUserFromToken } from "../middlewares/auth";
+import { checkUserRole } from "../middlewares/auth";
 const { check } = require("express-validator");
 const validate = require("../middlewares/validate");
 
 const router = Router();
 
-router.get("/", [getUserFromToken],controllers.getMany);
+router.get("/", controllers.getMany);
 router.post(
   "/",
   [

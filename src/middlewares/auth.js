@@ -29,56 +29,32 @@ module.exports = {
   /*  Function fetches User details from the token, may be unnecessary with 
   Passport JWT Authentication
    */
-  async getUserFromToken(req, res) {
-    const { token } = req.headers;
-    if (!token) {
-      return response.error(res, 401, "Token is required");
-    }
-    try {
-      const user = jwt.verify(token, SECRET_KEY);
-      return (req.user = user);
-    } catch (error) {
-      return response.error(res, 401, "Error token type");
-    }
-  },
 
   async isUserAdmin(req, res, next) {
-    const user = getUserFromToken(req, res);
-    if (user.username) {
-      try {
-        const { username } = req.params;
-        if (username !== user.username) {
-          return response.error(res, 401, "Wrong user");
-        }
-        const isAdmin = UserModel.findOne({ username }).exec();
-        if (isAdmin.role === "admin") {
-          return next();
-        }
-        return response.error({ message: "User is not admin " });
-      } catch (error) {
-        return next({ message: "Error validating user" });
-      }
+    const user = req.user;
+    if (user.role === "admin") {
+      return true;
+    } else {
+      response.error(res, 400, "User was not found")
     }
   },
 
-/* Function that checks if User is a Manager, returns the department user is a manager 
- */
+  /* Function that checks if User is a Manager, returns the department user is a manager 
+   */
   async isUserManager(req, res, next) {
-    const user = getUserFromToken(req, res);
-    if (user.username) {
-      try {
-        const { username } = req.params;
-        if (username !== user.username) {
-          return response.error(res, 401, "Wrong user");
-        }
-        const isManager = UserModel.findOne({ username }).exec();
-        if (isManager.role === "manager") {
-          return isManager.department;
-        }
-        return response.error({ message: "User is not manager " });
-      } catch (error) {
-        return next({ message: "Error validating user" });
-      }
+    const user = req.user;
+
+    if (user.role === "manager") {
+      console.log(user.department)
+      return user.department;
     }
+
   },
+
+  async checkUserRole(req, res, next) {
+    const user = req.user;
+    return user.role
+    next()
+  }
+
 };
