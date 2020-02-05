@@ -12,16 +12,16 @@ router.post('/', [
     check("description").not().isEmpty().withMessage("Enter desctiption of organization")
 ], validate, createOrganization);
 
-router.get('/:id', controllers.getOneById);
-router.put('/:id', [
-    check("name").not().isEmpty().withMessage("Enter Organisation's name"),
-    check("description").not().isEmpty().withMessage("Enter desctiption of organization")
-], validate, controllers.updateOne);
-router.post('/:id/addUser', [
-    check("email").isEmail().withMessage('Enter a valid email address'),
-    check('firstName').not().isEmpty().withMessage(`Enter employee's first name`),
-    check('lastName').not().isEmpty().withMessage(`Enter employee's last name`)
-], validate, addUserToOrganization )
+// router.get('/:id', controllers.getOneById);
+// router.put('/:id', [
+//     check("name").not().isEmpty().withMessage("Enter Organisation's name"),
+//     check("description").not().isEmpty().withMessage("Enter desctiption of organization")
+// ], validate, controllers.updateOne);
+// router.post('/:id/addUser', [
+//     check("email").isEmail().withMessage('Enter a valid email address'),
+//     check('firstName').not().isEmpty().withMessage(`Enter employee's first name`),
+//     check('lastName').not().isEmpty().withMessage(`Enter employee's last name`)
+// ], validate, addUserToOrganization );
 
 
 

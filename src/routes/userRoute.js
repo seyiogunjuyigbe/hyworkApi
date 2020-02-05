@@ -21,7 +21,6 @@ router.post("/login", [
 ], validate, loginUser);
 
 router.get('/login/success', (req,res)=>{
-    console.log(res);
     return res.status(200).json({success:true,
     message: 'Successfully logged in',
     user: req.user.username})
@@ -34,7 +33,7 @@ router.get('/login/failure', (req,res)=>{
 
 router.get('/logout', logoutUser);
 router.get('/verify/:token', verifyToken);
-router.get('/update/:token', verifyAdminRegistrationToken);
+// router.get('/update/:token', verifyAdminRegistrationToken);
 
 router.post('/token/resend', resendToken);
 

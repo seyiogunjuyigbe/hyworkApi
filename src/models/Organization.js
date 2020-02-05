@@ -7,7 +7,8 @@ var organizationSchema = new Schema({
     required: true
   },
   location: [{
-    type: location,
+    type: Schema.Types.ObjectId,
+    ref: 'Location'
   }],
   description: {
     type: String
