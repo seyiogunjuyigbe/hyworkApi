@@ -22,9 +22,9 @@ export const passportConfig = (passport) =>{
                 return done(null, false, console.log('Invalid email and passsword combination'))
             }
             // Make sure the user has been verified
-            if (!user.isVerified) {
-                return done(null, false, console.log('Your email is not yet verified'))
-            }
+            // if (!user.isVerified) {
+            //     return done(null, false, console.log('Your email is not yet verified'))
+            // }
                 return done(null, user);
          });
     
