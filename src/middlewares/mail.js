@@ -29,7 +29,7 @@ export const sendTokenMail = (user,req,res)=>{
                 if (error) {
                 console.log(error);
                 } else {
-                res.status(200).json({message: 'A verification email has been sent to ' + user.email + '.'});
+                console.log({message: 'A verification email has been sent to ' + user.email + '.'});
                 }
             });                
     }
