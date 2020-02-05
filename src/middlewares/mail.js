@@ -91,18 +91,16 @@ export const sendTokenMail = (user, req, res) => {
         subject: "Verify your email",
         text: `Hi ${user.username} \n 
                 Please click on the following link ${link} to verify your account. \n\n 
-                If you did not request this, please ignore this email.\n`
-      };
-
-      transporter.sendMail(mailOptions, function(error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          res.status(200).json({
-            message: "A verification email has been sent to " + user.email + "."
-          });
-        }
-      });
+                If you did not request this, please ignore this email.\n`,
+            };
+            
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                console.log(error);
+                } else {
+                console.log({message: 'A verification email has been sent to ' + user.email + '.'});
+                }
+            });                
     }
   });
 };
