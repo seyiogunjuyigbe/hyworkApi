@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 const cloudinary = require('cloudinary');
 const cloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
-import { getUserFromToken } from "./middlewares/auth";
+
 
 
 import path from 'path';
@@ -29,7 +29,7 @@ app.use(require("express-session")({
     secret: SECRET_KEY,
     resave: false,
     saveUninitialized: false, 
-    expires: new Date(Date.now() + (30 * 86400 * 1000))
+    expires: new Date(Date.now() + (30 * 80000 * 1000))
 }));
 
 app.use(passport.initialize());

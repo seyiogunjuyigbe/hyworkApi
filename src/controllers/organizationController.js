@@ -9,21 +9,29 @@ module.exports = {
   //the an admin of the newly created organisation.
   async createOrganization(req, res) {
     try {
-      //    const { name, description, category } = req.body;
-      const newOrganization = await Organization.create({
-        ...req.body,
-        admin: admin.push(req.user.id)
-      })
-        .lean()
-        .exec();
-      const user = await User.findOne({ _id: req.user.id })
-        .lean()
-        .exec();
-      if (newOrganization.name && user.username) {
-        sendCreateOrganisationEmail(user, newOrganization, req, res);
-        response.success(res, 201, `${organisation.name} has been created`);
+      console.log(req.user.organizations.length);
+      if (req.user.organizations.length <= 10) {
+        const newOrg = await Organization.create(req.body);
+        if (req.user) {
+          newOrg.admin.push(req.user._id);
+          newOrg.save((err) => {
+            if (err) {
+              return response.error(res, 500, err.message);
+            }
+            const user = await User.findOne({ _id: req.user._id });
+            user.organizations.push(newOrg._id);
+            user.save((err) => {
+              if (err) {
+                response.error(res, 500, err.message);
+              }
+              response.success(res, 200, `Organisation ${newOrg.name} created`);
+            })
+            sendCreateOrganisationEmail(user, newOrg, req, res);
+          });
+
+        }
+
       }
-      response.error(res, 400, "Could not create organisation");
     } catch (error) {
       response.error(res, 500, error.message);
     }
@@ -31,37 +39,20 @@ module.exports = {
 
   async addUserToOrganization(req, res) {
     try {
-      const { id } = req.params;
-      const { email, firstName, lastName, role } = req.body;
+      // const { email, firstName, lastName, role } = req.body;
       //const updateOrganization = await Organization.findByIdAndUpdate({_id: id}, { $push: { employees: emplo}}   )
-      const user = await User.create({
-        email,
-        firstName,
-        lastName,
-        role
-      });
-      if (user) {
-        const updatedOrganization = await Organization.findByIdAndUpdate(
-          { _id: id },
-          { $push: { employees: user } },
-          (error, success) => {
-            if (error) {
-              return response.error(res, 500, error.message);
-            } else {
-
-              return response.success(
-                res,
-                201,
-                `Successfully added user with email ${email} to organization`
-              );
-            }
-          }
-
-        );
-        if (updatedOrganization) {
-          senduserEmail(user, updatedOrganization, req, res);
-        }
-      } else {
+      const user = await User.findOne({ email })
+      if (!user) {
+        const newUser = await User.create(req.body);
+      }
+      const updatedOrganization = await Organization.findByIdAndUpdate(
+        { _id: req.params.id },
+        { $push: { employees: user ? user._id : newUser._id } }
+      );
+      if (updatedOrganization) {
+        senduserEmail(user ? user : newUser, updatedOrganization, req, res);
+      }
+      else {
         return response.error(res, 500, `User could not be created`);
       }
     } catch (error) {

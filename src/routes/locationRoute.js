@@ -1,6 +1,5 @@
 import { Router } from "express";
 import controllers from "../controllers/locationController";
-import { checkUserRole } from "../middlewares/auth";
 const { check } = require("express-validator");
 const validate = require("../middlewares/validate");
 

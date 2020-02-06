@@ -19,7 +19,6 @@ var organizationSchema = new Schema({
   },
   admin: [{
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'User'
   }],
   employees: [{
@@ -28,7 +27,6 @@ var organizationSchema = new Schema({
   }],
   telephone: {
     type: String,
-    required: true
   },
   staffStength: {
     type: Number
@@ -47,5 +45,11 @@ var organizationSchema = new Schema({
     ref: 'File'
   }]
 });
+
+// organizationSchema.pre('save', function(next) {
+//   const org = this;
+
+//   if (org.isModified()
+// })
 
 export const Organization = mongoose.model('Organization', organizationSchema)
