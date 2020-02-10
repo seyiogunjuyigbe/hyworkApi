@@ -50,20 +50,18 @@ module.exports = {
     const { email } = req.body;
     try {
       const user = await User.findOneAndUpdate({ email }, req.body, { upsert: true, new: true, runValidators: true });
-      console.log(user)
-
-      const updatedOrganization = await Organization.findOneAndUpdate(
-        { urlname: req.params.urlname },
-        { $push: { employees: user._id } }
+      const updatedOrganization = await Organization.findOne(
+        { urlname: req.params.urlname }
       );
+      updatedOrganization.employees.push(user._id);
+      updatedOrganization.save(err => {
+        if(err) {
+          return response.error(res, 500, `User could not be added to organization`);
+        }
+        senduserEmail(user, updatedOrganization, req, res);
+
+      })
       console.log(updatedOrganization)
-      if (updatedOrganization) {
-        response.success("")
-        senduserEmail(user ? user : newUser, updatedOrganization, req, res);
-      }
-      else {
-        return response.error(res, 500, `User could not be created`);
-      }
     } catch (error) {
       response.error(res, 500, error.message);
     }
