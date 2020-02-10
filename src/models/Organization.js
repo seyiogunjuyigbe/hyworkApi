@@ -15,7 +15,9 @@ var organizationSchema = new Schema({
   },
   urlname: {
     type: String,
-    trim: true
+    trim: true, 
+    required: true,
+    unique: true
   },
   category: {
     type: "String"
