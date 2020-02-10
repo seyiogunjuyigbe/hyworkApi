@@ -9,12 +9,13 @@ const nodemailer = require('nodemailer');
 const cloudinary = require('cloudinary');
 const cloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
-
+const geoip = require ('geoip-lite');
 import path from 'path';
 import {startDb} from './database/db'
 import {SECRET_KEY, SITE_URL} from "./config/constants"
 import {initRoutes} from './routes/routes'
 import {User} from './models/User';
+import { Shift } from './models/Shift';
 // const passportConfig = require ('./config/passport');
 startDb();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
@@ -35,6 +36,29 @@ app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
 })
+app.get('/location', (req,res)=>{
+    const ip = (req.headers['x-forwarded-for'] || '').split(',').pop() || 
+    req.connection.remoteAddress || 
+    req.socket.remoteAddress || 
+    req.connection.socket.remoteAddress;
+    
+    const location = geoip.lookup('78.138.46.47')
+    res.json(location)
+})
+
+// Shift.create({
+//         title: 'first shift',
+//       startTime: '7:00',
+//       endTime: '8:00',
+//       isShiftMarginEnabled: true,
+//       startMargin: 20,
+//       endMargin: '',
+//       createdBy: 'Mee'
+// }, (err,shift)=>{if(!err){
+//     shift.save();
+//     console.log(shift._id)}})
+
+
 
 initRoutes(app);
 
