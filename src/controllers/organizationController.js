@@ -18,16 +18,17 @@ module.exports = {
             if (err) {
               return response.error(res, 500, err.message);
             }
-            const user = await User.findOne({ _id: req.user._id });
-            user.organizations.push(newOrg._id);
-            user.save((err) => {
-              if (err) {
-                response.error(res, 500, err.message);
-              }
-              response.success(res, 200, `Organisation ${newOrg.name} created`);
-            })
-            sendCreateOrganisationEmail(user, newOrg, req, res);
+
           });
+          const user = await User.findOne({ _id: req.user._id });
+          user.organizations.push(newOrg._id);
+          user.save((err) => {
+            if (err) {
+              response.error(res, 500, err.message);
+            }
+            response.success(res, 200, `Organisation ${newOrg.name} created`);
+          })
+          sendCreateOrganisationEmail(user, newOrg, req, res);
 
         }
 

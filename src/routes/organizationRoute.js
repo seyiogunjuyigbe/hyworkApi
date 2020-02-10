@@ -9,7 +9,8 @@ const router = Router();
 
 router.post('/', [
     check("name").not().isEmpty().withMessage("Enter Organisation's name"),
-    check("description").not().isEmpty().withMessage("Enter desctiption of organization")
+    check("description").not().isEmpty().withMessage("Enter description of organization"),
+    check("urlname").not().isEmpty().withMessage("Enter url of organisation")
 ], validate, createOrganization);
 
 // router.get('/:id', controllers.getOneById);
