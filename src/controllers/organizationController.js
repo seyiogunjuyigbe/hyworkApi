@@ -61,7 +61,7 @@ module.exports = {
         senduserEmail(user, updatedOrganization, req, res);
 
       })
-      console.log(updatedOrganization)
+      // console.log(updatedOrganization)
     } catch (error) {
       response.error(res, 500, error.message);
     }
@@ -77,7 +77,27 @@ module.exports = {
         response.error(res, 500, err);
       }
     })
-  }
+  },
+  async deleteOrganization(req, res) {
+    Organization.deleteOne({ urlname: req.params.urlname }, (err) => {
+        if (err) {
+          response.error(res, 404, err)
+        }
+        response.success(res, 200, 'Organization successfully deleted');
+    })
+  },
+
+
+  async updateOrganization(req, res) {
+    Organization.findOneAndUpdate({ urlname: req.params.urlname }, req.body , (err, org) => {
+        if (err) {
+          response.error(res, 404, err)
+        }
+        response.success(res, 200, 'Organization successfully deleted');
+    })
+  },
+
+  
 };
 
-export default crudControllers(Organization);
+
