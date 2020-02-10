@@ -13,6 +13,10 @@ var organizationSchema = new Schema({
   description: {
     type: String
   },
+  urlname: {
+    type: String,
+    trim: true
+  },
   category: {
     type: "String"
     
