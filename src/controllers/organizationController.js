@@ -3,14 +3,20 @@ import { User } from "../models/User";
 const response = require("../middlewares/response");
 import { crudControllers } from "../../utils/crud";
 import { sendCreateOrganisationEmail, senduserEmail } from "../middlewares/mail";
+import { checkUrlExists } from "../middlewares/middleware";
+
+
+const errors = [];
 
 module.exports = {
   // Controller that creates a new organization. The user that creates the organization is immediately added as the
   //the an admin of the newly created organisation.
   async createOrganization(req, res) {
     try {
-      console.log(req.user.organizations.length);
-      if (req.user.organizations.length <= 10) {
+      if (req.user.organizations.length >= 10) { errors.push('User has registered more than 10 organizations') }
+      if (checkUrlExists(req.params.urlname)) { errors.push(`Organization with the username ${req.params.username} already exists`) }
+      if (errors.length === 0) {
+        // console.log(req.user.organizations.length)
         const newOrg = await Organization.create(req.body);
         if (req.user) {
           newOrg.admin.push(req.user._id);
@@ -32,6 +38,8 @@ module.exports = {
 
         }
 
+      } else {
+        response.error(res, 500, errors);
       }
     } catch (error) {
       response.error(res, 500, error.message);
@@ -39,18 +47,18 @@ module.exports = {
   },
 
   async addUserToOrganization(req, res) {
+    const { email } = req.body;
     try {
-      // const { email, firstName, lastName, role } = req.body;
-      //const updateOrganization = await Organization.findByIdAndUpdate({_id: id}, { $push: { employees: emplo}}   )
-      const user = await User.findOne({ email })
-      if (!user) {
-        const newUser = await User.create(req.body);
-      }
-      const updatedOrganization = await Organization.findByIdAndUpdate(
-        { _id: req.params.id },
-        { $push: { employees: user ? user._id : newUser._id } }
+      const user = await User.findOneAndUpdate({ email }, req.body, { upsert: true, new: true, runValidators: true });
+      console.log(user)
+
+      const updatedOrganization = await Organization.findOneAndUpdate(
+        { urlname: req.params.urlname },
+        { $push: { employees: user._id } }
       );
+      console.log(updatedOrganization)
       if (updatedOrganization) {
+        response.success("")
         senduserEmail(user ? user : newUser, updatedOrganization, req, res);
       }
       else {
@@ -59,6 +67,18 @@ module.exports = {
     } catch (error) {
       response.error(res, 500, error.message);
     }
+  },
+
+  async fetchOrganization(req, res) {
+    Organization.find({ urlname: req.params.urlname }, (err, org) => {
+      if (org) {
+        response.success(res, 200, org);
+      }
+
+      if (err) {
+        response.error(res, 500, err);
+      }
+    })
   }
 };
 

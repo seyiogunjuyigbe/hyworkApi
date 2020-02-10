@@ -3,11 +3,11 @@ import { response } from "../middlewares/response";
 
 export const checkUrlExists = url => {
     Organization.find({ urlname: url }, (err, org) => {
-        if (org) {
-            console.log(org)
+        if (!org[0].name === undefined) {
+            return true
         }
         else {
-            console.log(err)
+            return false
         }
     })
 }

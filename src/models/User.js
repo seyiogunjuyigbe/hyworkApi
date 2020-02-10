@@ -44,7 +44,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: 'You need a password',
+      // required: 'You need a password',
       minlength: 8
     },
     dob: {
