@@ -1,7 +1,7 @@
 const express = require('express');
 const validate = require('../middlewares/validate');
 const { check } = require('express-validator');
-import { registerNewUser, loginUser, verifyToken, resendToken, logoutUser } from "../controllers/auth";
+import { registerNewUser, loginUser, loginCb, verifyToken, resendToken, logoutUser } from "../controllers/auth";
 import {recover, reset, resetPassword} from '../controllers/password'
 
 const router = express.Router();
@@ -18,7 +18,7 @@ router.post('/register', [
 router.post("/login", [
     check('email').isEmail().withMessage('Enter a valid email address'),
     check('password').not().isEmpty().withMessage('Please enter the password for this account'),
-], validate, loginUser);
+], validate, loginUser, loginCb);
 
 router.get('/login/success', (req,res)=>{
     return res.status(200).json({success:true,

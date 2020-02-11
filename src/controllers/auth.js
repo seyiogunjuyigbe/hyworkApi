@@ -1,66 +1,56 @@
-import { User } from '../models/User';
-import { Token } from '../models/Token'
-const mongoose = require('mongoose');
+import {User} from '../models/User';
+import{Token} from '../models/Token'
 const passport = require('passport');
-import { sendTokenMail } from '../middlewares/mail';
-const LocalStrategy = require('passport-local');
-// import {passportConfig} from '../config/passport';
-// passportConfig();
+import {sendTokenMail} from '../middlewares/mail';
+import {passportConfig} from '../config/passport';
+passportConfig(passport);
 
 // Register new User
 // @route POST /user/register
-export const registerNewUser = (req, res) => {
-    const { email, username } = req.body;
-
-    User.findOne({ email }, (err, user) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: err.message })
-        }
-        else if (user) {
-            return res.status(401).json({ message: 'The email address you have entered is already associated with another account' })
-        } else {
-            User.findOne({ username }, (err, user) => {
-                if (user) {
-                    return res.status(401).json({ message: 'This username is already taken' })
-                }
+export const registerNewUser = (req, res) => {       
+            let newUser = new User({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                role: 'admin'
             });
-
-        }
-        User.create({ ...req.body, role: "user" }, (err, newUser) => {
-            if (err) {
-                return res.status(500).json({ success: false, message: err.message });
-            } else {
-                passport.authenticate("local")(req, res, function () {
-                    sendTokenMail(newUser, req, res)
+            newUser.username = req.body.username;
+            User.register(newUser, req.body.password, function(err,user){
+              if(err){
+                  console.log(err);
+                  return res.status(500).json({success:false, message: err.message});
+              }
+              else{
+                passport.authenticate("local")(req, res, function(){
+                    console.log("User registered");
+                    sendTokenMail(newUser,req,res);
                     newUser.save();
-                    return res.status(200).json({
-                        success: true,
-                        data: newUser
-                    })
-                })
-            }
-        });
-    });
-}
+                   })
+    }
+     })
+    }
 
-
+    
 // Login Existing User
 // @route POST /user/login
-export const loginUser = passport.authenticate('local-login', {
-    successRedirect: '/user/login/success',
-    failureRedirect: '/user/login/failure'
-})
+   export const loginUser = passport.authenticate('local-login')
 
+export const loginCb = (req,res)=>{
+  return res.status(200).json({
+      status: 'logged in',
+      message: 'Successfully logged in'
+  })
+}
 // Logout User
 // @route GET /user/logout
-export const logoutUser = (req, res) => {
-    req.session.destroy();
-    req.logout();
-    return res.status(200).json({
-        message: 'logged out successfully',
-        user: req.user
-    })
-}
+export const logoutUser = (req,res)=>{
+                req.session.destroy();
+                req.logout();
+                return res.status(200).json({
+                message: 'logged out successfully',
+                user: req.user
+            })
+                    }
 
 // EMAIL VERIFICATION
 // @route GET /user/verify/:token

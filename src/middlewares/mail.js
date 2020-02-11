@@ -96,9 +96,10 @@ export const sendTokenMail = (user, req, res) => {
             
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
-                console.log(error);
+                    return res.status(500).json({success: false, error: error});
                 } else {
-                console.log({message: 'A verification email has been sent to ' + user.email + '.'});
+                    console.log('mail sent to ' + user.mail)
+                    return res.status(200).json({message: 'Successfully registered! A verification email has been sent to ' + user.mail + '.'});
                 }
             });                
     }
