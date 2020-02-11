@@ -22,7 +22,6 @@ export const registerNewUser = (req, res) => {
               }
               else{
                 passport.authenticate("local")(req, res, function(){
-                    console.log("User registered");
                     sendTokenMail(newUser,req,res);
                     newUser.save();
                    })

@@ -1,5 +1,6 @@
 import { Organization } from "../models/Organization";
 import { User } from "../models/User";
+import { Token } from "../models/Token";
 const response = require("../middlewares/response");
 import { crudControllers } from "../../utils/crud";
 import { sendCreateOrganisationEmail, senduserEmail } from "../middlewares/mail";
