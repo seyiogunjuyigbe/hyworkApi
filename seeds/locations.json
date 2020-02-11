@@ -12,5 +12,13 @@
         "state": "Lagos",
         "country": "Nigeria",
         "title": "Home Address"
+    },
+    {
+        "streetAddress": "Ligali Ayorinde Way",
+        "city": "Lekki",
+        "state": "Lagos",
+        "country": "Nigeria",
+        "title": "Test Address"
     }
+    
 ]

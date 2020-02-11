@@ -7,10 +7,17 @@ var organizationSchema = new Schema({
     required: true
   },
   location: [{
-    type: location,
+    type: Schema.Types.ObjectId,
+    ref: 'Location'
   }],
   description: {
     type: String
+  },
+  urlname: {
+    type: String,
+    trim: true, 
+    required: true,
+    unique: true
   },
   category: {
     type: "String"
@@ -18,17 +25,14 @@ var organizationSchema = new Schema({
   },
   admin: [{
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'User'
   }],
-  users: [{
+  employees: [{
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'User'
   }],
   telephone: {
     type: String,
-    required: true
   },
   staffStength: {
     type: Number
@@ -47,5 +51,11 @@ var organizationSchema = new Schema({
     ref: 'File'
   }]
 });
+
+// organizationSchema.pre('save', function(next) {
+//   const org = this;
+
+//   if (org.isModified()
+// })
 
 export const Organization = mongoose.model('Organization', organizationSchema)
