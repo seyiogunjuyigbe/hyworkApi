@@ -97,6 +97,37 @@ module.exports = {
     })
   },
 
+  async verifyEmployee (req, res) {
+    if (!req.params.token) {
+        return response.error(res, 400, "No token attached")
+    }
+
+    Token.findOne({ token: req.params.token }, (err, token) => {
+        if (!token) {
+            return response.error(res, 400, 'We were unable to find a valid token. Your token may have expired.');
+        }
+        if (token) {
+            User.findOne({ _id: token.userId }, (err, user) => {
+                if (!user) {
+
+                    return response.error(res, 400, 'We were unable to find a user for this token.')
+                }
+                if (user.isVerified) {
+                    return response.error(res, 400, 'This user has already been verified.')
+                }
+                user.isVerified = true;
+                user.save(function (err) {
+                    if (err) {
+                        return res.status(500).json({ message: err.message });
+                    }
+                });
+                response.success(res, 200, user);
+
+            })
+        }
+    })
+}
+
   
 };
 
