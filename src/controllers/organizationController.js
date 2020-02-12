@@ -19,25 +19,24 @@ module.exports = {
       if (errors.length === 0) {
         // console.log(req.user.organizations.length)
         const newOrg = await Organization.create(req.body);
-        if (req.user) {
-          newOrg.admin.push(req.user._id);
-          newOrg.save((err) => {
-            if (err) {
-              return response.error(res, 500, err.message);
-            }
+        newOrg.admin.push(req.user._id);
+        newOrg.save((err) => {
+          if (err) {
+            return response.error(res, 500, err.message);
+          }
 
-          });
-          const user = await User.findOne({ _id: req.user._id });
-          user.organizations.push(newOrg._id);
-          user.save((err) => {
-            if (err) {
-              response.error(res, 500, err.message);
-            }
-            response.success(res, 200, `Organisation ${newOrg.name} created`);
-          })
-          sendCreateOrganisationEmail(user, newOrg, req, res);
+        });
+        const user = await User.findOne({ _id: req.user._id });
+        user.organizations.push(newOrg._id);
+        user.save((err) => {
+          if (err) {
+            response.error(res, 500, err.message);
+          }
+          response.success(res, 200, `Organisation ${newOrg.name} created`);
+        })
+        sendCreateOrganisationEmail(user, newOrg, req, res);
 
-        }
+
 
       } else {
         response.error(res, 500, errors);
@@ -56,7 +55,7 @@ module.exports = {
       );
       updatedOrganization.employees.push(user._id);
       updatedOrganization.save(err => {
-        if(err) {
+        if (err) {
           return response.error(res, 500, `User could not be added to organization`);
         }
         senduserEmail(user, updatedOrganization, req, res);
@@ -81,55 +80,55 @@ module.exports = {
   },
   async deleteOrganization(req, res) {
     Organization.deleteOne({ urlname: req.params.urlname }, (err) => {
-        if (err) {
-          response.error(res, 404, err)
-        }
-        response.success(res, 200, 'Organization successfully deleted');
+      if (err) {
+        response.error(res, 404, err)
+      }
+      response.success(res, 200, 'Organization successfully deleted');
     })
   },
 
 
   async updateOrganization(req, res) {
-    Organization.findOneAndUpdate({ urlname: req.params.urlname }, req.body , (err, org) => {
-        if (err) {
-          response.error(res, 404, err)
-        }
-        response.success(res, 200, 'Organization successfully deleted');
+    Organization.findOneAndUpdate({ urlname: req.params.urlname }, req.body, (err, org) => {
+      if (err) {
+        response.error(res, 404, err)
+      }
+      response.success(res, 200, 'Organization successfully deleted');
     })
   },
 
-  async verifyEmployee (req, res) {
+  async verifyEmployee(req, res) {
     if (!req.params.token) {
-        return response.error(res, 400, "No token attached")
+      return response.error(res, 400, "No token attached")
     }
 
     Token.findOne({ token: req.params.token }, (err, token) => {
-        if (!token) {
-            return response.error(res, 400, 'We were unable to find a valid token. Your token may have expired.');
-        }
-        if (token) {
-            User.findOne({ _id: token.userId }, (err, user) => {
-                if (!user) {
+      if (!token) {
+        return response.error(res, 400, 'We were unable to find a valid token. Your token may have expired.');
+      }
+      if (token) {
+        User.findOne({ _id: token.userId }, (err, user) => {
+          if (!user) {
 
-                    return response.error(res, 400, 'We were unable to find a user for this token.')
-                }
-                if (user.isVerified) {
-                    return response.error(res, 400, 'This user has already been verified.')
-                }
-                user.isVerified = true;
-                user.save(function (err) {
-                    if (err) {
-                        return res.status(500).json({ message: err.message });
-                    }
-                });
-                response.success(res, 200, user);
+            return response.error(res, 400, 'We were unable to find a user for this token.')
+          }
+          if (user.isVerified) {
+            return response.error(res, 400, 'This user has already been verified.')
+          }
+          user.isVerified = true;
+          user.save(function (err) {
+            if (err) {
+              return res.status(500).json({ message: err.message });
+            }
+          });
+          response.success(res, 200, user);
 
-            })
-        }
+        })
+      }
     })
-}
+  }
 
-  
+
 };
 
 
