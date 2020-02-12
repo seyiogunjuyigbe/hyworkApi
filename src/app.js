@@ -48,17 +48,20 @@ app.get('/location', (req,res)=>{
 
 // Shift.create({
 //         title: 'first shift',
-//       startTime: '7:00',
-//       endTime: '8:00',
+//       startTime: '7:00:00',
+//       endTime: '20:00:00',
 //       isShiftMarginEnabled: true,
-//       startMargin: 20,
-//       endMargin: '',
-//       createdBy: 'Mee'
+//       startMarginInMinutes: 20,
+//       endMarginInMinutes: 20,
+//       createdBy: 'seyi'
 // }, (err,shift)=>{if(!err){
 //     shift.save();
 //     console.log(shift._id)}})
 
-
+// User.remove({}, (err,success)=>{
+//     if(!err){console.log('All deleted')}
+//     else{console.log(err)}
+// })
 
 initRoutes(app);
 

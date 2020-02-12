@@ -3,7 +3,7 @@ const validate = require('../middlewares/validate');
 const { check } = require('express-validator');
 import { registerNewUser, loginUser, loginCb, verifyToken, resendToken, logoutUser } from "../controllers/auth";
 import {recover, reset, resetPassword} from '../controllers/password'
-import {clockIn, clockOut} from '../controllers/attendance';
+import {clockIn, clockOut, fetchMyAttendance} from '../controllers/attendance';
 const router = express.Router();
 // import { getUserByUsername, getAllUsers } from '../controllers/userController';
 
@@ -18,7 +18,7 @@ router.post('/register', [
 router.post("/login", [
     check('email').isEmail().withMessage('Enter a valid email address'),
     check('password').not().isEmpty().withMessage('Please enter the password for this account'),
-], validate, loginUser, loginCb);
+], validate, loginUser);
 
 router.get('/login/success', (req,res)=>{
     console.log(res);
@@ -48,6 +48,7 @@ router.post('/password/reset/:token', [
             check('confirmPassword', 'Passwords do not match').custom((value, {req}) => (value === req.body.password)),
         ], validate, resetPassword);
 router.post('/clockin', clockIn)        
-router.post('/clockout', clockOut)
+router.post('/clockout', clockOut);
+router.get('/attendance', fetchMyAttendance)
 
 module.exports = router;

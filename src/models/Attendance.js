@@ -27,7 +27,7 @@ const attendanceSchema = new Schema({
   user: String,
   shift: {
     type: Schema.Types.ObjectId,
-    ref: 'Shift'
+    ref: "Shift"
   },
   seatingLocation: {},
 });

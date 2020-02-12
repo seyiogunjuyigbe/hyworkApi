@@ -17,3 +17,8 @@ for(var i=0; i<str.length;i++) {
 strips.push((str.substring(0,indices[0])), str.substring(indices[0]+1,indices[1]), str.substring(indices[1]+1,str.length))
 return strips;
 }
+
+
+export const fetchUserAttendance = (user,arr)=>{
+    
+}

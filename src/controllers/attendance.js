@@ -1,16 +1,18 @@
 import {Attendance} from '../models/Attendance';
 import {Shift} from '../models/Shift';
+import {Organization} from '../models/Organization';
 import {Location} from '../models/Location'
-import { calcTimeDiff } from '../middlewares/attendanceCalc';
+import { calcTimeDiff, fetchUserAttendance } from '../middlewares/attendanceCalc';
 import { User } from '../models/User';
 const geoip = require ('geoip-lite');
 
 // Clock in user
 // @POST
 // Access: logged in employee
-// @params: :shiftId
+// @body: :shiftId
 export const clockIn = (req,res)=>{
-    Shift.findById(req.body.shiftId, (err,shift)=>{
+    if(req.user){
+     Shift.findById(req.body.shiftId, (err,shift)=>{
         if(err){
             return res.status(500).json({message: err.message})
         } else if(!shift){
@@ -26,7 +28,7 @@ export const clockIn = (req,res)=>{
                     if(ip == '::1'){location = geoip.lookup(fakeIp)}
                     else{location = geoip.lookup(ip)}
             // Check if user has clocked in
-            Attendance.findOne({shift, user: req.user.username, date: today.toDateString(), clockOut: undefined}, (err, foundAttendance)=>{
+            Attendance.findOne({user: req.user.username, clockOutStatus: 'Working'}, (err, foundAttendance)=>{
                 if(foundAttendance){
                     return res.status(409).json({message: 'You are clocked in already'})
                 } else{            
@@ -50,6 +52,7 @@ export const clockIn = (req,res)=>{
                                 attendance.clockInStatus = 'Late'
                             };
                                 attendance.clockInMargin = `${Math.floor(diff/60)} hours ${Math.round(diff%60)} minutes`
+                                attendance.clockOutStatus = 'Working'
                                 attendance.save(); 
                                 User.findById(req.user._id, (err,user)=>{
                                     if(err){
@@ -61,25 +64,33 @@ export const clockIn = (req,res)=>{
                                 })
                             return res.status(200).json({
                                 employee: `${req.user.firstName} ${req.user.lastName}`,
-                                event: 'Clocked in',
+                                event:    'Clocked in',
                                 location: attendance.seatingLocation,
-                                status: attendance.clockInStatus,
-                                margin: attendance.clockInMargin
+                                status:   attendance.clockInStatus,
+                                margin:   attendance.clockInMargin,
+                                token:    attendance.token
                             })
-                        }
+                       }
                     })
                 }
             })
                 }
             })
 
+        } else{
+            return res.status(401).json({message: 'You need to be logged in to do that!'})
         }
-
+       
+    } 
 // Clockout User
-// Params: :token
+// @body:token
 // Access: logged in employee
 // POST
 export const clockOut = (req,res)=>{
+    if(req.user){
+        User.findById(req.user._id, (err,user)=>{
+            if(err){return res.status(404).json({message: 'no User found'})}
+            else{
     Shift.findById(req.body.shiftId, (err,shift)=>{
         if(err){
             return res.status(500).json({message: err.message})
@@ -90,7 +101,7 @@ export const clockOut = (req,res)=>{
                         Attendance.findOne({token:req.body.token}, (err, attendance)=>{
                         if(err){return res.status(500).json({message:err.message})}
                         else if(!attendance){return res.status(404).json({message: 'Attendance not found'})}
-                        else if(attendance.clockOut !== undefined){
+                        else if(attendance.clockOutStatus !== 'Working'){
                             return res.status(409).json({message: 'You are already clocked out for this shift'})
                         }
                         else{
@@ -104,19 +115,105 @@ export const clockOut = (req,res)=>{
                             };
                                 attendance.clockOutMargin = `${Math.floor(diff/60)} hours ${Math.round(diff%60)} minutes`
                                 attendance.save(); 
+                                user.save();
                                 return res.status(200).json({
                                 employee: `${req.user.firstName} ${req.user.lastName}`,
                                 event: 'Clocked Out',
                                 status: attendance.clockOutStatus,
-                                margin: attendance.clockOutMargin
+                                margin: attendance.clockOutMargin,
+                                
                             })
                         }
                     })
                 }
             })
+        }
+    })
 
+        } else{
+            return res.status(401).json({message: 'You need to be logged in to do that'})
+        }
+    }
+
+
+        // fetchMyAttendance
+        // GET
+        // Access: logged in employee
+    export const fetchMyAttendance = (req,res)=>{
+        if(req.user){
+                    // getEach date from  employee's join date till date
+                            let today = new Date();
+                            var getDateArray = (start, end)=> {  
+                            var arr = new Array();
+                            var dt = new Date(start);
+                            while (dt <= end) {
+                                arr.push(new Date(dt).toDateString());
+                                dt.setDate(dt.getDate() + 1);
+                            }
+                        }
+                    var dateArr = getDateArray(req.user.createdAt, today);
+            // Fetch attendance for each date for this employee from joinDate till today
+           var arr = new Array();
+             dateArr.forEach((date)=>{ 
+                    Attendance.find({user: req.user.username, date}, (err,record)=>{
+                    if(err){return res.status(500).json({message:err.message})}
+                    else if(!record){
+                        arr.push({date, attendance: 'Absent'});
+                    }
+                    else if(record.length == 1){
+                        arr.push({
+                            date, 
+                            attendance: 'Present', 
+                            clockIn: record.clockIn,
+                            clockInStatus: record.clockInStatus,
+                            clockOut: record.clockOut,
+                            clockOutStatus: record.clockOutStatus,
+                        })
+                    }else if(record.length > 1){
+                        record.forEach((rec)=>{
+                            arr.push({
+                            date, 
+                            attendance: 'Present', 
+                            clockIn: rec.clockIn,
+                            clockInStatus: rec.clockInStatus,
+                            clockOut: rec.clockOut,
+                            clockOutStatus: rec.clockOutStatus,
+                        })     
+                        })  
+                    }
+                }) 
+            })
+            return res.status(200).json({attendance:arr})                        
+            } else{
+                return res.status(401).json({message: 'You need to be logged in to do that'})
+            }
         }
 
 
 
+// fetchOrganizationWideAttendance
+// Access: Logged in admin
+// GET
+// params: organization_Name
+const fetchOrganizationWideAttendance = (req,res)=>{
+    Organization.findOne({name: req.params.orgName}, (err,org)=>{
+        if(err){
+            return res.status(500).json({message: err.message})
+        } else if(!org){
+            return res.status(404).json({message: 'Organization not found'})
+        } else if(org){
+                if(!req.user){
+                    return res.status(401).json({meessage: 'Unauthorized access'})
+                } 
+                else if(org.admins.indexOf(req.user._id) == -1){
+                    return res.status(401).json({message: 'Unauthorized access'})
+                } else {
+                    org.users.forEach((user)=>{
+                        fetchUserAttendance(user)
+                    })
+                }
+        }
+    })
+    
+}
 

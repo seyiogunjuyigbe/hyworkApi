@@ -4,6 +4,7 @@ const passport = require('passport');
 import {sendTokenMail} from '../middlewares/mail';
 import {passportConfig} from '../config/passport';
 passportConfig(passport);
+const passportLocalMongoose = require('passport-local-mongoose')
 
 // Register new User
 // @route POST /user/register
@@ -33,7 +34,27 @@ export const registerNewUser = (req, res) => {
     
 // Login Existing User
 // @route POST /user/login
-   export const loginUser = passport.authenticate('local-login')
+//    export const loginUser = passport.authenticate('local-login')
+   export const loginUser = (req,res)=>{
+       User.findOne({email: req.body.email}, (err,user)=>{
+           if(err){return res.status(500).json({message: err.message})}
+           else if(!user){return res.status(403).json({message: 'No user found with this emaill address'})}
+           else {
+               if(req.body.password){
+                  user.authenticate(req.body.password, (err,found,passwordErr)=>{
+                    if(err){
+                        return res.status(500).json({message: err.message})
+                    } else if(passwordErr){
+                        return res.status(403).json({message: 'Incorrect password'})
+                    } else if(found){
+                        return res.status(200).json({found})
+                    }
+                  }) 
+               }
+               
+           }
+       })
+   }
 
 export const loginCb = (req,res)=>{
   return res.status(200).json({
