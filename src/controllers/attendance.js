@@ -153,9 +153,9 @@ export const clockOut = (req,res)=>{
                             return arr
                         }
                     var dateArr = getDateArray(req.user.createdAt, today);
-            // Fetch attendance for each date for this employee from joinDate till today
+           var arr = new Array(); // Fetch attendance for each date for this employee from joinDate till today
            var getAll = ()=>{
-            var arr = new Array();
+            
              dateArr.forEach((date)=>{ 
                     Attendance.find({user: req.user.username, date}, (err,record)=>{
                     if(err){return res.status(500).json({message:err.message})}
@@ -173,7 +173,7 @@ export const clockOut = (req,res)=>{
                             clockOut: record.clockOut,
                             clockOutStatus: record.clockOutStatus,
                         })
-                        console.log('here 2: ' + arr)
+                        console.log('here 2: '); console.log(arr)
                         return arr
                     // if the attendance record has multiple records
                     }else if(record.length > 1){
@@ -187,9 +187,6 @@ export const clockOut = (req,res)=>{
                             clockOutStatus: rec.clockOutStatus,
                         })     
                         })  
-                        
-                        return arr;
-
                     }
                     return arr;
                 }) 
