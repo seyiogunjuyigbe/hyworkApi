@@ -19,3 +19,11 @@ export const authUser = (req, res, next) => {
         response.error(res, 404, 'User is not logged in')
     }
 }
+
+export const isAdmin = (req, res, next) => {
+    if(req.user.role === "admin") {
+        return next();
+    }else {
+        response.error(res, 404, 'User does not have the required permission')
+    }
+}
