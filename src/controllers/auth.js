@@ -35,10 +35,10 @@ export const registerNewUser = (req, res) => {
 // Login Existing User
 // @route POST /user/login
 //    export const loginUser = passport.authenticate('local-login')
-   export const loginUser = (req,res)=>{
+   export const loginUser = (req,res, next)=>{
        User.findOne({email: req.body.email}, (err,user)=>{
            if(err){return res.status(500).json({message: err.message})}
-           else if(!user){return res.status(403).json({message: 'No user found with this emaill address'})}
+           else if(!user){return res.status(403).json({message: 'No user found with this email address'})}
            else {
                if(req.body.password){
                   user.authenticate(req.body.password, (err,found,passwordErr)=>{
@@ -47,7 +47,16 @@ export const registerNewUser = (req, res) => {
                     } else if(passwordErr){
                         return res.status(403).json({message: 'Incorrect password'})
                     } else if(found){
-                        return res.status(200).json({found})
+                        req.login(user, function(err) {
+                            if(err){return res.status(500).json({message: err.message})}
+                            else if (!user.isVerified){
+                                return res.status(200).json({
+                                    success: true,
+                                    message: 'Unverified account... please check your mail for verification link'
+                                })
+                            }
+                            next();
+                          });
                     }
                   }) 
                }
@@ -59,7 +68,8 @@ export const registerNewUser = (req, res) => {
 export const loginCb = (req,res)=>{
   return res.status(200).json({
       status: 'logged in',
-      message: 'Successfully logged in'
+      message: 'Successfully logged in',
+      user: req.user.username
   })
 }
 // Logout User

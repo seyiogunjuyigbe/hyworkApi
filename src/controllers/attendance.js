@@ -150,16 +150,20 @@ export const clockOut = (req,res)=>{
                                 arr.push(new Date(dt).toDateString());
                                 dt.setDate(dt.getDate() + 1);
                             }
+                            return arr
                         }
                     var dateArr = getDateArray(req.user.createdAt, today);
             // Fetch attendance for each date for this employee from joinDate till today
-           var arr = new Array();
+           var getAll = ()=>{
+            var arr = new Array();
              dateArr.forEach((date)=>{ 
                     Attendance.find({user: req.user.username, date}, (err,record)=>{
                     if(err){return res.status(500).json({message:err.message})}
                     else if(!record){
                         arr.push({date, attendance: 'Absent'});
+                        console.log('here: ' + arr)
                     }
+                    // If the attendance record is just a single record
                     else if(record.length == 1){
                         arr.push({
                             date, 
@@ -169,8 +173,11 @@ export const clockOut = (req,res)=>{
                             clockOut: record.clockOut,
                             clockOutStatus: record.clockOutStatus,
                         })
+                        console.log('here 2: ' + arr)
+                        return arr
+                    // if the attendance record has multiple records
                     }else if(record.length > 1){
-                        record.forEach((rec)=>{
+                            record.forEach((rec)=>{
                             arr.push({
                             date, 
                             attendance: 'Present', 
@@ -180,10 +187,19 @@ export const clockOut = (req,res)=>{
                             clockOutStatus: rec.clockOutStatus,
                         })     
                         })  
+                        
+                        return arr;
+
                     }
+                    return arr;
                 }) 
+                
+
             })
-            return res.status(200).json({attendance:arr})                        
+            
+        }
+        var allAttendance = getAll()
+            return res.status(200).json({attendance: allAttendance})                        
             } else{
                 return res.status(401).json({message: 'You need to be logged in to do that'})
             }

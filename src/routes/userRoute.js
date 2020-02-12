@@ -18,7 +18,7 @@ router.post('/register', [
 router.post("/login", [
     check('email').isEmail().withMessage('Enter a valid email address'),
     check('password').not().isEmpty().withMessage('Please enter the password for this account'),
-], validate, loginUser);
+], validate, loginUser, loginCb);
 
 router.get('/login/success', (req,res)=>{
     console.log(res);

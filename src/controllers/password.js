@@ -1,6 +1,7 @@
 import { MAIL_SENDER, MAIL_PASS, MAIL_SERVICE, MAIL_USER } from '../config/constants';
-import User from '../models/User';
-const nodemailer = require('nodemailer')
+import {User} from '../models/User';
+const nodemailer = require('nodemailer');
+const passportLocalMongoose = require('passport-local-mongoose')
 const transporter = nodemailer.createTransport({
     service: MAIL_SERVICE,
     auth: {
@@ -24,7 +25,7 @@ export const recover = (req, res) => {
             if(err){
                 return res.status(500).json({success:false, error: err.message})
             } else{
-                    let link = "http://" + req.headers.host + "/password/reset/" + user.resetPasswordToken;
+                    let link = "http://" + req.headers.host + "/user/password/reset/" + user.resetPasswordToken;
                     const mailOptions = {
                         to: user.email,
                         from: MAIL_SENDER,
@@ -38,7 +39,7 @@ export const recover = (req, res) => {
                         if (error) {
                         console.log(error);
                         } else {
-                        res.status(200).json({message: 'A password recovery link has been sent to ' + user.email + '.'});
+                        res.status(200).json({message: 'A password recovery link has been sent to ' + user.email + '.',link});
                         }
                     });  
             }
@@ -72,11 +73,11 @@ export const resetPassword = (req, res) => {
                     }
         else{
             //Set the new password
-            user.password = req.body.password;
-            user.resetPasswordToken = undefined;
+            user.setPassword(req.body.password, (err,user)=>{
+                if(err){return res.status(500).json({message: err.message})}
+              user.resetPasswordToken = undefined;
             user.resetPasswordExpires = undefined;
-            user.isVerified = true;
-            // Save
+            user.isVerified = true;  
             user.save((err) => {
                 if (err) {return res.status(500).json({message: err.message});
               
@@ -95,9 +96,26 @@ export const resetPassword = (req, res) => {
                 } else {
                     res.status(200).json({message: 'Your password has been updated.'});
                 }
-            });  
-            }
-          })            
+            });
+          }
+          })  
+            })     
             };
         });
         };
+    
+
+        // Change Password
+        // @POST
+        export const changePassword = (req,res)=>{
+            User.findById(req.user._id, (err,user)=>{
+                if(err){return res.status(500).json({message: err.message})}
+                else if(!user){return res.status(403).json({message: 'User not found'})}
+                else if(user){
+                    user.changePassword(user.password,req.body.password, (err, user)=>{
+                        if(err){return res.status(500).json({message: err.message})}
+                        user.save((err,user)=>{if(!err)return res.status(200).json({message: 'password changed successfully'})})
+                    })
+                }
+            })
+        }
