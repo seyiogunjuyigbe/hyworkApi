@@ -3,6 +3,7 @@ import { createOrganization, addUserToOrganization, fetchOrganization, updateOrg
 
 const { check } = require('express-validator');
 const validate = require("../middlewares/validate");
+const authUser = require('../middlewares/middleware');
 
 const router = Router();
 
@@ -11,7 +12,7 @@ router.post('/', [
     check("name").not().isEmpty().withMessage("Enter Organisation's name"),
     check("description").not().isEmpty().withMessage("Enter description of organization"),
     check("urlname").not().isEmpty().withMessage("Enter url of Organization")
-], validate, createOrganization);
+], [validate, authUser.authUser], createOrganization);
 // Fetch an organization by the Url
 router.get('/:urlname', fetchOrganization);
 // Delete an organization
