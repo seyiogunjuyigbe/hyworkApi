@@ -135,7 +135,7 @@ module.exports = {
               return res.status(500).json({ message: err.message });
             }
           });
-          response.success(res, 200, `User${username} has been successfully verified`);
+          response.success(res, 200, user);
 
         })
       }
