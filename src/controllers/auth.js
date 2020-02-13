@@ -6,8 +6,8 @@ import {passportConfig} from '../config/passport';
 passportConfig(passport);
 const passportLocalMongoose = require('passport-local-mongoose')
 
-// Register new User
-// @route POST /user/register
+// Register new Admin
+// @route POST /auth/register
 export const registerNewUser = (req, res) => {       
             let newUser = new User({
                 firstName: req.body.firstName,
@@ -33,7 +33,7 @@ export const registerNewUser = (req, res) => {
 
     
 // Login Existing User
-// @route POST /user/login
+// @route POST /auth/login
 //    export const loginUser = passport.authenticate('local-login')
    export const loginUser = (req,res, next)=>{
        User.findOne({email: req.body.email}, (err,user)=>{
@@ -73,7 +73,7 @@ export const loginCb = (req,res)=>{
   })
 }
 // Logout User
-// @route GET /user/logout
+// @route GET /auth/logout
 export const logoutUser = (req,res)=>{
                 req.session.destroy();
                 req.logout();
@@ -84,7 +84,7 @@ export const logoutUser = (req,res)=>{
                     }
 
 // EMAIL VERIFICATION
-// @route GET /user/verify/:token
+// @route GET /auth/verify/:token
 export const verifyToken = (req, res) => {
     if(!req.params.token){
       return res.status(400).json({message: "We were unable to find a user for this token."});  

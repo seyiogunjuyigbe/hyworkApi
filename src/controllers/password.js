@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
         },
     });  
 
-// @route POST user/auth/recover
+// @route POST /auth/password/recover
 // Recover Password - Generates token and Sends password reset email
 export const recover = (req, res) => {
          const { email } = req.body;
@@ -25,7 +25,7 @@ export const recover = (req, res) => {
             if(err){
                 return res.status(500).json({success:false, error: err.message})
             } else{
-                    let link = "http://" + req.headers.host + "/user/password/reset/" + user.resetPasswordToken;
+                    let link = "http://" + req.headers.host + "/auth/password/reset/" + user.resetPasswordToken;
                     const mailOptions = {
                         to: user.email,
                         from: MAIL_SENDER,
@@ -47,7 +47,7 @@ export const recover = (req, res) => {
             })
         };
 
-// @route POST user/auth/reset
+// @route POST /auth/password/reset
 // Reset Password - Validate password reset token and shows the password reset view
 
 export const reset = (req, res) => {
@@ -64,7 +64,7 @@ export const reset = (req, res) => {
     } ;
 
 
-// @route POST user/auth/reset
+// @route POST /auth/password/reset
 // Reset Password
 export const resetPassword = (req, res) => {
     User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: {$gt: Date.now()}}, (err,user)=>{

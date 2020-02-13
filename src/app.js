@@ -16,7 +16,7 @@ import {SECRET_KEY, SITE_URL} from "./config/constants"
 import {initRoutes} from './routes/routes'
 import {User} from './models/User';
 import { Shift } from './models/Shift';
-// const passportConfig = require ('./config/passport');
+
 startDb();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
 app.use(express.static(path.join(__dirname, '../public'))); // load local css and js files
@@ -35,15 +35,6 @@ app.use(passport.session());
 app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
-})
-app.get('/location', (req,res)=>{
-    const ip = (req.headers['x-forwarded-for'] || '').split(',').pop() || 
-    req.connection.remoteAddress || 
-    req.socket.remoteAddress || 
-    req.connection.socket.remoteAddress;
-    
-    const location = geoip.lookup('78.138.46.47')
-    res.json(location)
 })
 
 // Shift.create({
@@ -66,7 +57,7 @@ app.get('/location', (req,res)=>{
 initRoutes(app);
 
 const PORT = process.env.PORT
-
+app.all('*', (req,res)=>{return res.status(404).json({message: 'You seem lost... no resource found'})})
 app.listen(PORT, process.env.IP, ()=>{
     console.log(`Listening on ${PORT}`)
 })

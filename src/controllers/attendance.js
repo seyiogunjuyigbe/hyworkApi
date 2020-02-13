@@ -135,68 +135,58 @@ export const clockOut = (req,res)=>{
         }
     }
 
-
+    const fetchAttendance = (req,res, user,startDate,endDate)=>{
+         
+        // getEach date from  start date till end date
+                let today = new Date(endDate);
+                var getDateArray = (start, end)=> {  
+                var arr = new Array();
+                var dt = new Date(start);
+                while (dt <= end) {
+                    arr.push(new Date(dt).toDateString());
+                    dt.setDate(dt.getDate() + 1);
+                }
+                return arr
+            }
+        var dateArr = getDateArray(startDate, today);
+       // Fetch attendance for each date for this employee from joinDate till today
+        Attendance.find({user:user}, (err,records)=>{
+            var recordArr = [];
+    if(err){return res.status(500).json({message: err.message})} 
+    else if(!records || records == undefined || records.length == 0){
+        return res.status(200).json({message: 'No attendance records found'})
+    }
+    else{  
+    dateArr.forEach((date)=>{
+       for(var i=0; i<=records.length; i++){
+        if(date == records[i].date){
+            recordArr.push({
+                date: records[i].date,
+                status: records[i].clockInStatus,
+                arrival: records[i].clockIn
+            })
+            break;
+        } 
+        if(date !== records[i].date){
+            recordArr.push({
+                date,
+                status: 'Absent'
+            })
+            break;
+        }
+    }
+    })  } 
+        return res.status(200).json({recordArr})
+        })  
+    }     
         // fetchMyAttendance
         // GET
         // Access: logged in employee
     export const fetchMyAttendance = (req,res)=>{
         if(req.user){
-                    // getEach date from  employee's join date till date
-                            let today = new Date();
-                            var getDateArray = (start, end)=> {  
-                            var arr = new Array();
-                            var dt = new Date(start);
-                            while (dt <= end) {
-                                arr.push(new Date(dt).toDateString());
-                                dt.setDate(dt.getDate() + 1);
-                            }
-                            return arr
-                        }
-                    var dateArr = getDateArray(req.user.createdAt, today);
-           var arr = new Array(); // Fetch attendance for each date for this employee from joinDate till today
-           var getAll = ()=>{
-            
-             dateArr.forEach((date)=>{ 
-                    Attendance.find({user: req.user.username, date}, (err,record)=>{
-                    if(err){return res.status(500).json({message:err.message})}
-                    else if(!record){
-                        arr.push({date, attendance: 'Absent'});
-                        console.log('here: ' + arr)
-                    }
-                    // If the attendance record is just a single record
-                    else if(record.length == 1){
-                        arr.push({
-                            date, 
-                            attendance: 'Present', 
-                            clockIn: record.clockIn,
-                            clockInStatus: record.clockInStatus,
-                            clockOut: record.clockOut,
-                            clockOutStatus: record.clockOutStatus,
-                        })
-                        console.log('here 2: '); console.log(arr)
-                        return arr
-                    // if the attendance record has multiple records
-                    }else if(record.length > 1){
-                            record.forEach((rec)=>{
-                            arr.push({
-                            date, 
-                            attendance: 'Present', 
-                            clockIn: rec.clockIn,
-                            clockInStatus: rec.clockInStatus,
-                            clockOut: rec.clockOut,
-                            clockOutStatus: rec.clockOutStatus,
-                        })     
-                        })  
-                    }
-                    return arr;
-                }) 
-                
-
-            })
-            
-        }
-        var allAttendance = getAll()
-            return res.status(200).json({attendance: allAttendance})                        
+            var begin =  new Date(req.query.startDate).toDateString()
+            var end = new Date(req.query.endDate).toDateString()
+          fetchAttendance(req,res, req.user.username,begin, end);
             } else{
                 return res.status(401).json({message: 'You need to be logged in to do that'})
             }
@@ -204,29 +194,131 @@ export const clockOut = (req,res)=>{
 
 
 
+        // fetchUserAttendance
+        // GET
+        // Access: logged in admin
+            export const fetchThisUserAttendance = (req,res)=>{
+            User.findOne({username:req.params.user}, (err,user)=>{
+                if(err){return res.status(500).json({message: err.message})} 
+                else if(!user){return res.status(404).json({message: 'User not found'})} 
+                else if(user){
+                    var begin =  new Date(req.query.startDate).toDateString()
+                    var end = new Date(req.query.endDate).toDateString()
+                    fetchAttendance(req,res,user.username,begin, end)
+                        }
+ 
+                else{
+                    return res.status(401).json({message: 'You need to be logged in to do that'})
+                }
+            })}
+
+
+// fetchAttendanceForUsers
+// Access: Logged in admin
+// GET
+// query: user
+export const fetchManyUserAttendance = (req,res)=>{
+    var begin =  new Date(req.query.startDate).toDateString()
+    var endT = new Date(req.query.endDate).toDateString()
+        var getDateArray = (start, end)=> {  
+    var arr = new Array();
+    var dt = new Date(start);
+    while (dt <= new Date(end)) {
+        arr.push(new Date(dt).toDateString());
+        dt.setDate(dt.getDate() + 1);
+    }
+     return arr
+    }
+    var dateArr = getDateArray(begin, endT);
+    const users = req.query.arr;
+    var list = [];
+    var allRecords = [];
+    for(var i=0; i<=users.length; i++){
+        list.push({user: users[i]})
+    }
+        Attendance.find({$or: list}).sort({user: 'asc'}).exec((err, records)=>{
+       if(err){
+           return res.status(500).json({message: err.message})
+        } else if(!records || records == undefined || records.length == 0){
+            return res.status(404).json({message: 'No attendance records found for these users'})
+        } else if(records){
+            dateArr.forEach((date)=>{
+                for(var i=0; i<=records.length; i++){
+                 if(date == records[i].date){
+                     allRecords.push({
+                         employee: records[i].user,
+                         date: records[i].date,
+                         status: records[i].clockInStatus,
+                         arrival: records[i].clockIn
+                     })
+                    //  break;
+                 } 
+                 if(date !== records[i].date){
+                     allRecords.push({
+                        employee: records[i].user,
+                         date,
+                         status: 'Absent'
+                     })
+                     break;
+                 }
+        }
+    })
+    return res.status(200).json({allRecords})
+      }
+    })}
+
 // fetchOrganizationWideAttendance
 // Access: Logged in admin
 // GET
 // params: organization_Name
-const fetchOrganizationWideAttendance = (req,res)=>{
-    Organization.findOne({name: req.params.orgName}, (err,org)=>{
-        if(err){
-            return res.status(500).json({message: err.message})
-        } else if(!org){
-            return res.status(404).json({message: 'Organization not found'})
-        } else if(org){
-                if(!req.user){
-                    return res.status(401).json({meessage: 'Unauthorized access'})
-                } 
-                else if(org.admins.indexOf(req.user._id) == -1){
-                    return res.status(401).json({message: 'Unauthorized access'})
-                } else {
-                    org.users.forEach((user)=>{
-                        fetchUserAttendance(user)
-                    })
-                }
+export const fetchAllAttendance = (req,res)=>{
+    var begin =  new Date(req.query.startDate).toDateString()
+    var endT = new Date(req.query.endDate).toDateString()
+        var getDateArray = (start, end)=> {  
+    var arr = new Array();
+    var dt = new Date(start);
+    while (dt <= new Date(end)) {
+        arr.push(new Date(dt).toDateString());
+        dt.setDate(dt.getDate() + 1);
+    }
+     return arr
+    }
+    var dateArr = getDateArray(begin, endT);
+    var allRecords = [];
+    User.find({}, (err,users)=>{
+        if(!err){
+    for(var i=0; i<=users.length; i++){
+        list.push({user: users[i]})
+    }
+        Attendance.find({$or: list}).sort({user: 'asc'}).exec((err, records)=>{
+       if(err){
+           return res.status(500).json({message: err.message})
+        } else if(!records || records == undefined || records.length == 0){
+            return res.status(404).json({message: 'No attendance records found for these users'})
+        } else if(records){
+            dateArr.forEach((date)=>{
+                for(var i=0; i<=records.length; i++){
+                 if(date == records[i].date){
+                     allRecords.push({
+                         employee: records[i].user,
+                         date: records[i].date,
+                         status: records[i].clockInStatus,
+                         arrival: records[i].clockIn
+                     })
+                    //  break;
+                 } 
+                 if(date !== records[i].date){
+                     allRecords.push({
+                        employee: records[i].user,
+                         date,
+                         status: 'Absent'
+                     })
+                     break;
+                 }
         }
-    })
-    
+    })               
 }
-
+})
+    return res.status(200).json({allRecords})
+      }
+    })}

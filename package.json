@@ -20,6 +20,7 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/register": "^7.8.3",
     "@babel/runtime": "^7.7.7",
+    "accesscontrol": "^2.2.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
