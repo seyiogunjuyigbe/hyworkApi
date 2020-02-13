@@ -17,15 +17,6 @@ export async function uploadFile(req, res) {
 }
 
 
-// export async function fetchById(req, res) {
-//     File.findById(req.params.id, (err, file) => {
-//         if (err) {
-//             response.error(res, 404, err)
-//         }
-//         response.success(res, 200, file);
-//     })
-// }
-
 export async function updateFileDetails(req, res) {
     const { title, description } = req.body;
     const file = await File.findById(req.params.id);
@@ -38,20 +29,6 @@ export async function updateFileDetails(req, res) {
         response.success(res, 200, "File Updated")
     })
 }
-
-// export async function fetchAllFiles(req, res) {
-//     try {
-//         const files = await File.find({}).lean().exec()
-//         if (!files) {
-//             response.error(res, 400, "Could not fetch files");
-//         }
-//         response.success(res, 200, files)
-
-//     } catch (error) {
-//         response.error(res, 500, error.message)
-//     }
-
-// }
 
 export async function fetchFilesByUser(req, res) {
     try {
