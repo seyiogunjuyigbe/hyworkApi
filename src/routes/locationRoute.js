@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", controllers.getMany);
 router.post(
-  "/",
+  "/new",
   [
     check("streetAddress")
       .not()
