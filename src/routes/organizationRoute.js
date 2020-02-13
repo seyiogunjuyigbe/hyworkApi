@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee } from "../controllers/organizationController";
+import { createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData } from "../controllers/organizationController";
 
 const { check } = require('express-validator');
 const validate = require("../middlewares/validate");
@@ -33,6 +33,9 @@ router.post('/:urlname/addUser', [
 
 //Verify added employee
 router.get('/:urlname/user/:token', verifyEmployee);
+
+//Fetch employee data
+router.get('/:urlname/employee/:username', fetchEmployeeData);
 
 
 

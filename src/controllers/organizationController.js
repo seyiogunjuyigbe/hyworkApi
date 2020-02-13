@@ -59,9 +59,7 @@ module.exports = {
           return response.error(res, 500, `User could not be added to organization`);
         }
         senduserEmail(user, updatedOrganization, req, res);
-
-      })
-      // console.log(updatedOrganization)
+      });
     } catch (error) {
       response.error(res, 500, error.message);
     }
@@ -97,6 +95,22 @@ module.exports = {
     })
   },
 
+  async fetchEmployeeData(req, res) {
+    // const { username, urlname } = req.params;
+    const user =await User.findOne({ username: req.params.username }).lean().exec();
+    if(user) {
+      Organization.findOne({ urlname: req.params.urlname, employees: user._id}, (err, org) => {
+        if (err) {
+          response.error(res, 404, err)
+        }
+        response.success(res, 200, user);
+      })
+    }else {
+      response.error(res, 404, "No user with that username")
+    }
+
+  },
+
   async verifyEmployee(req, res) {
     if (!req.params.token) {
       return response.error(res, 400, "No token attached")
@@ -121,7 +135,7 @@ module.exports = {
               return res.status(500).json({ message: err.message });
             }
           });
-          response.success(res, 200, user);
+          response.success(res, 200, `User${username} has been successfully verified`);
 
         })
       }
