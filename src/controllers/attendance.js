@@ -12,12 +12,18 @@ const geoip = require ('geoip-lite');
 // @body: :shiftId
 export const clockIn = (req,res)=>{
     if(req.user){
-     Shift.findById(req.body.shiftId, (err,shift)=>{
+        Organization.findById(req.params.urlname, (err,org)=>{
+            if(err){return res.status(500).json({message:err.message})}
+            else if(!org){return res.status(404).json({message: 'Organization not found'})}
+            else if(!org.employees.includes(user)){return res.status(401).json({message: 'You are not a member of this organization'})}
+            else{
+         Shift.findById(req.body.shiftId, (err,shift)=>{
         if(err){
             return res.status(500).json({message: err.message})
-        } else if(!shift){
+        } else if(!shift || !org.shifts.includes(shift._id)){
             return res.status(404).json({message: 'Reference error; shift not found'})
-        } else{
+        } 
+         else{
             const today = new Date();
             const ip = (req.headers['x-forwarded-for'] || '').split(',').pop() || 
                         req.connection.remoteAddress || 
@@ -58,6 +64,8 @@ export const clockIn = (req,res)=>{
                                     if(err){
                                         res.status(500).json({message: err.message})
                                     } else{
+                                        org.attendance.push(attendance);
+                                        org.save();
                                         user.attendance.push(attendance);
                                         user.save();
                                     }
@@ -76,8 +84,10 @@ export const clockIn = (req,res)=>{
             })
                 }
             })
-
-        } else{
+                }
+            })
+           } 
+        else{
             return res.status(401).json({message: 'You need to be logged in to do that!'})
         }
        
@@ -101,6 +111,9 @@ export const clockOut = (req,res)=>{
                         Attendance.findOne({token:req.body.token}, (err, attendance)=>{
                         if(err){return res.status(500).json({message:err.message})}
                         else if(!attendance){return res.status(404).json({message: 'Attendance not found'})}
+                        else if(attendance.user !== user.username){
+                            return res.status(401).json({type: 'Unauthorized',message: 'You are not authorized to do that'})
+                        }
                         else if(attendance.clockOutStatus !== 'Working'){
                             return res.status(409).json({message: 'You are already clocked out for this shift'})
                         }
@@ -136,7 +149,6 @@ export const clockOut = (req,res)=>{
     }
 
     const fetchAttendance = (req,res, user,startDate,endDate)=>{
-         
         // getEach date from  start date till end date
                 let today = new Date(endDate);
                 var getDateArray = (start, end)=> {  
@@ -152,13 +164,13 @@ export const clockOut = (req,res)=>{
        // Fetch attendance for each date for this employee from joinDate till today
         Attendance.find({user:user}, (err,records)=>{
             var recordArr = [];
-    if(err){return res.status(500).json({message: err.message})} 
-    else if(!records || records == undefined || records.length == 0){
+        if(err){return res.status(500).json({message: err.message})} 
+        else if(!records || records == undefined || records.length == 0){
         return res.status(200).json({message: 'No attendance records found'})
-    }
-    else{  
-    dateArr.forEach((date)=>{
-       for(var i=0; i<=records.length; i++){
+            }
+         else{  
+        dateArr.forEach((date)=>{
+        for(var i=0; i<=records.length; i++){
         if(date == records[i].date){
             recordArr.push({
                 date: records[i].date,

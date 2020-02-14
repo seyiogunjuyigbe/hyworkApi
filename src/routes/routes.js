@@ -10,8 +10,8 @@ export const initRoutes = app =>{
     });
     
     app.use('/auth', authRouter);
-    app.use('/org/:urlName/u', userRouter);
-    app.use('/org/:urlName/attendance', attendanceRouter)
+    app.use('/org/:urlname/u', userRouter);
+    app.use('/org/:urlname/attendance', attendanceRouter)
     app.use('/location', locationRoute);
     app.use('/org', organizationRouter);
 }

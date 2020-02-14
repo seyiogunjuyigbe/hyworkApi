@@ -50,6 +50,10 @@ var organizationSchema = new Schema({
   files: [{
     type: Schema.Types.ObjectId,
     ref: 'File'
+  }],
+  attendance: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Attendance'
   }]
 });
 
