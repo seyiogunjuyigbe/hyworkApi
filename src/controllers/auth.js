@@ -23,7 +23,6 @@ export const registerNewUser = (req, res) => {
               }
               else{
                 passport.authenticate("local")(req, res, function(){
-                    console.log("User registered");
                     sendTokenMail(newUser,req,res);
                     newUser.save();
                    })
@@ -86,50 +85,81 @@ export const logoutUser = (req,res)=>{
 // EMAIL VERIFICATION
 // @route GET /auth/verify/:token
 export const verifyToken = (req, res) => {
-    if(!req.params.token){
-      return res.status(400).json({message: "We were unable to find a user for this token."});  
-    } 
-        // Find a matching token
-        Token.findOne({ token: req.params.token }, (err, token)=>{
-            if (!token) {
+    if (!req.params.token) {
+        return res.status(400).json({ message: "We were unable to find a user for this token." });
+    }
+    // Find a matching token
+    Token.findOne({ token: req.params.token }, (err, token) => {
+        if (!token) {
             return res.status(400).json({ message: 'We were unable to find a valid token. Your token my have expired.' });
-               }
-            if(token){
-                User.findOne({ _id: token.userId }, (err, user) => {
-                    if (!user){
-                        return res.status(400).json({ message: 'We were unable to find a user for this token.' });
-                            }
-                    if (user.isVerified) {
-                        return res.status(400).json({ message: 'This user has already been verified.' });
-                            }
-                         // Verify and save the user
-                     user.isVerified = true;
-                     user.save(function (err) {
-                         if (err) {
-                            return res.status(500).json({message:err.message});
-                            }
-                            
-                           res.status(200).send("The account has been verified. Please log in.");
-                         });
-                       });
-                       }
-            });      
-    } 
+        }
+        if (token) {
+            User.findOne({ _id: token.userId }, (err, user) => {
+                if (!user) {
+                    return res.status(400).json({ message: 'We were unable to find a user for this token.' });
+                }
+                if (user.isVerified) {
+                    return res.status(400).json({ message: 'This user has already been verified.' });
+                }
+                // Verify and save the user
+                user.isVerified = true;
+                user.save(function (err) {
+                    if (err) {
+                        return res.status(500).json({ message: err.message });
+                    }
+
+                    res.status(200).send("The account has been verified. Please log in.");
+                });
+            });
+        }
+    });
+}
+
+export const verifyAdminRegistrationToken = (req, res) => {
+    if (!req.params.token) {
+        return res.status(400).json({ message: "We were unable to find a user for this token." });
+    }
+    // Find a matching token
+    Token.findOne({ token: req.params.token }, (err, token) => {
+        if (!token) {
+            return res.status(400).json({ message: 'We were unable to find a valid token. Your token my have expired.' });
+        }
+        if (token) {
+            User.findOne({ _id: token.userId }, (err, user) => {
+                if (!user) {
+                    return res.status(400).json({ message: 'We were unable to find a user for this token.' });
+                }
+                if (user.isVerified) {
+                    return res.status(400).json({ message: 'This user has already been verified.' });
+                }
+                // Verify and save the user
+                user.isVerified = true;
+                user.save(function (err) {
+                    if (err) {
+                        return res.status(500).json({ message: err.message });
+                    }
+                    res.status(200).send("The account has been verified. Please log in.");
+                    //Redirect to the user's update profile page must be done here
+                });
+            });
+        }
+    });
+}
 
 // Resend Verification Token
 // @route POST user/verify/resend
 export const resendToken = (req, res) => {
-        const { email } = req.body;
-        User.findOne({ email }, (err,user)=>{
-            if(err){
-                return res.status(500).json({message: "error", error: err.message})
-            }
-            if (!user){
-                 return res.status(401).json({ message: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.'});
-                    }
-            if (user.isVerified){
-                 return res.status(400).json({ message: 'This account has already been verified. Please log in.'});
-                }
-            sendTokenMail(user, req, res);
-        });
-    } 
+    const { email } = req.body;
+    User.findOne({ email }, (err, user) => {
+        if (err) {
+            return res.status(500).json({ message: "error", error: err.message })
+        }
+        if (!user) {
+            return res.status(401).json({ message: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.' });
+        }
+        if (user.isVerified) {
+            return res.status(400).json({ message: 'This account has already been verified. Please log in.' });
+        }
+        sendTokenMail(user, req, res);
+    });
+} 

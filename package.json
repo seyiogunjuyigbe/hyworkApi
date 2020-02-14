@@ -8,7 +8,13 @@
     "build": "rm -rf dist/ && babel src/ -d dist/ --copy-files",
     "dev": "nodemon --exec babel-node -- ./src/app.js",
     "lint": "eslint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "author": "Touchcore Team",
   "license": "ISC",
@@ -48,6 +54,8 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "jest": "^25.1.0",
+    "nodemon": "^2.0.2",
+    "supertest": "^4.0.2"
   }
 }

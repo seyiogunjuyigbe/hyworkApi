@@ -12,7 +12,7 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       unique: true,
-      required: 'You must have a username'
+      // required: 'You must have a username'
     },
     firstName: {
       type: String,
@@ -41,6 +41,11 @@ const userSchema = new Schema(
     email2: {
       type: String,
       trim: true
+    },
+    password: {
+      type: String,
+      // required: 'You need a password', Pass
+      minlength: 8
     },
     dob: {
       type: Date
