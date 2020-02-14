@@ -5,14 +5,17 @@ const response = require('../middlewares/response');
 
 export default crudControllers(File);
 
-export async function uploadFile(req, res) {
+export async function uploadFile(req, res, next) {
     const { title, description } = req.body;
-    File.create({ title, description, fileLocationUrl: `uploads/files/${req.file.filename}`, uploadedBy: req.user._id }, (err, file) => {
-        if (err) {
-            response.error(res, 400, err);
-        }
-        response.success(res, 200, "File uploaded successfully")
-    })
+    console.log(title);
+    const { files } = req;
+    console.log(files)
+    // File.create({ title, description, uploadedBy: req.user._id }, (err, file) => {
+    //     if (err) {
+    //         response.error(res, 400, err);
+    //     }
+    //     response.success(res, 200, "File uploaded successfully")
+    // })
 
 }
 

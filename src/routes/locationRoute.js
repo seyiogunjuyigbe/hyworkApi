@@ -1,5 +1,5 @@
 import { Router } from "express";
-import controllers from "../controllers/locationController";
+import controllers from "../controllers/location";
 const { check } = require("express-validator");
 const validate = require("../middlewares/validate");
 

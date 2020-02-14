@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData } from "../controllers/organizationController";
+import { createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData } from "../controllers/organization";
 
 const { check } = require('express-validator');
 const validate = require("../middlewares/validate");
