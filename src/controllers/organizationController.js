@@ -15,7 +15,7 @@ module.exports = {
   async createOrganization(req, res) {
     try {
       if (req.user.organizations.length >= 10) { errors.push('User has registered more than 10 organizations') }
-      if (checkUrlExists(req.params.urlname)) { errors.push(`Organization with the username ${req.params.username} already exists`) }
+      if (checkUrlExists(req.body.urlname)) { errors.push(`Organization with the username ${req.body.urlname} already exists`) }
       if (errors.length === 0) {
         // console.log(req.user.organizations.length)
         const newOrg = await Organization.create(req.body);

@@ -7,7 +7,7 @@ const validate = require("../middlewares/validate");
 const router = Router();
 
 // Create an organization
-router.post('/', [
+router.post('/new', [
     check("name").not().isEmpty().withMessage("Enter Organisation's name"),
     check("description").not().isEmpty().withMessage("Enter description of organization"),
     check("urlname").not().isEmpty().withMessage("Enter url of Organization")
