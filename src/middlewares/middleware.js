@@ -28,3 +28,13 @@ export const isAdmin = (req, res, next) => {
         response.error(res, 404, 'User does not have the required permission')
     }
 }
+
+export const orgExists = (req, res, next) => {
+    Organization.findOne({urlname: req.params.urlname}, (err, org) => {
+        if(org) {
+            return next()
+        }else {
+            response.error(res, 404, `Organization could not be found`)
+        }
+    })
+}
