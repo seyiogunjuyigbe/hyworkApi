@@ -9,15 +9,15 @@ const nodemailer = require('nodemailer');
 const cloudinary = require('cloudinary');
 const cloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
-
-
+const geoip = require ('geoip-lite');
 
 import path from 'path';
 import {startDb} from './database/db'
 import {SECRET_KEY, SITE_URL, MAIL_PASS, MAIL_SENDER, MAIL_USER, MAIL_SERVICE} from "./config/constants"
 import {initRoutes} from './routes/routes'
 import {User} from './models/User';
-// const passportConfig = require ('./config/passport');
+import { Shift } from './models/Shift';
+
 startDb();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
 app.use(express.static(path.join(__dirname, '../public'))); // load local css and js files
@@ -39,10 +39,31 @@ app.use(function(req, res, next){
     next();
 })
 
+// Shift.create({
+//         title: 'first shift',
+//       startTime: '7:00:00',
+//       endTime: '20:00:00',
+//       isShiftMarginEnabled: true,
+//       startMarginInMinutes: 20,
+//       endMarginInMinutes: 20,
+//       createdBy: 'seyi'
+// }, (err,shift)=>{if(!err){
+//     shift.save();
+//     console.log(shift._id)}})
+
+// User.find({}, (err,users)=>{
+//     if(!err){
+//         users.forEach((user)=>{
+//             console.log(user.username)
+//         })
+//     }
+//     else{console.log(err)}
+// })
+
 initRoutes(app);
 
 const PORT = process.env.PORT
-
+app.all('*', (req,res)=>{return res.status(404).json({message: 'You seem lost... no resource found'})})
 app.listen(PORT, process.env.IP, ()=>{
     console.log(`Listening on ${PORT}`)
 })

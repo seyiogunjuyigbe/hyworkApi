@@ -11,8 +11,11 @@ export const initRoutes = app =>{
     app.get('/', (req,res)=>{
         res.send('Hello World!')
     });
-    app.use('/user', userRouter);
+    
+    app.use('/auth', authRouter);
+    app.use('/org/:urlname/u', userRouter);
+    app.use('/org/:urlname', attendanceRouter);
+    app.use('/org/:urlname/shifts', shiftRouter);
     app.use('/location', locationRoute);
-    app.use('/organization', organizationRoute);
-    app.use('/file', fileRoute);
+    app.use('/org', organizationRouter);
 }

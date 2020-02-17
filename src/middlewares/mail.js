@@ -1,11 +1,6 @@
-import { Token } from "../models/Token";
-const nodemailer = require("nodemailer");
-import {
-  MAIL_SERVICE,
-  MAIL_SENDER,
-  MAIL_PASS,
-  MAIL_USER
-} from "../config/constants";
+import {Token} from '../models/Token';
+const nodemailer = require('nodemailer');
+import {MAIL_SERVICE, MAIL_SENDER, MAIL_PASS, MAIL_USER} from '../config/constants'
 
 export const sendCreateOrganisationEmail = (user, organisation, req, res) => {
   let transporter = nodemailer.createTransport({
@@ -98,8 +93,8 @@ export const sendTokenMail = (user, req, res) => {
                 if (error) {
                     return res.status(500).json({success: false, error: error});
                 } else {
-                    console.log('mail sent to ' + user.mail)
-                    return res.status(200).json({message: 'Successfully registered! A verification email has been sent to ' + user.mail + '.'});
+                    console.log('mail sent to ' + user.email)
+                    return res.status(200).json({message: 'Successfully registered! A verification email has been sent to ' + user.email + '.'});
                 }
             });                
     }

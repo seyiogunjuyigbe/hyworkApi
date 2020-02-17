@@ -4,9 +4,10 @@ const passport = require('passport');
 import {sendTokenMail} from '../middlewares/mail';
 import {passportConfig} from '../config/passport';
 passportConfig(passport);
+const passportLocalMongoose = require('passport-local-mongoose')
 
-// Register new User
-// @route POST /user/register
+// Register new Admin
+// @route POST /auth/register
 export const registerNewUser = (req, res) => {       
             let newUser = new User({
                 firstName: req.body.firstName,
@@ -31,17 +32,47 @@ export const registerNewUser = (req, res) => {
 
     
 // Login Existing User
-// @route POST /user/login
-   export const loginUser = passport.authenticate('local-login')
+// @route POST /auth/login
+//    export const loginUser = passport.authenticate('local-login')
+   export const loginUser = (req,res, next)=>{
+       User.findOne({email: req.body.email}, (err,user)=>{
+           if(err){return res.status(500).json({message: err.message})}
+           else if(!user){return res.status(403).json({message: 'No user found with this email address'})}
+           else {
+               if(req.body.password){
+                  user.authenticate(req.body.password, (err,found,passwordErr)=>{
+                    if(err){
+                        return res.status(500).json({message: err.message})
+                    } else if(passwordErr){
+                        return res.status(403).json({message: 'Incorrect password'})
+                    } else if(found){
+                        req.login(user, function(err) {
+                            if(err){return res.status(500).json({message: err.message})}
+                            else if (!user.isVerified){
+                                return res.status(200).json({
+                                    success: true,
+                                    message: 'Unverified account... please check your mail for verification link'
+                                })
+                            }
+                            next();
+                          });
+                    }
+                  }) 
+               }
+               
+           }
+       })
+   }
 
 export const loginCb = (req,res)=>{
   return res.status(200).json({
       status: 'logged in',
-      message: 'Successfully logged in'
+      message: 'Successfully logged in',
+      user: req.user.username
   })
 }
 // Logout User
-// @route GET /user/logout
+// @route GET /auth/logout
 export const logoutUser = (req,res)=>{
                 req.session.destroy();
                 req.logout();
@@ -52,7 +83,7 @@ export const logoutUser = (req,res)=>{
                     }
 
 // EMAIL VERIFICATION
-// @route GET /user/verify/:token
+// @route GET /auth/verify/:token
 export const verifyToken = (req, res) => {
     if (!req.params.token) {
         return res.status(400).json({ message: "We were unable to find a user for this token." });
