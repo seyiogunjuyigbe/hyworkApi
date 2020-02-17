@@ -20,7 +20,7 @@ export const createShift = (req,res)=>{
     } else{
             User.findById(req.user._id, (err,user)=>{
                 if(!err){
-                    Shift.findByIdAndUpdate(req.params.shift, ...req.body , (err,shift)=>{
+                    Shift.findByIdAndUpdate(req.params.shiftid, ...req.body , (err,shift)=>{
                         if(err){
                             return res.status(500).json({message: err.message})
                         } else{
@@ -54,7 +54,7 @@ export const updateShift  = (req,res)=>{
             return res.status(401).json({message: 'You are unauthorized to create a shift'})
         }
          else{
-                Shift.findByIdAndUpdate(req.params.id, ...req.body,(err,shift)=>{                     
+                Shift.findByIdAndUpdate(req.params.shiftid, ...req.body,(err,shift)=>{                     
                             if(err){
                                 return res.status(500).json({message: err.message})
                             } else if(shift.createdBy !== req.user.username){
@@ -67,6 +67,24 @@ export const updateShift  = (req,res)=>{
                     } 
                 })
                 }
+export const fetchShifts = (req,res)=>{
+    Organization.findOne({name: req.params.urlname}, (err,org)=>{
+        if(err){
+            return res.status(500).json({message: err.message})
+        } else if(!org){
+            return res.status(404).json({message: 'No organization with this name was found... please check again'})
+        } else if(!req.user){
+            return res.status(401).json({message: 'You need to be logged in'})
+        } 
+        else if(org.admin.indexOf(req.user._id == -1)){
+            return res.status(401).json({message: 'You are unauthorized to delete a shift'})
+        }
+         else{
+             return res.status(200).json(org.shifts)
+         }
+    })
+}
+
 
 export const deleteShift = (req,res)=>{
     Organization.findOne({name: req.params.urlname}, (err,org)=>{
@@ -81,7 +99,7 @@ export const deleteShift = (req,res)=>{
             return res.status(401).json({message: 'You are unauthorized to delete a shift'})
         }
          else{
-                Shift.findByIdAndDelete(req.params.id, (err,shift)=>{                     
+                Shift.findByIdAndDelete(req.params.shiftid, (err,shift)=>{                     
                             if(err){
                                 return res.status(500).json({message: err.message})
                             } else if(shift.createdBy !== req.user.username){
