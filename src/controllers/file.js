@@ -1,4 +1,5 @@
 import { File } from "../models/File";
+import { Organization } from "../models/Organization";
 import { crudControllers } from "../../utils/crud";
 
 const response = require('../middlewares/response');
@@ -14,7 +15,15 @@ export async function uploadFile(req, res, next) {
         if (err) {
             response.error(res, 400, err);
         }
-        response.success(res, 200, "File uploaded successfully")
+        Organization.findOne({ urlname: req.params.urlname }, (err, org) => {
+            if (err) {
+                response.error(res, 404, err)
+            }
+            org.files.push(file._id)
+            org.save();
+            response.success(res, 200, "File uploaded successfully")
+
+        })
     })
 
 }
