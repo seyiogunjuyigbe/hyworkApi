@@ -12,6 +12,11 @@ const fileSchema = new Schema({
   fileLocationUrl: {
     type: String,
     required: true
+  }, 
+  uploadedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 });
 export const File = mongoose.model('File', fileSchema);
