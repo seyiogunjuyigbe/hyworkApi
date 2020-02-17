@@ -240,9 +240,9 @@ const userSchema = new Schema(
 );
 
 userSchema.plugin(passportLocalMongoose);
-userSchema.methods.comparePassword = function(password) {
-  return bcrypt.compareSync(password, this.password);
-};
+// userSchema.methods.comparePassword = function(password) {
+//   return bcrypt.compareSync(password, this.password);
+// };
 userSchema.methods.generatePasswordReset = function() {
   this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
   this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour

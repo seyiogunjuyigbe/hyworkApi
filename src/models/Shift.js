@@ -16,13 +16,15 @@ var shiftSchema = new Schema({
   },
   isShiftMarginEnabled: {
     type: Boolean,
-    required: true
   },
-  startMargin: {
+  startMarginInMinutes: {
+    type: Number,
+    default: 0
+  },
+  endMarginInMinutes: {
     type: String,
-    required: true
   },
-  endMargin: {
+  createdBy: {
     type: String,
     required: true
   }
