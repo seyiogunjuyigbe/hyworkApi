@@ -150,7 +150,7 @@ export const clockOut = (req,res)=>{
 
     const fetchAttendance = (req,res, user,startDate,endDate)=>{
         // getEach date from  start date till end date
-                let today = new Date(endDate);
+                let lastDate = new Date(endDate);
                 var getDateArray = (start, end)=> {  
                 var arr = new Array();
                 var dt = new Date(start);
@@ -160,8 +160,8 @@ export const clockOut = (req,res)=>{
                 }
                 return arr
             }
-        var dateArr = getDateArray(startDate, today);
-       // Fetch attendance for each date for this employee from joinDate till today
+        var dateArr = getDateArray(startDate, lastDate);
+       // Fetch attendance for each date for this employee from start date till end date
         Attendance.find({user:user}, (err,records)=>{
             var recordArr = [];
         if(err){return res.status(500).json({message: err.message})} 
@@ -190,7 +190,8 @@ export const clockOut = (req,res)=>{
     })  } 
         return res.status(200).json({recordArr})
         })  
-    }     
+    }   
+  
         // fetchMyAttendance
         // GET
         // Access: logged in employee
@@ -206,12 +207,12 @@ export const clockOut = (req,res)=>{
 
 
 
-        // fetchUserAttendance
-        // GET
-        // Access: logged in admin
-            export const fetchThisUserAttendance = (req,res)=>{
-            User.findOne({username:req.params.user}, (err,user)=>{
-                if(err){return res.status(500).json({message: err.message})} 
+ // fetchUserAttendance
+ // GET
+ // Access: logged in admin
+     export const fetchThisUserAttendance = (req,res)=>{
+     User.findOne({username:req.params.user}, (err,user)=>{
+         if(err){return res.status(500).json({message: err.message})} 
                 else if(!user){return res.status(404).json({message: 'User not found'})} 
                 else if(user){
                     var begin =  new Date(req.query.startDate).toDateString()
@@ -229,7 +230,7 @@ export const clockOut = (req,res)=>{
 // Access: Logged in admin
 // GET
 // query: user
-export const fetchManyUserAttendance = (req,res)=>{
+export const fetchManyUsersAttendance = (req,res)=>{
     var begin =  new Date(req.query.startDate).toDateString()
     var endT = new Date(req.query.endDate).toDateString()
         var getDateArray = (start, end)=> {  
@@ -284,9 +285,17 @@ export const fetchManyUserAttendance = (req,res)=>{
 // GET
 // params: organization_Name
 export const fetchAllAttendance = (req,res)=>{
+    if(req.user){
+    Organization.findOne({urlname:req.params.urlname}, (err,org)=>{
+        if(err){return res.status(500).json({message: err.message})}
+        else if(!org){return res.status(404).json({message: 'Organization not found'})}
+        else if(!org.admin.includes(req.user._id)){
+            return res.status(401).json({message: 'You are not authorized to do this'})
+        }
+        else{
     var begin =  new Date(req.query.startDate).toDateString()
     var endT = new Date(req.query.endDate).toDateString()
-        var getDateArray = (start, end)=> {  
+    var getDateArray = (start, end)=> {  
     var arr = new Array();
     var dt = new Date(start);
     while (dt <= new Date(end)) {
@@ -300,7 +309,7 @@ export const fetchAllAttendance = (req,res)=>{
     User.find({}, (err,users)=>{
         if(!err){
     for(var i=0; i<=users.length; i++){
-        list.push({user: users[i]})
+        list.push({user: users[i].username})
     }
         Attendance.find({$or: list}).sort({user: 'asc'}).exec((err, records)=>{
        if(err){
@@ -333,4 +342,10 @@ export const fetchAllAttendance = (req,res)=>{
 })
     return res.status(200).json({allRecords})
       }
-    })}
+    })
+}
+})
+} else{
+    return res.status(401).json({message: 'You need to be logged in to that'})
+}
+} 

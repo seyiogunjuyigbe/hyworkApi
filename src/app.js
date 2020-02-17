@@ -51,8 +51,12 @@ app.use(function(req, res, next){
 //     shift.save();
 //     console.log(shift._id)}})
 
-// User.remove({}, (err,success)=>{
-//     if(!err){console.log('All deleted')}
+// User.find({}, (err,users)=>{
+//     if(!err){
+//         users.forEach((user)=>{
+//             console.log(user.username)
+//         })
+//     }
 //     else{console.log(err)}
 // })
 
