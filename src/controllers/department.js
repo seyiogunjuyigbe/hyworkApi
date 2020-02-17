@@ -4,87 +4,79 @@ import { User } from "../models/User";
 import { crudControllers } from "../../utils/crud";
 const response = require("../middlewares/response");
 
-//Route: organization/:urlname/department/create
+//Route: org/:urlname/department/create
 export const createDepartment = async (req, res) => {
     const { title, description } = req.body;
     try {
         const org = await Organization.findOne({ urlname: req.params.urlname });
-        if (org) {
-            Department.create({ title, description, dateCreated: Date.now() }, (err, dept) => {
+
+        Department.create({ title, description, dateCreated: Date.now() }, (err, dept) => {
+            if (err) {
+                response.error(res, 404, err)
+            }
+            org.department.push(dept._id);
+            org.save((err) => {
                 if (err) {
-                    response.error(res, 404, err)
+                    response.error(res, 500, err);
                 }
-                org.department.push(dept._id);
-                org.save((err) => {
-                    if (err) {
-                        response.error(res, 500, err);
-                    }
-                    response.success(res, 200, `Added department ${dept.title} to organization ${org.name}`);
-                })
-
+                response.success(res, 200, `Added department ${dept.title} to organization ${org.name}`);
             })
-
-        }
-
+        })
     } catch (error) {
         response.error(res, 500, error.message)
     }
 }
 
-//Route: organization/:urlname/department/:title/addManager/:username
+//Route: org/:urlname/department/:title/addManager/:username
 export const addManager = async (req, res) => {
     const { title, username } = req.params;
 
     try {
         const org = await Organization.findOne({ urlname: req.params.urlname });
-        if (org) {
-            Department.findOne({ title }, (err, dept) => {
+        Department.findOne({ title }, (err, dept) => {
+            if (err) {
+                response.error(res, 404, err);
+            }
+            User.findOne({ username }, (err, user) => {
                 if (err) {
-                    response.error(res, 404, err);
+                    response.error(res, 404, err)
                 }
-                User.findOne({ username }, (err, user) => {
+                dept.manager = user._id;
+                dept.save((err) => {
                     if (err) {
-                        response.error(res, 404, err)
+                        response.error(err)
                     }
-                    dept.manager = user._id;
-                    dept.save((err) => {
-                        if (err) {
-                            response.error(err)
-                        }
-                        response.success(res, 200, `Made User ${user.username} the manager of department ${dept.title}`)
-                    })
+                    response.success(res, 200, `Made User ${user.username} the manager of department ${dept.title}`)
                 })
-            });
-        }
+            })
+        });
     } catch (error) {
         response.error(res, 500, error.message)
     }
 }
-//Route: organization/:urlname/department/:title/addEmployee/:username
+//Route: org/:urlname/department/:title/addEmployee/:username
 export const addEmployee = async (req, res) => {
     const { title, username } = req.params;
 
     try {
         const org = await Organization.findOne({ urlname: req.params.urlname });
-        if (org) {
-            Department.findOne({ title }, (err, dept) => {
+        Department.findOne({ title }, (err, dept) => {
+            if (err) {
+                response.error(res, 404, err);
+            }
+            User.findOne({ username }, (err, user) => {
                 if (err) {
-                    response.error(res, 404, err);
+                    response.error(res, 404, err)
                 }
-                User.findOne({ username }, (err, user) => {
+                dept.employees.push(user._id);
+                dept.save((err) => {
                     if (err) {
-                        response.error(res, 404, err)
+                        response.error(err)
                     }
-                    dept.employees.push(user._id);
-                    dept.save((err) => {
-                        if (err) {
-                            response.error(err)
-                        }
-                        response.success(res, 200, `Added ${user.username} to department ${dept.title}`)
-                    })
+                    response.success(res, 200, `Added ${user.username} to department ${dept.title}`)
                 })
-            });
-        }
+            })
+        });
     } catch (error) {
         response.error(res, 500, error.message)
     }
@@ -92,8 +84,8 @@ export const addEmployee = async (req, res) => {
 
 // Route: /organization/:urlname/department/:title/add
 export const addDeptToOrg = async (req, res) => {
-    const org = await Organization.findOne({ urlname: req.params.urlname });
-    if (org) {
+    try {
+        const org = await Organization.findOne({ urlname: req.params.urlname });
         Department.findOne({ title }, (err, dept) => {
             if (err) {
                 response.error(res, 404, err);
@@ -108,9 +100,9 @@ export const addDeptToOrg = async (req, res) => {
                 }
                 response.success(res, 200, `Added department ${dept.title} to organization ${org.name}`)
             })
-        })
-    } else {
-        response.error(res, 404, "Organization could not be found")
-    }
+        });
 
+    } catch (error) {
+        response.error(res, 500, error.message)
+    }
 }
