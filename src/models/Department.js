@@ -16,7 +16,6 @@ const departmentSchema = new Schema({
   },
   employees: [{
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'User'
   }],
   dateCreated: {
