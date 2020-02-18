@@ -20,21 +20,12 @@ module.exports = {
         // console.log(req.user.organizations.length)
         const newOrg = await Organization.create(req.body);
         newOrg.admin.push(req.user._id);
-        newOrg.save((err) => {
-          if (err) {
-            return response.error(res, 500, err.message);
-          }
-
-        });
+        newOrg.save();
         const user = await User.findOne({ _id: req.user._id });
         user.organizations.push(newOrg._id);
-        user.save((err) => {
-          if (err) {
-            response.error(res, 500, err.message);
-          }
-          response.success(res, 200, `Organisation ${newOrg.name} created`);
-        })
+        user.save();
         sendCreateOrganisationEmail(user, newOrg, req, res);
+        response.success(res, 200, `Organisation ${newOrg.name} created`);
 
 
 

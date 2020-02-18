@@ -2,16 +2,18 @@ const router = require('express').Router();
 import { createDepartment, addDeptToOrg, addEmployee, addManager} from '../controllers/department';
 const authUser = require("../middlewares/middleware");
 const { check } = require('express-validator');
+const validate = require("../middlewares/validate");
 
 
-router.post('/department/create', [
+
+router.post('/:urlname/dept/create', [
     check("title").not().isEmpty().withMessage("Enter title of Department"),
     check("description").not().isEmpty().withMessage("Enter description of Department")
-], [authUser.authUser], createDepartment);
+], [validate, authUser.orgExists], createDepartment);
 
-router.post('/department/:title/add', [authUser.authUser], addDeptToOrg);
-router.post('/department/:title/addManager/:username', [authUser.authUser], addManager);
+router.post('/:urlname/dept/:title/add', [authUser.orgExists], addDeptToOrg);
+router.post('/:urlname/dept/:title/addManager/:username', [authUser.isAdmin], addManager);
 
-router.post('/department/:title/addEmployee/:username', [authUser.authUser], addEmployee);
+router.post('/:urlname/dept/:title/addEmployee/:username', addEmployee);
 
 module.exports = router;

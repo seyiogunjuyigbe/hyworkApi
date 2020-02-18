@@ -30,7 +30,8 @@ export const isAdmin = (req, res, next) => {
 }
 
 export const orgExists = (req, res, next) => {
-    Organization.findOne({urlname: req.params.urlname}, (err, org) => {
+    const { urlname } = req.params;
+    Organization.findOne({ urlname }, (err, org) => {
         if(org) {
             return next()
         }else {
