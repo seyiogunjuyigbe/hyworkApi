@@ -27,7 +27,7 @@ export const createDepartment = async (req, res) => {
 
 //Route: org/:urlname/department/:title/addManager/:username
 export const addManager = async (req, res) => {
-    const { title, username } = req.params;
+    const { id, username } = req.params;
 
     try {
         const org = await Organization.findOne({ urlname: req.params.urlname });
@@ -54,11 +54,11 @@ export const addManager = async (req, res) => {
 }
 //Route: org/:urlname/department/:title/addEmployee/:username
 export const addEmployee = async (req, res) => {
-    const { title, username } = req.params;
+    const { id, username } = req.params;
 
     try {
         const org = await Organization.findOne({ urlname: req.params.urlname });
-        Department.findOne({ title }, (err, dept) => {
+        Department.findById(id , (err, dept) => {
             if (err) {
                 response.error(res, 404, err);
             }
@@ -82,11 +82,11 @@ export const addEmployee = async (req, res) => {
 
 // Route: /organization/:urlname/department/:title/add
 export const addDeptToOrg = async (req, res) => {
-    const { title, urlname } = req.params;
+    const { id, urlname } = req.params;
     // console.log(title);
     try {
         const org = await Organization.findOne({ urlname });
-        Department.findOne({ title }, (err, dept) => {
+        Department.findById(id, (err, dept) => {
             if (err) {
                 response.error(res, 404, err);
             }
