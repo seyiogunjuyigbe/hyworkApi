@@ -137,3 +137,5 @@ export const addDeptToOrg = async (req, res) => {
         return response.error(res, 500, error.message)
     }
 }
+
+export default crudControllers(Department);
