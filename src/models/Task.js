@@ -11,22 +11,18 @@ var taskSchema = new Schema({
     required: true
   },
   timeAssigned: {
-    type: String,
-    required: true
+    type: Date
   },
   deadline: {
-    type: String,
-    required: true
+    type: Date,
   },
   assignedBy: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: 'User'
   },
   assignedTo: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: 'User'
   },
   files: [{
     type: Schema.Types.ObjectId,

@@ -20,6 +20,7 @@ module.exports = {
         // console.log(req.user.organizations.length)
         const newOrg = await Organization.create(req.body);
         newOrg.admin.push(req.user._id);
+        newOrg.employees.push(req.user._id);
         newOrg.save();
         const user = await User.findOne({ _id: req.user._id });
         user.organizations.push(newOrg._id);

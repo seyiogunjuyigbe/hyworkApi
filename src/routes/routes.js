@@ -8,7 +8,7 @@ const fileRouter = require('../routes/fileRoute');
 const attendanceRouter = require('../routes/attendanceRoutes.js');
 const shiftRouter = require('../routes/shiftRoutes.js');
 const departmentRouter = require('../routes/departmentRouter');
-
+const taskRouter = require('../routes/taskRoutes');
 const validate = require("../middlewares/validate");
 const {check} = require('express-validator');
 export const initRoutes = app => {
@@ -24,6 +24,8 @@ export const initRoutes = app => {
     app.use('/org', organizationRouter);
     app.use('/org/:urlname', fileRouter);
     app.use('/org', departmentRouter);
+    app.use('/org', taskRouter);
+
 
 
 }
