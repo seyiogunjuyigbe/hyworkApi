@@ -3,7 +3,7 @@ import { Department } from "../models/Department";
 import { User } from "../models/User";
 import { crudControllers } from "../../utils/crud";
 const response = require("../middlewares/response");
-const array = require('lodash/array');
+
 
 //Route: org/:urlname/department/create
 export const createDepartment = async (req, res) => {
