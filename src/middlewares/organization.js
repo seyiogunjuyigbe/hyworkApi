@@ -32,7 +32,8 @@ export const LoggedUserisAdmin = async (req, res, next) => {
         if(org.admin.includes(req.user._id)) {
             return next()
         }else {
-            response.error(res, 404, `${req.user.firstName} is not an admin of ${org.name}`)
+            response.error(res, 404, `${req.user.firstName} is not an admin
+             of ${org.name}`)
         }
     })
 } 

@@ -18,7 +18,6 @@ export const registerNewUser = (req, res) => {
             newUser.username = req.body.username;
             User.register(newUser, req.body.password, function(err,user){
               if(err){
-                  console.log(err);
                   return res.status(500).json({success:false, message: err.message});
               }
               else{

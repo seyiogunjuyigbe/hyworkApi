@@ -5,7 +5,7 @@ const { check } = require('express-validator');
 const validate = require("../middlewares/validate");
 import { createTask, addFiletoTask, getTasksAssignedToUser, getTasksAssignedByMe } from '../controllers/task';
 
-// router.get('/:urlname/task/assignedbyme', [ orgMiddleware.orgExists ], getTasksAssignedByMe);
+
 router.get('/:urlname/task/assignedto/:username',[ authUser.authUser, orgMiddleware.orgExists ,orgMiddleware.LoggedUserisEmployee ], getTasksAssignedToUser )
 router.post('/:urlname/task/:id/add/file/:fileId', [ authUser.authUser, authUser.orgExists ], addFiletoTask);
 router.post('/:urlname/task/add/:username', [

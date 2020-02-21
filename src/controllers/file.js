@@ -8,9 +8,7 @@ export default crudControllers(File);
 
 export async function uploadFile(req, res, next) {
     const { title, description } = req.body;
-    console.log(title);
     const { file } = req;
-    console.log(file)
     File.create({ title, description, fileLocationUrl: file.secure_url, uploadedBy: req.user._id }, (err, file) => {
         if (err) {
             response.error(res, 400, err);

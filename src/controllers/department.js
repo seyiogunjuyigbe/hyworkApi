@@ -8,7 +8,6 @@ const response = require("../middlewares/response");
 //Route: org/:urlname/department/create
 export const createDepartment = async (req, res) => {
     const { title, description } = req.body;
-    console.log(title);
     try {
         const org = await Organization.findOne({ urlname: req.params.urlname });
         Department.create({ title, description, dateCreated: Date.now() }, (err, dept) => {
@@ -98,7 +97,6 @@ export const removeEmployee = async (req, res) => {
                         return response.error(res, 404, err)
                     }
                     if (dept.employees.includes(user._id)) {
-                        // console.log(dept.employees);
                         dept.employees = dept.employees.filter(value => {
                             value === user._id
                         });
