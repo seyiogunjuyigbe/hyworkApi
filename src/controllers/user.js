@@ -6,19 +6,21 @@ export const addPhoneNumber = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         if (user) {
-            if (user.phoneNumber === "") {
+            if (!Boolean(user.phoneNumber)) {
                 user.phoneNumber = phone;
-                user.save().then(
-                    response.success(res, 200, `User's Phone Number Added`)
-                )
-            }else if(user.phoneNumber2 === ""){
-                user.phoneNumber2 = phone;
-                user.save().then(
-                    response.success(res, 200, `User's Second Phone Number Added`)
-                )
+                user.save();
+                return response.success(res, 200, `User's Phone Number Added`)
+                
             }
-            response.error(res, 404, `Phone Numbers already exists`);
+            if(!Boolean(user.phoneNumber2)) {
+                user.phoneNumber2 = phone;
+                user.save();
+                return response.success(res, 200, `User's Second Phone Number Added`)
+            
+            }
+            return response.error(res, 404, `User Phone Number already exists`)
         }
+
     } catch (error) {
         response.error(res, 500, error.message)
     }
