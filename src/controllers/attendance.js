@@ -1,7 +1,6 @@
 import {Attendance} from '../models/Attendance';
 import {Shift} from '../models/Shift';
 import {Organization} from '../models/Organization';
-import {Location} from '../models/Location'
 import { calcTimeDiff, fetchUserAttendance } from '../middlewares/attendanceCalc';
 import { User } from '../models/User';
 const geoip = require ('geoip-lite');

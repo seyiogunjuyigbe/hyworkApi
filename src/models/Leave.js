@@ -20,6 +20,8 @@ const leaveSchema = new Schema({
   },
   approvalStatus: {
     type: String,
+    enum: ['Pending', 'Approved', 'Declined'],
+    default: 'Pending',
     required: true
   },
   applicant: {
@@ -29,8 +31,7 @@ const leaveSchema = new Schema({
   },
   approvedBy: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: 'User'
   }
 });
 
