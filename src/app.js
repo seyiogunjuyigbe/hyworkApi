@@ -38,28 +38,6 @@ app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
 })
-
-// Shift.create({
-//         title: 'first shift',
-//       startTime: '7:00:00',
-//       endTime: '20:00:00',
-//       isShiftMarginEnabled: true,
-//       startMarginInMinutes: 20,
-//       endMarginInMinutes: 20,
-//       createdBy: 'seyi'
-// }, (err,shift)=>{if(!err){
-//     shift.save();
-//     console.log(shift._id)}})
-
-// User.find({}, (err,users)=>{
-//     if(!err){
-//         users.forEach((user)=>{
-//             console.log(user.username)
-//         })
-//     }
-//     else{console.log(err)}
-// })
-
 initRoutes(app);
 
 const PORT = process.env.PORT
