@@ -12,12 +12,6 @@ export const addPhoneNumber = async (req, res) => {
                 return response.success(res, 200, `User's Phone Number Added`)
                 
             }
-            if(!Boolean(user.phoneNumber2)) {
-                user.phoneNumber2 = phone;
-                user.save();
-                return response.success(res, 200, `User's Second Phone Number Added`)
-            
-            }
             return response.error(res, 404, `User Phone Number already exists`)
         }
 
@@ -27,16 +21,18 @@ export const addPhoneNumber = async (req, res) => {
 }
 
 
-export const addBioData = async (req, res) => {
+export const updateBioData = async (req, res) => {
     const { dob, maritalStatus, bioMessage } = req.body;
 
     try {
+        console.log(req.user.bioMessage);
         const user = await User.findByIdAndUpdate(req.user._id, { maritalStatus, dob, bioMessage });
         if (user) {
-            response.success(res, 200, "Updated Bio Details")
+            response.success(res, 200, "Added Bio Details")
         }
     } catch (error) {
         response.error(res, 500, error.message);
     }
 }
+
 
