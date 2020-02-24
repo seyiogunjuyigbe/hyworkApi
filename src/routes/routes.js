@@ -18,11 +18,11 @@ export const initRoutes = app => {
     
     app.use('/auth', authRouter);
     app.use('/org/:urlname/u', userRouter);
-    app.use('/org/:urlname', attendanceRouter);
+    app.use('/org/:urlname/attendance', attendanceRouter);
     app.use('/org/:urlname/shifts', shiftRouter);
     app.use('/location', locationRouter);
     app.use('/org', organizationRouter);
-    app.use('/org/:urlname', fileRouter);
+    app.use('/org', fileRouter);
     app.use('/org', departmentRouter);
     app.use('/org', taskRouter);
 

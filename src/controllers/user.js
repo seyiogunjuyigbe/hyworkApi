@@ -25,7 +25,6 @@ export const updateBioData = async (req, res) => {
     const { dob, maritalStatus, bioMessage } = req.body;
 
     try {
-        console.log(req.user.bioMessage);
         const user = await User.findByIdAndUpdate(req.user._id, { maritalStatus, dob, bioMessage });
         if (user) {
             response.success(res, 200, "Added Bio Details")
