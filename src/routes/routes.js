@@ -4,6 +4,7 @@ const locationRoute = require('./locationRoute');
 const attendanceRouter = require('./attendanceRoutes')
 const organizationRouter = require('./organizationRoute')
 const shiftRouter = require('./shiftRoutes');
+const leaveRouter = require('./leaveRoutes');
 export const initRoutes = app =>{
     app.get('/', (req,res)=>{
         res.send('Hello World!')
@@ -15,4 +16,5 @@ export const initRoutes = app =>{
     app.use('/org/:urlname/shifts', shiftRouter);
     app.use('/location', locationRoute);
     app.use('/org', organizationRouter);
+    app.use('/org/:urlname/d/:deptId/leave', leaveRouter);
 }
