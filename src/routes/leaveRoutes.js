@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 import {createLeaveRequest, approveLeave, declineLeave} from '../controllers/leaveController';
-router.post('/new', createLeaveRequest);
-router.post('/:token/approve', approveLeave);
-router.post('/:token/decline', declineLeave)
+router.post('/:urlname/d/:deptId/leave/new', createLeaveRequest);
+router.get('/:urlname/d/:deptId/leave/:token/approve', approveLeave);
+router.get('/:urlname/d/:deptId/leave/:token/decline', declineLeave)
 module.exports  = router;

@@ -42,6 +42,10 @@ departments:[{
 type: Schema.Types.ObjectId,
 ref: 'Department'
 }],
+leaves: [{
+type: Schema.Types.ObjectId,
+ref: 'Leave'
+}],
   services: [{
     type: Schema.Types.ObjectId,
     ref: 'Service'

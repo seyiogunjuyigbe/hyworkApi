@@ -1,35 +1,36 @@
 import {User} from '../models/User';
 import {Organization} from '../models/Organization';
+const validate = require('../middlewares/validate');
+const { check } = require('express-validator');
 import {Leave} from '../models/Leave';
 import {Department} from '../models/Department';
 const nodemailer = require('nodemailer');
 const response = require('../middlewares/response');
+import {MAIL_PASS, MAIL_SENDER, MAIL_SERVICE, MAIL_USER} from '../config/constants';
 
 export const createLeaveRequest = (req,res)=>{
     if(!req.user)return response.error(res,401,'You need to be signed in')
     else{  
-         Organization.findById(req.params.urlname, (err,org)=>{
+         Organization.findOne({urlname:req.params.urlname}, (err,org)=>{
         if(err)return response.error(res,500,err.message)
-        else if(!org) return response.error(res,404, 'Organization not found')
-        else if(!org.admins.includes(req.user))return response.error(res,401, 'Unauthorized access')
+        else if(!org) {console.log(req.params);return response.error(res,404, 'Organization not found')}
         else{
-            Leave.create(...req.body, (err,leave)=>{
-                if(err)return response.error(ress,500,err.message)
+          var today = new Date();
+            Leave.create({...req.body, dateApplied : new Date(),applicant:req.user}, (err,leave)=>{
+                if(err)return response.error(res,500,err.message)
                 else{
-                    leave.applicant = req.user;
                     leave.save();
-                    org.push(leave)
+                    org.leaves.push(leave)
                     org.save();
                 Department.findOne({ employees: { $in: [req.user._id] } }, (err,department)=>{
         if(err) return response.error(res,500,err.message)
         else if(!department)return response.error(res,403,'You do not belong to any department in this organization')     
         else{
-        var manager;
-        User.findById(department.manager, (err,man)=>{
+
+        User.findById(department.manager, (err,manager)=>{
           if(err)return response.error(res,500,'Internal Server Error')
-          else if(!man) return response.error(res,404,'Manager not found')
-          else manager = man;
-        })
+          else if(!manager) return response.error(res,404,'Manager not found')
+          else {
        let transporter = nodemailer.createTransport({
       service: MAIL_SERVICE,
       auth: {
@@ -55,7 +56,10 @@ export const createLeaveRequest = (req,res)=>{
                   return res.status(200).json({message: 'Your leave request has been received'});
               }
           }); 
+        }
+      })
         } 
+        
         })               
             }
           
@@ -67,22 +71,22 @@ export const createLeaveRequest = (req,res)=>{
     export const approveLeave = (req,res)=>{
     Department.findById(req.params.deptId, (err,dept)=>{
           if(err)return response.error(res,500, err.message)
-          else if(!req.user)return response.error(res,401, 'You need to be logged in');
-          else if(!dept.admins.includes(req.user._id)) return response.error(res,403, 'You need to be an admin to do that');
+          else if(!req.user)return response.error(res,403, 'You need to be logged in');
+          else if(!dept) return response.error(res,404, 'Department not found')
+          else if(String(dept.manager)!== String(req.user._id)) return response.error(res,403, 'You need to be an admin to do that');
         else{
         Leave.findOne({token:req.params.token}, (err,leave)=>{
           if(err)return response.error(res,500,err.message);
-          else if(!token) return response.error(res,404, 'Leave not found');
-          else if(leave.status !== 'Pending') return response.error(res,400,'Leave request has already been responded to')
+          else if(!leave) return response.error(res,404, 'Leave not found');
+          else if(String(leave.applicant) == String(req.user._id)) return response.error(res,403, 'You cannot respond yto your own leave request');          
+          else if(leave.approvalStatus !== 'Pending') return response.error(res,400,'Leave request has already been responded to')
           else{
-            leave.status = 'Approved';
+            leave.approvalStatus = 'Approved';
             leave.save();
-            var applicant;
-            User.findById(leave.applicant, (err,user)=>{
+            User.findById(leave.applicant, (err,applicant)=>{
               if(err)return response.error(res,500,err.message);
-              else if(!user) return response.error(res,404, 'Leave applicant not found');
-              else applicant = user
-            })
+              else if(!applicant) return response.error(res,404, 'Leave applicant not found');
+              else{
             let transporter = nodemailer.createTransport({
               service: MAIL_SERVICE,
               auth: {
@@ -101,13 +105,16 @@ export const createLeaveRequest = (req,res)=>{
                   };
                   transporter.sendMail(mailOptions, function(error, info){
                       if (error) {
-                          return res.status(500).json({success: false, error: error});
+                        console.log('mail not sent to due to poor connection')
+                          return res.status(500).json({success: true, problem: 'Mail not sent', error});
                       } else {
                           console.log('mail sent to ' + applicant.email)
                           return res.status(200).json({message: 'Your leave request has been accepted'});
                       }
                   }); 
-
+                
+                }
+              })
 
           }
         })
@@ -120,22 +127,22 @@ export const createLeaveRequest = (req,res)=>{
   export const declineLeave = (req,res)=>{
     Department.findById(req.params.deptId, (err,dept)=>{
           if(err)return response.error(res,500, err.message)
-          else if(!req.user)return response.error(res,401, 'You need to be logged in');
-          else if(!dept.admins.includes(req.user._id)) return response.error(res,403, 'You need to be an admin to do that');
+          else if(!req.user)return response.error(res,403, 'You need to be logged in');
+          else if(!dept) return response.error(res,404, 'Department not found')
+          else if(String(dept.manager)!== String(req.user._id)) return response.error(res,403, 'You need to be an admin to do that');
         else{
         Leave.findOne({token:req.params.token}, (err,leave)=>{
           if(err)return response.error(res,500,err.message);
-          else if(!token) return response.error(res,404, 'Leave not found');
-          else if(leave.status !== 'Pending') return response.error(res,400,'Leave request has already been responded to')
+          else if(!leave) return response.error(res,404, 'Leave not found');
+          else if(String(leave.applicant) == String(req.user._id)) return response.error(res,403, 'You cannot respond yto your own leave request');          
+          else if(leave.approvalStatus !== 'Pending') return response.error(res,400,'Leave request has already been responded to')
           else{
-            leave.status = 'Declined';
+            leave.approvalStatus = 'Declined';
             leave.save();
-            var applicant;
-            User.findById(leave.applicant, (err,user)=>{
+            User.findById(leave.applicant, (err,applicant)=>{
               if(err)return response.error(res,500,err.message);
-              else if(!user) return response.error(res,404, 'Leave applicant not found');
-              else applicant = user
-            })
+              else if(!applicant) return response.error(res,404, 'Leave applicant not found');
+              else{
             let transporter = nodemailer.createTransport({
               service: MAIL_SERVICE,
               auth: {
@@ -146,20 +153,23 @@ export const createLeaveRequest = (req,res)=>{
             let mailOptions = {
               from: MAIL_SENDER,
               to: applicant.email,
-              subject: "Leave Request Declined",
+              subject: "Leave Request Approved",
               html: `<h2>Hi ${applicant.username} </h2>\n,
-                    <p>Your leave request has been declined by ${req.user.firstName} ${req.user.lastName}</p>
+                    <p>Your leave request has been declined by ${req.user.firstName} ${req.user.lastName} for some reasons</p>
                     `
                   };
                   transporter.sendMail(mailOptions, function(error, info){
                       if (error) {
-                          return res.status(500).json({success: false, error: error});
+                        console.log('mail not sent to due to poor connection')
+                          return res.status(500).json({status: 'declined', problem: 'Mail not sent', error});
                       } else {
                           console.log('mail sent to ' + applicant.email)
                           return res.status(200).json({message: 'Your leave request has been declined'});
                       }
                   }); 
-
+                
+                }
+              })
 
           }
         })

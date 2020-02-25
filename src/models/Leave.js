@@ -3,16 +3,20 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseIdToken = require('mongoose-id-token')
 const leaveSchema = new Schema({
-  date: {
+  dateApplied: {
     type: Date,
     required: true
   },
-  type: {
+  title: {
     type: String,
     required: true
   },
-  period: {
-    type: String,
+  startDate: {
+    type: Date,
+    required: true
+  },
+  endDate: {
+    type: Date,
     required: true
   },
   reason: {
@@ -27,8 +31,7 @@ const leaveSchema = new Schema({
   },
   applicant: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: 'User'
   },
   approvedBy: {
     type: Schema.Types.ObjectId,

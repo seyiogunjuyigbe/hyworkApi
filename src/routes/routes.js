@@ -16,5 +16,5 @@ export const initRoutes = app =>{
     app.use('/org/:urlname/shifts', shiftRouter);
     app.use('/location', locationRoute);
     app.use('/org', organizationRouter);
-    app.use('/org/:urlname/d/:deptId/leave', leaveRouter);
+    app.use('/org', leaveRouter);
 }
