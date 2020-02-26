@@ -10,6 +10,14 @@ const transporter = nodemailer.createTransport({
         },
     });  
 
+
+// @route GET /auth/password/recover
+// Render page for password recovery
+export const recoverPass = (req,res)=>{
+    return res.status(200).render('recoverPassword')
+}
+
+
 // @route POST /auth/password/recover
 // Recover Password - Generates token and Sends password reset email
 export const recover = (req, res) => {

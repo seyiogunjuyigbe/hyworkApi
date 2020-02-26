@@ -4,11 +4,32 @@ const passport = require('passport');
 import {sendTokenMail} from '../middlewares/mail';
 import {passportConfig} from '../config/passport';
 passportConfig(passport);
-const passportLocalMongoose = require('passport-local-mongoose')
+const {validationResult} = require('express-validator');
+// Render Register Page
+// @route GET /auth/register
+export const renderSignUpPage = (req,res)=>{
+return res.status(200).render('register', {err:null})
+}
+
+
 
 // Register new Admin
-// @route POST /auth/register
-export const registerNewUser = (req, res) => {       
+// @route POST /auth/register.
+export const registerNewUser = (req, res) => { 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+    let error = []; errors.array().map((err) => error.push(err.msg));
+    return res.status(422).render('register',{err: error});
+    } else{      
+    User.findOne({email: req.body.email})
+    .then((user)=>{
+        if(user) return res.status(500).render('register', {err: 'A user with this email already exists'}) 
+    })
+    .catch((error)=>{ return res.status(500).render('500')})
+    User.findOne({username: req.body.username})
+    .then((user)=>{
+        if(user)return res.status(500).render('register', {err: 'This username is already taken'})
+        else{
             let newUser = new User({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
@@ -19,7 +40,7 @@ export const registerNewUser = (req, res) => {
             User.register(newUser, req.body.password, function(err,user){
               if(err){
                   console.log(err);
-                  return res.status(500).json({success:false, message: err.message});
+                  return res.status(500).render('register',{success:false, err: err.message});
               }
               else{
                 passport.authenticate("local")(req, res, function(){
@@ -27,27 +48,45 @@ export const registerNewUser = (req, res) => {
                     newUser.save();
                    })
     }
-     })
-    }
+     })   
+                
+        }
+    })
+    .catch((error)=>{return res.status(500).render('500')})
+}
+}
 
-    
+// Render Login Page
+// @ROUTE GET /auth/login
+export const renderLoginPage = (req,res)=>{
+    if(!req.user) return res.status(200).render('login', {url:"http://" + req.headers.host, err:null})
+    else res.send('Hey, ' + req.user.username + ', You are already logged in')
+}
+
+
+
 // Login Existing User
 // @route POST /auth/login
 //    export const loginUser = passport.authenticate('local-login')
    export const loginUser = (req,res, next)=>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+    let error = []; errors.array().map((err) => error.push(err.msg));
+    return res.status(422).render('login',{err: error});
+    } else{ 
        User.findOne({email: req.body.email}, (err,user)=>{
-           if(err){return res.status(500).json({message: err.message})}
-           else if(!user){return res.status(403).json({message: 'No user found with this email address'})}
+           if(err){return res.status(500).render('error/500')}
+           else if(!user){return res.status(403).render('login',{err: 'No user found with this email address'})}
            else {
                if(req.body.password){
                   user.authenticate(req.body.password, (err,found,passwordErr)=>{
                     if(err){
-                        return res.status(500).json({message: err.message})
+                        return res.status(500).render('error/500',{message: err.message})
                     } else if(passwordErr){
-                        return res.status(403).json({message: 'Incorrect password'})
+                        return res.status(403).render('login',{err: 'Incorrect password'})
                     } else if(found){
                         req.login(user, function(err) {
-                            if(err){return res.status(500).json({message: err.message})}
+                            if(err){return res.status(500).render('error/500',{message: err.message})}
                             else if (!user.isVerified){
                                 return res.status(200).json({
                                     success: true,
@@ -63,7 +102,7 @@ export const registerNewUser = (req, res) => {
            }
        })
    }
-
+   }
 export const loginCb = (req,res)=>{
   return res.status(200).json({
       status: 'logged in',
@@ -76,9 +115,7 @@ export const loginCb = (req,res)=>{
 export const logoutUser = (req,res)=>{
                 req.session.destroy();
                 req.logout();
-                return res.status(200).json({
-                message: 'logged out successfully'
-            })
+                return res.status(200).redirect('auth/login')
                     }
 
 // EMAIL VERIFICATION
