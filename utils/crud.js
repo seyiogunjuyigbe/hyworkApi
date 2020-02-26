@@ -1,7 +1,7 @@
 export const getOneById = model => async (req, res) => {
   try {
     const doc = await model
-      .findOne({ _id: req.params.id })
+      .findById( req.params.id )
       .lean()
       .exec();
 

@@ -20,7 +20,7 @@ export const createShift = (req,res)=>{
     } else{
             User.findById(req.user._id, (err,user)=>{
                 if(!err){
-                    Shift.findByIdAndUpdate(req.params.shiftid, ...req.body , (err,shift)=>{
+                    Shift.create({...req.body }, (err,shift)=>{
                         if(err){
                             return res.status(500).json({message: err.message})
                         } else{

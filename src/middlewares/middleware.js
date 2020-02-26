@@ -4,7 +4,6 @@ const response = require("../middlewares/response");
 export const checkUrlExists = url => {
     Organization.find({ urlname: url }, (err, org) => {
         if (!org.name === undefined) {
-            console.log()
             return true
         }
         else {

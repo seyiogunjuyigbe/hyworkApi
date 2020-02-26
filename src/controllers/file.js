@@ -8,9 +8,7 @@ export default crudControllers(File);
 
 export async function uploadFile(req, res, next) {
     const { title, description } = req.body;
-    console.log(title);
     const { file } = req;
-    console.log(file)
     File.create({ title, description, fileLocationUrl: file.secure_url, uploadedBy: req.user._id }, (err, file) => {
         if (err) {
             response.error(res, 400, err);
@@ -43,17 +41,49 @@ export async function updateFileDetails(req, res) {
 }
 
 export async function fetchFilesByUser(req, res) {
+    const { urlname } = req.params;
+    let orgFiles = [];
     try {
-        const files = await File.find({ uploadedBy: req.user._id }).lean().exec()
+        const files = await File.find({ uploadedBy: req.user._id }).lean().exec();
+        const org = await Organization.findOne({ urlname });
         if (!files) {
             response.error(res, 400, `No files owned by user ${req.user.username}`);
         }
-        response.success(res, 200, files)
-
+        files.forEach(file => {
+            if(org.files.includes(file._id)) { 
+                orgFiles.push(file);
+            }
+        });
+        if(orgFiles.length === 0) { 
+            return response.error(res, 404, `User has no files uploaded that belongs to this organization`);
+        }
+        return response.success(res, 200, orgFiles);
     } catch (error) {
         response.error(res, 500, error.message)
     }
+}
 
+export const fetchAllOrgFiles = async(req, res) => {
+    const { urlname } = req.params;
+    let orgFiles = [];
+    try {
+        const files = await File.find({}).lean().exec();
+        const org = await Organization.findOne({ urlname });
+        if (!files) {
+            response.error(res, 400, `No files found`);
+        }
+        files.forEach(file => {
+            if(org.files.includes(file._id)) { 
+                orgFiles.push(file);
+            }
+        });
+        if(orgFiles.length === 0) { 
+            return response.error(res, 404, `Organization has no files`);
+        }
+        return response.success(res, 200, orgFiles);
+    } catch (error) {
+        response.error(res, 500, error.message)
+    }
 }
 
 
