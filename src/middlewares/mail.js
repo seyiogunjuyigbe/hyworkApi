@@ -72,7 +72,7 @@ export const sendTokenMail = (user, req, res) => {
     if (err) {
       return res.status(500).json({ message: err.message });
     } else {
-      let link = `http://${req.headers.host}/user/verify/${token.token}`;
+      let link = `http://${req.headers.host}/auth/verify/${token.token}`;
       let transporter = nodemailer.createTransport({
         service: MAIL_SERVICE,
         auth: {

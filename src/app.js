@@ -17,6 +17,8 @@ import {SECRET_KEY, SITE_URL, MAIL_PASS, MAIL_SENDER, MAIL_USER, MAIL_SERVICE} f
 import {initRoutes} from './routes/routes'
 import {User} from './models/User';
 import { Shift } from './models/Shift';
+import { Department } from './models/Department';
+import { Organization } from './models/Organization';
 
 startDb();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
@@ -38,30 +40,13 @@ app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
 })
-
-// Shift.create({
-//         title: 'first shift',
-//       startTime: '7:00:00',
-//       endTime: '20:00:00',
-//       isShiftMarginEnabled: true,
-//       startMarginInMinutes: 20,
-//       endMarginInMinutes: 20,
-//       createdBy: 'seyi'
-// }, (err,shift)=>{if(!err){
-//     shift.save();
-//     console.log(shift._id)}})
-
-// User.find({}, (err,users)=>{
-//     if(!err){
-//         users.forEach((user)=>{
-//             console.log(user.username)
-//         })
-//     }
-//     else{console.log(err)}
-// })
+// Department.find({ employees: { $in: ['5e53ebe0567d1a578db6314f'] } }, (err,department)=>{
+//     if(err)console.log('Internal Error');
+//     else if(!department)console.log('Not found');
+//     else console.log({department})
+//   })
 
 initRoutes(app);
-
 const PORT = process.env.PORT
 app.all('*', (req,res)=>{return res.status(404).json({message: 'You seem lost... no resource found'})})
 app.listen(PORT, process.env.IP, ()=>{

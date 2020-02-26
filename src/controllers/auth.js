@@ -77,8 +77,7 @@ export const logoutUser = (req,res)=>{
                 req.session.destroy();
                 req.logout();
                 return res.status(200).json({
-                message: 'logged out successfully',
-                user: req.user
+                message: 'logged out successfully'
             })
                     }
 
