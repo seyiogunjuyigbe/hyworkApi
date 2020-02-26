@@ -3,7 +3,7 @@ const validate = require('../middlewares/validate');
 const { check } = require('express-validator');
 import { registerNewUser, loginUser, loginCb, verifyToken, resendToken, logoutUser } from "../controllers/auth";
 import {recover, reset, resetPassword, changePassword} from '../controllers/password'
-import {checkNow} from '../controllers/leaveController'
+import {checkNow} from '../controllers/leave'
 const router = express.Router();
 router.post('/register', [
     check('email').isEmail().withMessage('Enter a valid email address'),
