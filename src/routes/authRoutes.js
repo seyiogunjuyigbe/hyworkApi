@@ -27,13 +27,13 @@ router.post('/token/resend', resendToken);
 router.get('/password/recover', recoverPass)
 router.post('/password/recover', [
     check('email').isEmail().withMessage('Enter a valid email address'),
-], validate, recover);
+], recover);
 
 router.get('/password/reset/:token', reset);
 router.post('/password/reset/:token', [
     check('password').not().isEmpty().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i").withMessage('Password must be at least 8 characters long and must include one lowercase character, one uppercase character, a number, and a special character'),
     check('confirmPassword', 'Passwords do not match').custom((value, {req}) => (value === req.body.password)),
-        ], validate, resetPassword);
+        ], resetPassword);
 
 router.post('/password/change', [
     check('password').not().isEmpty().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i").withMessage('Password must be at least 8 characters long and must include one lowercase character, one uppercase character, a number, and a special character'),

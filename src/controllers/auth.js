@@ -3,8 +3,11 @@ import{Token} from '../models/Token'
 const passport = require('passport');
 import {sendTokenMail} from '../middlewares/mail';
 import {passportConfig} from '../config/passport';
+import { Organization } from '../models/Organization';
 passportConfig(passport);
 const {validationResult} = require('express-validator');
+
+
 // Render Register Page
 // @route GET /auth/register
 export const renderSignUpPage = (req,res)=>{
@@ -23,12 +26,12 @@ export const registerNewUser = (req, res) => {
     } else{      
     User.findOne({email: req.body.email})
     .then((user)=>{
-        if(user) return res.status(500).render('register', {err: 'A user with this email already exists'}) 
+        if(user) return res.status(403).render('register', {err: 'A user with this email already exists'}) 
     })
     .catch((error)=>{ return res.status(500).render('500')})
     User.findOne({username: req.body.username})
     .then((user)=>{
-        if(user)return res.status(500).render('register', {err: 'This username is already taken'})
+        if(user)return res.status(403).render('register', {err: 'This username is already taken'})
         else{
             let newUser = new User({
                 firstName: req.body.firstName,
@@ -104,6 +107,7 @@ export const renderLoginPage = (req,res)=>{
    }
    }
 export const loginCb = (req,res)=>{
+    Organization.find
   return res.status(200).json({
       status: 'logged in',
       message: 'Successfully logged in',
@@ -122,20 +126,20 @@ export const logoutUser = (req,res)=>{
 // @route GET /auth/verify/:token
 export const verifyToken = (req, res) => {
     if (!req.params.token) {
-        return res.status(400).json({ message: "We were unable to find a user for this token." });
+        return res.status(404).json({ message: "We were unable to find a user for this token." });
     }
     // Find a matching token
     Token.findOne({ token: req.params.token }, (err, token) => {
         if (!token) {
-            return res.status(400).json({ message: 'We were unable to find a valid token. Your token my have expired.' });
+            return res.status(404).json({ message: 'We were unable to find a valid token. Your token my have expired.' });
         }
         if (token) {
             User.findOne({ _id: token.userId }, (err, user) => {
                 if (!user) {
-                    return res.status(400).json({ message: 'We were unable to find a user for this token.' });
+                    return res.status(404).json({ message: 'We were unable to find a user for this token.' });
                 }
                 if (user.isVerified) {
-                    return res.status(400).json({ message: 'This user has already been verified.' });
+                    return res.status(403).json({ message: 'This user has already been verified.' });
                 }
                 // Verify and save the user
                 user.isVerified = true;
@@ -158,15 +162,15 @@ export const verifyAdminRegistrationToken = (req, res) => {
     // Find a matching token
     Token.findOne({ token: req.params.token }, (err, token) => {
         if (!token) {
-            return res.status(400).json({ message: 'We were unable to find a valid token. Your token my have expired.' });
+            return res.status(404).json({ message: 'We were unable to find a valid token. Your token my have expired.' });
         }
         if (token) {
             User.findOne({ _id: token.userId }, (err, user) => {
                 if (!user) {
-                    return res.status(400).json({ message: 'We were unable to find a user for this token.' });
+                    return res.status(404).json({ message: 'We were unable to find a user for this token.' });
                 }
                 if (user.isVerified) {
-                    return res.status(400).json({ message: 'This user has already been verified.' });
+                    return res.status(403).json({ message: 'This user has already been verified.' });
                 }
                 // Verify and save the user
                 user.isVerified = true;
