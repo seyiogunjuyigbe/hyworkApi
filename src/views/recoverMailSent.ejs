@@ -1,0 +1,27 @@
+<%- include ('./partials/header') -%>
+
+    <title>Password Reset Success</title>
+</head>
+<body>
+    <div id="wrapper">
+        <div class="vertical-align-wrap">
+          <div class="vertical-align-middle auth-main">
+            <div class="auth-box">
+                        <div class="top">
+                            <img src="/images/touchcore-logo-white.png" alt="Touchcore HRM">
+                        </div>
+              <div class="card">
+                            <div class="header">
+                                <p class="lead text-success"><%=message%></p>
+                            </div>
+                            <div class="body">
+                               <small>Didn't get the mail?</small> 
+                                <a href="/auth/password/recover" class="btn btn-primary">CLICK TO RESEND</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+  <%- include ('./partials/footer') -%>

@@ -1,7 +1,7 @@
 export const getOneById = model => async (req, res) => {
   try {
     const doc = await model
-      .findOne({ _id: req.params.id })
+      .findById( req.params.id )
       .lean()
       .exec();
 
@@ -95,7 +95,6 @@ export const updateOne = model => async (req, res) => {
 export const removeOne = model => async (req, res) => {
   try {
     const removed = await model.findOneAndRemove({
-      createdBy: req.user._id,
       _id: req.params.id
     });
 

@@ -38,14 +38,10 @@ var organizationSchema = new Schema({
   staffStength: {
     type: Number
   },
-departments:[{
-type: Schema.Types.ObjectId,
-ref: 'Department'
-}],
-leaves: [{
-type: Schema.Types.ObjectId,
-ref: 'Leave'
-}],
+  department: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Department'
+  }],
   services: [{
     type: Schema.Types.ObjectId,
     ref: 'Service'
