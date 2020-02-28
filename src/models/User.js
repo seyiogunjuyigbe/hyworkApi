@@ -63,8 +63,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'manager', 'admin'],
-      default: 'user'
+      enum: ['user', 'manager', 'admin']
     },
     joinDate: {
       type: Date
@@ -175,7 +174,11 @@ const userSchema = new Schema(
         ref: "Case"
       }
     ],
-    organizations: [
+    affiliatedOrg: {
+      type: Schema.Types.ObjectId,
+      ref: "Organization"
+    },
+    createdOrganizations: [
       {
         type: Schema.Types.ObjectId,
         ref: "Organization"

@@ -91,10 +91,15 @@ export const sendTokenMail = (user, req, res) => {
             
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
-                    return res.status(500).json({success: false, error: error});
+                    return res.status(500).render('error/500',{message:error});
                 } else {
                     console.log('mail sent to ' + user.email)
-                    return res.status(200).json({message: 'Successfully registered! A verification email has been sent to ' + user.email + '.'});
+                    return res.status(200).render('tokenSent',{
+                      message: 'Successfully registered! A verification email has been sent to ' + user.email + '.', 
+                      baseUrl:`http://${req.headers.host}`,
+                      link,
+                      email: user.email
+                    });
                 }
             });                
     }

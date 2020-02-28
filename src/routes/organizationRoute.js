@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData } from "../controllers/organization";
+import {renderCreateOrgPage, createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData, checkIfOrgExists } from "../controllers/organization";
 
 const { check } = require('express-validator');
 const validate = require("../middlewares/validate");
@@ -7,6 +7,8 @@ const authUser = require('../middlewares/middleware');
 const orgMiddleware = require('../middlewares/organization');
 
 const router = Router();
+// render page to add new organization
+router.get('/new', renderCreateOrgPage)
 
 // Create an organization
 router.post('/new', [
@@ -37,7 +39,8 @@ router.get('/:urlname/user/:token', verifyEmployee);
 
 //Fetch employee data
 router.get('/:urlname/employee/:username', [authUser.authUser, orgMiddleware.LoggedUserisAdmin], fetchEmployeeData);
-
+// Check if org exists
+router.get('/check/:urlname', checkIfOrgExists)
 
 
 

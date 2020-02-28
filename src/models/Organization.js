@@ -24,10 +24,7 @@ var organizationSchema = new Schema({
     type: "String"
     
   },
-  admin: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
-  }],
+  admin: [],
   employees: [{
     type: Schema.Types.ObjectId,
     ref: 'User'

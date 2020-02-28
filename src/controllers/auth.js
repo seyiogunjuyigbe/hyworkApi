@@ -70,8 +70,9 @@ export const renderLoginPage = (req,res)=>{
 
 // Login Existing User
 // @route POST /auth/login
-//    export const loginUser = passport.authenticate('local-login')
+// export const loginUser = passport.authenticate('local-login')
    export const loginUser = (req,res, next)=>{
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
     let error = []; errors.array().map((err) => error.push(err.msg));
