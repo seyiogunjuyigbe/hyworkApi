@@ -20,10 +20,13 @@ var organizationSchema = new Schema({
     required: true,
     unique: true
   },
+
   category: {
     type: "String"
     
   },
+  // this was changed to a plain array so that the org.admin.includes() function works without hitches.
+  // a mongoose approach will be to use the $in query but I'm not sure how that will play out
   admin: [],
   employees: [{
     type: Schema.Types.ObjectId,
@@ -50,6 +53,10 @@ var organizationSchema = new Schema({
   files: [{
     type: Schema.Types.ObjectId,
     ref: 'File'
+  }],
+  shifts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Shift'
   }],
   attendance: [{
     type: Schema.Types.ObjectId,

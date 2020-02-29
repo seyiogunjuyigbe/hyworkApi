@@ -108,12 +108,7 @@ export const renderLoginPage = (req,res)=>{
    }
    }
 export const loginCb = (req,res)=>{
-    Organization.find
-  return res.status(200).json({
-      status: 'logged in',
-      message: 'Successfully logged in',
-      user: req.user.username
-  })
+return res.status(200).json({success:true,message:'Logged in as ' + req.user.username})
 }
 // Logout User
 // @route GET /auth/logout
