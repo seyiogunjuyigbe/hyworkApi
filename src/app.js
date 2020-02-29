@@ -16,6 +16,7 @@ import {startDb} from './database/db'
 import {SECRET_KEY, SITE_URL, MAIL_PASS, MAIL_SENDER, MAIL_USER, MAIL_SERVICE} from "./config/constants"
 import {initRoutes} from './routes/routes'
 import { User } from './models/User';
+import { Organization } from './models/Organization';
 
 startDb();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
