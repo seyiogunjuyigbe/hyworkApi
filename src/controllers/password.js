@@ -50,9 +50,12 @@ export const recover = (req, res) => {
 
                     transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
-                            res.status(500).render('error/500');
                             console.log(error);
+                            res.status(500).render('error/500', {message: 'Connection error'});
+                            // return res.status(200).json({link})
+                            
                         } else {
+                        //    return res.status(200).json({link})
                         res.status(200).render('recoverMailSent',{message: 'A password recovery link has been sent to ' + user.email + '.',link});
                         }
                     });  

@@ -6,7 +6,6 @@ router.post('/:urlname/attendance/:shift_id/clockout', clockOut);
 router.get('/:urlname/attendance/fetch/me', fetchMyAttendance)
 router.get('/:urlname/attendance/fetch/user/:user', fetchThisUserAttendance)
 router.get('/:urlname/attendance/fetch/many', fetchManyUsersAttendance)
-router.get('/:urlname/attendance/fetch/all', fetchAllAttendance)
 
 
 module.exports = router;
