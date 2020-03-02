@@ -70,8 +70,8 @@ export const renderLoginPage = (req,res)=>{
 
 // Login Existing User
 // @route POST /auth/login
-//    export const loginUser = passport.authenticate('local-login')
-   export const loginUser = (req,res, next)=>{
+// export const loginUser = passport.authenticate('local-login')
+   export const loginUser = (req,res, next)=>{  
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
     let error = []; errors.array().map((err) => error.push(err.msg));
@@ -107,12 +107,7 @@ export const renderLoginPage = (req,res)=>{
    }
    }
 export const loginCb = (req,res)=>{
-    Organization.find
-  return res.status(200).json({
-      status: 'logged in',
-      message: 'Successfully logged in',
-      user: req.user.username
-  })
+return res.status(200).json({success:true,message:'Logged in as ' + req.user.username})
 }
 // Logout User
 // @route GET /auth/logout

@@ -29,10 +29,12 @@ export const LoggedUserisAdmin = async (req, res, next) => {
     const { urlname } = req.params;
     
     Organization.findOne({ urlname }, (err, org) => {
-        if(org.admin.includes(req.user._id)) {
+        if(err)response.error(res,500,err.message);
+        else if(!org) response.error(res, 404, 'This organization does not exist')
+        else if(org.admin.includes(req.user._id)) {
             return next()
         }else {
-            response.error(res, 404, `${req.user.firstName} is not an admin
+            response.error(res, 403, `${req.user.firstName} is not an admin
              of ${org.name}`)
         }
     })
