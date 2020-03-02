@@ -5,7 +5,6 @@ const mongooseIdToken = require('mongoose-id-token')
 const leaveSchema = new Schema({
   dateApplied: {
     type: Date,
-    required: true
   },
   title: {
     type: String,

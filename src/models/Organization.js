@@ -57,6 +57,10 @@ var organizationSchema = new Schema({
   attendance: [{
     type: Schema.Types.ObjectId,
     ref: 'Attendance'
+  }], 
+  leaves: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Leave'
   }]
 });
 
