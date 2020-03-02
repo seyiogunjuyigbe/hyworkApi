@@ -14,9 +14,20 @@ export const createLeaveRequest = (req,res)=>{
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
       let error = []; errors.array().map((err) => error.push(err.msg));
+
       return res.status(422).json({error});
       } 
+
         else{
+        if((new Date(req.body.startDate)).getTime() >= (new Date(req.body.endDate)).getTime()){
+         return response.error(res,422,'End date must be later than start date')
+         }
+         else if((new Date(req.body.startDate)).getTime() <= (new Date()).getTime()){
+        return response.error(res,422,'Start date can not be earlier than today')
+
+         }
+         else{
+           
          Organization.findOne({urlname:req.params.urlname}, (err,org)=>{
         if(err)return response.error(res,500,err.message)
         else if(!org) {console.log(req.params);return response.error(res,404, 'Organization not found')}
@@ -50,8 +61,8 @@ export const createLeaveRequest = (req,res)=>{
       subject: "Leave Notice",
       html: `<h2>Hi ${department.manager.username} </h2>\n,
             <p>A leave request has been received from ${req.user.firstName} ${req.user.lastName}</p>
-            <a href="http://${req.headers.host}/org/:urlname/d/:deptId/leave/${leave.token}/approve">Approve Leave</a><br>
-            <a href="http://${req.headers.host}/org/:urlname/d/:deptId/leave/${leave.token}/decline">DeclineLeave</a>
+            <a href="http://${req.headers.host}/org/:urlname/d/${department._id}/leave/${leave.token}/approve">Approve Leave</a><br>
+            <a href="http://${req.headers.host}/org/:urlname/d/${department._id}/leave/${leave.token}/decline">DeclineLeave</a>
             `
           };
           transporter.sendMail(mailOptions, function(error, info){
@@ -70,6 +81,7 @@ export const createLeaveRequest = (req,res)=>{
         }}
         )}}
       }
+    }
 
     export const approveLeave = (req,res)=>{
     Department.findById(req.params.deptId, (err,dept)=>{
