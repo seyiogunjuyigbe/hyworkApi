@@ -16,6 +16,7 @@ var shiftSchema = new Schema({
   },
   isShiftMarginEnabled: {
     type: Boolean,
+    default: false
   },
   startMarginInMinutes: {
     type: Number,
@@ -23,10 +24,14 @@ var shiftSchema = new Schema({
   },
   endMarginInMinutes: {
     type: String,
+    default: 0
   },
   createdBy: {
-    type: String,
-    required: true
+    type: String
+  },
+  createdFor: {
+    type: Schema.Types.ObjectId,
+    ref: 'Organization'
   }
 });
 

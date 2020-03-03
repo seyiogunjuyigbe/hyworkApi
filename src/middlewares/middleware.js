@@ -16,7 +16,7 @@ export const authUser = (req, res, next) => {
     if(req.user) {
         return next();
     }else {
-        response.error(res, 404, 'User is not logged in')
+        return res.status(403).redirect('/auth/login')
     }
 }
 
@@ -24,7 +24,7 @@ export const isAdmin = (req, res, next) => {
     if(req.user.role === "admin") {
         return next();
     }else {
-        response.error(res, 404, 'User does not have the required permission')
+        return res.status(403).render('error/403', {message: 'You are unauthorized to do this'})
     }
 }
 
