@@ -1,5 +1,5 @@
 const router = require('express').Router();
-import {createCase, respondToCase, fethThiscase, changeCaseStatus} from '../controllers/case';
+import {createCase, respondToCase, fethThiscase, changeCaseStatus,inviteRespondentToCase} from '../controllers/case';
 const validate = require('../middlewares/validate');
 const { check } = require('express-validator');
 import {authUser} from '../middlewares/middleware';
@@ -19,5 +19,8 @@ router.post('/:urlname/case/:case_id/comment/new', check('notes').not().isEmpty(
 router.get('/:urlname/case/:case_id/view', authUser,LoggedUserisEmployee,fethThiscase);
 router.post('/:urlname/case/:case_id/status/change',
             check('status').not().isEmpty().withMessage('Please specify new case status'),validate,
-            authUser,LoggedUserisEmployee,changeCaseStatus)
+            authUser,LoggedUserisEmployee,changeCaseStatus);
+router.post('/:urlname/case/:case_id/respondents/new',
+            check('respondents').isArray().not().isEmpty().withMessage('Please specify a minimum of 1 new respondent'),validate,
+            authUser,LoggedUserisEmployee,inviteRespondentToCase)
 module.exports = router;
