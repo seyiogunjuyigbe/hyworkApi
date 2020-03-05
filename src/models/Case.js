@@ -15,7 +15,8 @@ const caseSchema = new Schema({
     enum: ['Department','Organization']
   },
   priority: {
-    type: String
+    type: String,
+    enum: ['Low', 'Medium', 'High', 'Urgent']
   },
   description: {
     type: String,
@@ -35,7 +36,7 @@ const caseSchema = new Schema({
   }],
  status: {
 type: String,
-enum: ['Pending', 'Unanswered', 'Resolved', 'Unresolved'],
+enum: ['Pending', 'Unanswered', 'Resolved', 'Unresolved', 'Closed'],
 default: 'Pending'
  }
 });
