@@ -3,7 +3,9 @@ import { Organization } from '../models/Organization';
 import { crudControllers } from '../../utils/crud';
 import { User } from '../models/User';
 import { File } from '../models/File';
+// import moment from 'moment';
 const response = require("../middlewares/response");
+const moment = require('moment')
 
 
 export default crudControllers(Task);
@@ -39,7 +41,7 @@ export const createTask = async (req, res) => {
 }
 // Add a file to a task
 //Route: org/:urlname/task/:id/add/file/:fileId
-export const addFiletoTask = async(req, res) => {
+export const addFiletoTask = async (req, res) => {
     const { urlname, id, fileId } = req.params;
     try {
         const org = await Organization.findOne({ urlname });
@@ -48,7 +50,7 @@ export const addFiletoTask = async(req, res) => {
                 if (err) { return response.error(res, 404, err.message) }
                 File.findById(fileId, (err, file) => {
                     if (err) { return response.error(res, 404, err.message) }
-                    if (task.files.includes(file._id)) { return response.error(res, 404, `File has already been added`)}
+                    if (task.files.includes(file._id)) { return response.error(res, 404, `File has already been added`) }
                     task.files.push(file._id);
                     task.save().then(
                         response.success(res, 200, `File ${file.title} has been added to task ${task.title}`)
@@ -64,18 +66,18 @@ export const addFiletoTask = async(req, res) => {
 
 //Get tasks assigned to a User
 //Route: org/:urlname/task/assignedto/:username
-export const getTasksAssignedToUser = async(req, res) => {
+export const getTasksAssignedToUser = async (req, res) => {
     const { username } = req.params;
     try {
         const user = await User.findOne({ username });
-        if(user) { 
-            Task.find({ assignedTo: user._id}, (err, tasks) => {
-                if(err) { return response.error(res, 404, err.message) }
+        if (user) {
+            Task.find({ assignedTo: user._id }, (err, tasks) => {
+                if (err) { return response.error(res, 404, err.message) }
                 response.success(res, 200, tasks);
             })
-        } 
+        }
 
-    }catch (error) {
+    } catch (error) {
         response.error(res, 500, error.message)
     }
 }
@@ -94,3 +96,36 @@ export const getTasksAssignedToUser = async(req, res) => {
 //         response.error(res, 500, error.message)
 //     }
 // }
+
+
+export const getFilesAssignedToTask = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const taskFiles = await Task.findById(id).populate('files');
+        if (taskFiles) {
+            response.success(res, 201, taskFiles);
+        }
+
+    } catch (error) {
+        response.error(res, 500, error.message);
+    }
+};
+
+export const addDeadlineToTask = (req, res) => {
+    const { id } = req.params;
+    const { deadline } = req.body;
+    Task.findById(id, (err, task) => {
+        if (err) response.success(res, 500, err);
+        if (!task.deadline){
+            task.deadline = Date.parse(deadline);
+        console.log(task.deadline);
+        task.save().then(response.success(res, 200, 'Task deadline added'));
+        }
+        return response.error(res, 404, 'Deadline already added to this task');
+
+    });
+
+}
+
+
+
