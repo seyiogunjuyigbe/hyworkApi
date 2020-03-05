@@ -16,7 +16,7 @@ export const authUser = (req, res, next) => {
     if(req.user) {
         return next();
     }else {
-        return res.status(403).redirect('/auth/login')
+        return response.error(res,401,'You need to be logged in to do this')
     }
 }
 

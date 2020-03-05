@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const caseSchema = new Schema({
-  subject: {
+  title: {
     type: String,
     required: true
   },
@@ -10,27 +10,34 @@ const caseSchema = new Schema({
     type: String,
     required: true
   },
+  reach: {
+    type:String,
+    enum: ['Department','Organization']
+  },
   priority: {
-    type: String,
-    required: true
+    type: String
   },
   description: {
     type: String,
     required: true
   },
   createdBy: {
-    type: user,
+    type: String,
     required: true
   },
-  respondents: {
-    type: user,
+  respondents: [{
+    type: String,
     required: true, 
-    comments: [{
+  }],
+  comments: [{
     type: Schema.Types.ObjectId,
     ref: 'Comment'
-  }]
-  }
- 
+  }],
+ status: {
+type: String,
+enum: ['Pending', 'Unanswered', 'Resolved', 'Unresolved'],
+default: 'Pending'
+ }
 });
 
 export const Case = mongoose.model('Case', caseSchema)

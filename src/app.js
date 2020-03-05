@@ -38,6 +38,13 @@ app.use(function(req, res, next){
     next();
 })
 initRoutes(app);
+// Organization.findOne({urlname: 'alpha'}).populate('employees',"username email -_id")
+// .then((org)=>{
+//     var list = [];
+//     org.employees.forEach(guy=>list.push(guy.username));
+//     console.log(org.employees)
+// })
+// .catch(err=>console.log(err))
 const PORT = process.env.PORT
 app.all('*', (req,res)=>{return res.status(404).json({message: 'You seem lost... no resource found'})})
 app.listen(PORT, process.env.IP, ()=>{

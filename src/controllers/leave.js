@@ -22,7 +22,7 @@ export const createLeaveRequest = (req,res)=>{
                     leave.save();
                     org.leaves.push(leave)
                     org.save();
-                Department.findOne({ employees: { $in: [req.user._id] } }, (err,department)=>{
+                Department.findOne({ employees: { $in: req.user._id } }, (err,department)=>{
         if(err) return response.error(res,500,err.message)
         else if(!department)return response.error(res,403,'You do not belong to any department in this organization')     
         else{

@@ -105,3 +105,22 @@ export const sendTokenMail = (user, req, res) => {
     }
   });
 };
+
+
+export const sendMailToTheseUsers = (req, res, mailOptions, next) => {
+      let transporter = nodemailer.createTransport({
+        service: MAIL_SERVICE,
+        auth: {
+          user: MAIL_USER,
+          pass: MAIL_PASS
+        }
+      });            
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    return res.status(500).render('error/500',{message:error});
+                } else {
+                    console.log('mail sent to ')
+                    return next()
+                }
+            });     
+    }
