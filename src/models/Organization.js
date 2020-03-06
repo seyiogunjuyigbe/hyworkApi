@@ -69,6 +69,10 @@ var organizationSchema = new Schema({
   cases: [{
     type: Schema.Types.ObjectId,
     ref: 'Case'
+  }],
+  assets:[{
+    type: Schema.Types.ObjectId,
+    ref: 'Asset'
   }]
 });
 
