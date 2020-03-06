@@ -21,7 +21,11 @@ const departmentSchema = new Schema({
   dateCreated: {
     type: Date,
     required: true
-  }
+  },
+  cases: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Case'
+  }]
 });
 
 export const Department = mongoose.model('Department', departmentSchema)

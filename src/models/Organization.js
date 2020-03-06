@@ -65,6 +65,10 @@ var organizationSchema = new Schema({
   leaves:[{
     type: Schema.Types.ObjectId,
     ref: 'Leave'
+  }],
+  cases: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Case'
   }]
 });
 

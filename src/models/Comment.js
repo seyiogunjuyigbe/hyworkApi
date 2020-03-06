@@ -7,13 +7,11 @@ var commentSchema = new Schema({
     required: true
   },
   sender: {
-    type: user,
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
-  recipient: {
-    type: user,
-    required: true
-  },
+  recipients: [],
   sentFor: {
         type: Schema.Types.ObjectId,
         ref: 'Case'
@@ -21,7 +19,7 @@ var commentSchema = new Schema({
   notes: {
     type: String,
   },
-  tasks: [{
+  assignedTasks: [{
     type: Schema.Types.ObjectId,
     ref: 'Task'
   }]
