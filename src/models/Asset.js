@@ -11,6 +11,7 @@ var assetSchema = new Schema({
   acquiredBy: {
     type: String
   },
+  modifiedBy: String,
   dateAcquired: {
     type: Date
   },
