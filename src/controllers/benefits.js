@@ -34,7 +34,7 @@ export const giveUserBenefit = async (req, res) => {
     }
 }
 
-export const removeBenefitFromUser = async(req, res) => {
+export const removeBenefitFromUser = async(req, res) => { 
     const { id, username } = req.params;
     try {
         const benefit = await Benefit.findById(id);
@@ -51,9 +51,10 @@ export const removeBenefitFromUser = async(req, res) => {
         }
     }
 }
+
 export const getAllBenefits = (req, res) => {
     Benefit.find({}, (err, benefits) => {
-        if(err) response.error(res, 404, 'Could not fetch benefits');
+        if(err) { response.error(res, 404, 'Could not fetch benefits') };
         response.success(res, 200, benefits);
     })
 }
