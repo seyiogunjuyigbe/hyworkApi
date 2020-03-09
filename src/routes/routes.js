@@ -9,6 +9,7 @@ const attendanceRouter = require('../routes/attendanceRoutes.js');
 const shiftRouter = require('../routes/shiftRoutes.js');
 const departmentRouter = require('../routes/departmentRouter');
 const leaveRouter = require('./leaveRoutes');
+const benefitRouter = require('../routes/benefitRoutes');
 
 const taskRouter = require('../routes/taskRoutes');
 const validate = require("../middlewares/validate");
@@ -28,6 +29,7 @@ export const initRoutes = app => {
     app.use('/org', departmentRouter);
     app.use('/org', leaveRouter); 
     app.use('/org', taskRouter);
+    app.use('/benefit', benefitRouter);
 
 
 

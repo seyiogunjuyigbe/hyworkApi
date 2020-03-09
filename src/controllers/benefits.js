@@ -9,7 +9,7 @@ export const createBenefit = async (req, res) => {
     const benefit = await Benefit.create({ title, description, value });
 
     if (benefit) {
-        response.success(res, 201, `Successfully created ${benefit.title}`);
+        response.success(res, 201, `Successfully created ${benefit.title} \n data:${benefit}`);
     }
     response.error(res, 404, "Could not create benefit");
 
