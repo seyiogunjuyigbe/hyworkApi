@@ -3,8 +3,6 @@ import { User } from '../models/User';
 
 const response = require('../middlewares/response');
 
-
-
 export const createBenefit = async (req, res) => {
     const { title, description, value } = req.body;
 
@@ -49,6 +47,8 @@ export const removeBenefitFromUser = async(req, res) => {
                 }
             })
         }
+    }catch (error) {
+        response.error(res, 500, error.message);
     }
 }
 
@@ -56,5 +56,5 @@ export const getAllBenefits = (req, res) => {
     Benefit.find({}, (err, benefits) => {
         if(err) { response.error(res, 404, 'Could not fetch benefits') };
         response.success(res, 200, benefits);
-    })
+    });
 }
