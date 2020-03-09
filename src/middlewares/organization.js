@@ -17,10 +17,12 @@ export const LoggedUserisEmployee = async (req, res, next) => {
     const { urlname } = req.params;
     
     Organization.findOne({ urlname }, (err, org) => {
-        if(org.employees.includes(req.user._id)) {
+        if(err) response.error(res,500,err.message);
+        else if(!org) response.error(res,404,`Organization ${urlname} not found`)
+        else if(org.employees.includes(req.user._id)) {
             return next()
         }else {
-            response.error(res, 404, `${req.user.firstName} is not an employee of ${org.name}`)
+            response.error(res, 403, `${req.user.firstName} is not an employee of ${org.name}`)
         }
     })
 } 
