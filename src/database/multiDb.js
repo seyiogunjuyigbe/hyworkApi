@@ -27,4 +27,4 @@ const getDBInstance = (dbName) => {
     return newConnection;
 };
 
-module.exports = { connect, getDbInstance };
+module.exports = { connect, getDBInstance };

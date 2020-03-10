@@ -10,6 +10,7 @@ const cloudinary = require('cloudinary');
 const cloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
 const geoip = require ('geoip-lite');
+const { connect } = require('./database/multiDb.js');
 
 import path from 'path';
 import {startDb} from './database/db'
@@ -19,6 +20,7 @@ import { User } from './models/User';
 import { Organization } from './models/Organization';
 
 startDb();
+connect();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
 app.use(express.static(path.join(__dirname, '../public'))); // load local css and js files
 app.set('view engine', 'ejs'); 
