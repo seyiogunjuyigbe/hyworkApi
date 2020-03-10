@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 import {Token} from './Token';
 import {SECRET_KEY} from '../config/constants';
 const passportLocalMongoose = require('passport-local-mongoose')
-const userSchema = new Schema(
+export const userSchema = new Schema(
   {
     username: {
       type: String,

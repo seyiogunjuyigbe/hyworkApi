@@ -1,7 +1,7 @@
 const mongooseIdToken = require('mongoose-id-token')
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const attendanceSchema = new Schema({
+export const attendanceSchema = new Schema({
   date: {
     type: String,
     required: true

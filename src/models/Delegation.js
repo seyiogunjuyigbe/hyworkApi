@@ -1,7 +1,6 @@
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const delegationSchema = new Schema({
+export const delegationSchema = new Schema({
   delegatee: {
     type: Schema.Types.ObjectId,
     ref: User,

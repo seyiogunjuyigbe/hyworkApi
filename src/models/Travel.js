@@ -1,7 +1,6 @@
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var travelSchema = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const travelSchema = new Schema({
   employeeId: {
     type: String,
     required: true

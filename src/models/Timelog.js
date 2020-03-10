@@ -1,7 +1,6 @@
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var timeLogSchema = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const timeLogSchema = new Schema({
   startTime: {
     type: String,
     required: true
