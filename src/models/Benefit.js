@@ -14,7 +14,8 @@ const benefitSchema = new Schema({
     required: true
   },
   beneficiaries: [{
-    type: user
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }]
 });
 
