@@ -1,29 +1,33 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Organization = void 0;
 
 var mongoose = require('mongoose');
+
 var Schema = mongoose.Schema;
 var organizationSchema = new Schema({
-    name: {
+  name: {
     type: String,
     required: true
   },
   location: [{
     type: Schema.Types.ObjectId,
-    ref:'Location'
-
+    ref: 'Location'
   }],
   description: {
     type: String
   },
   urlname: {
     type: String,
-    trim: true, 
+    trim: true,
     required: true,
     unique: true
   },
-
   category: {
     type: "String"
-    
   },
   // this was changed to a plain array so that the org.admin.includes() function works without hitches.
   // a mongoose approach will be to use the $in query but I'm not sure how that will play out
@@ -33,7 +37,7 @@ var organizationSchema = new Schema({
     ref: 'User'
   }],
   telephone: {
-    type: String,
+    type: String
   },
   staffStength: {
     type: Number
@@ -61,8 +65,8 @@ var organizationSchema = new Schema({
   attendance: [{
     type: Schema.Types.ObjectId,
     ref: 'Attendance'
-  }], 
-  leaves:[{
+  }],
+  leaves: [{
     type: Schema.Types.ObjectId,
     ref: 'Leave'
   }],
@@ -70,20 +74,18 @@ var organizationSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Case'
   }],
-  assets:[{
+  assets: [{
     type: Schema.Types.ObjectId,
     ref: 'Asset'
   }],
-  travels:[{
+  travels: [{
     type: Schema.Types.ObjectId,
     ref: 'Travel'
   }]
-});
-
-// organizationSchema.pre('save', function(next) {
+}); // organizationSchema.pre('save', function(next) {
 //   const org = this;
-
 //   if (org.isModified()
 // })
 
-export const Organization = mongoose.model('Organization', organizationSchema)
+var Organization = mongoose.model('Organization', organizationSchema);
+exports.Organization = Organization;
