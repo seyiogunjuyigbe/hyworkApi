@@ -41,3 +41,17 @@ export const LoggedUserisAdmin = async (req, res, next) => {
         }
     })
 } 
+
+export const getOrganization = (req, res) => {
+    if (req.headers.host.length !== 0) {
+        const dbName = req.headers.host.toLowerCase();
+        return dbName;
+    }
+};
+export const checkDBExists = (req,res,next) => {
+    Organization.findOne({ urlname: req.headers.host.toLowerCase()}, (err, org) => {
+        if(org) {
+            next()
+        }
+    })
+}
