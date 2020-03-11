@@ -1,9 +1,9 @@
-import {User} from '../models/User';
+import {User} from '../models/TenantModels';
 import {Organization} from '../models/Organization';
 const validate = require('../middlewares/validate');
 const { check,validationResult } = require('express-validator');
-import {Leave} from '../models/Leave';
-import {Department} from '../models/Department';
+import {Leave} from '../models/TenantModels';
+import {Department} from '../models/TenantModels';
 const nodemailer = require('nodemailer');
 const response = require('../middlewares/response');
 import {MAIL_PASS, MAIL_SENDER, MAIL_SERVICE, MAIL_USER} from '../config/constants';

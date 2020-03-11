@@ -25,7 +25,8 @@ export const dependentSchema = new Schema({
   
   },
   location: {
-    type: location,
+    type: Schema.Types.ObjectId,
+    ref: 'Location',
     required: true
   }
 });

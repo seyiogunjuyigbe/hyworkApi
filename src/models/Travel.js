@@ -6,7 +6,8 @@ export const travelSchema = new Schema({
     required: true
   },
   employeeDepartment: {
-    type: department,
+    type: Schema.Types.ObjectId,
+    ref: 'Department',
     required: true
   },
   placeOfVisit: {

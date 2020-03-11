@@ -1,5 +1,5 @@
 const response = require('../middlewares/response');
-import { User } from '../models/User';
+import { User } from '../models/TenantModels';
 
 export const addPhoneNumber = async (req, res) => {
     const { phone } = req.body;

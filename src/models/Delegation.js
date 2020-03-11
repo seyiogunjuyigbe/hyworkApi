@@ -3,17 +3,17 @@ const Schema = mongoose.Schema;
 export const delegationSchema = new Schema({
   delegatee: {
     type: Schema.Types.ObjectId,
-    ref: User,
+    ref: 'User',
     required: true
   },
   delegator: {
     type: Schema.Types.ObjectId,
-    ref: User,
+    ref: 'User',
     required: true
   },
   delegatedBy: {
     type: Schema.Types.ObjectId,
-    ref: User,
+    ref: 'User',
     required: true
   },
   isPermanent: {

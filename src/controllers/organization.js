@@ -1,4 +1,4 @@
-// import { Organization } from "../models/Organization";
+import { Organization } from "../models/Organization";
 import { User } from "../models/User";
 import { Token } from "../models/Token";
 const response = require("../middlewares/response");
@@ -8,6 +8,7 @@ import { checkUrlExists } from "../middlewares/middleware";
 import { userSchema } from '../models/User';
 import { organizationSchema } from '../models/Organization';
 const { getDBInstance } = require('../database/multiDb.js');
+import { models } from '../models/TenantModels';
 
 
 
@@ -30,9 +31,9 @@ renderCreateOrgPage(req,res){
       if (req.user.createdOrganizations.length >= 10) { errors.push('User has registered more than 10 organizations') }
       if (checkUrlExists(req.body.urlname)) { errors.push(`Organization with the username ${req.body.urlname} already exists`) }
       if (errors.length === 0) {
-        export const dbName = req.body.urlname.toLowerCase();
+        const dbName = req.body.urlname.toLowerCase();
         const dbConnection = getDBInstance(dbName);
-        const Organization = dbConnection.model('Organization', organizationSchema)
+        req.db.models = models(dbConnection);
         const newOrg = await Organization.create(req.body);
         // newOrg.urlname = req.body.urlname.toLowerCase();
         newOrg.admin.push(req.user._id);

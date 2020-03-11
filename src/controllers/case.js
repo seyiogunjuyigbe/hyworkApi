@@ -1,4 +1,4 @@
-import { Case } from "../models/Case";
+import { Case } from "../models/TenantModels";
 import {Organization} from '../models/Organization';
 import {Department} from "../models/Department";
 import {User} from '../models/User';

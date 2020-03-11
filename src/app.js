@@ -21,7 +21,7 @@ import { initRoutes, tenantRoutes } from './routes/routes'
 import { User } from './models/User';
 import { Organization } from './models/Organization';
 
-const dbName = getOrganization();
+
 startDb();
 connect();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
@@ -41,8 +41,14 @@ app.use(passport.session());
 app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
+});
+const tRoutes = tenantRoutes(app);
+app.use((req, res, next) => {
+    req.headers.host = req.dbName;
+    subdomain(req.dbName, tRoutes);
+    next();
 })
-app.use(subdomain(dbName, tenantRoutes(app)));
+
 initRoutes(app);
 // Organization.findOne({urlname: 'alpha'}).populate('employees',"username email -_id")
 // .then((org)=>{

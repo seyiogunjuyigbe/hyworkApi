@@ -1,4 +1,4 @@
-import { Task } from '../models/Task';
+import { Task } from '../models/TenantModels';
 import { Organization } from '../models/Organization';
 import { crudControllers } from '../../utils/crud';
 import { User } from '../models/User';

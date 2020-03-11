@@ -1,6 +1,6 @@
 import {User} from '../models/User';
 import {Organization} from '../models/Organization'
-import {Shift} from '../models/Shift'
+import {Shift} from '../models/TenantModels'
 import {calcTimeDiffWithoutSec} from '../middlewares/attendanceCalc'
 
 
