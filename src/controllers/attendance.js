@@ -1,4 +1,4 @@
-import {Attendance} from '../models/Attendance';
+import { Attendance } from '../models/TenantModels';
 import {Shift} from '../models/Shift';
 import {Organization} from '../models/Organization';
 import { calcTimeDiff, fetchUserAttendance, calcTimeDiffWithoutSec } from '../middlewares/attendanceCalc';
