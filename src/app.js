@@ -10,15 +10,18 @@ const cloudinary = require('cloudinary');
 const cloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
 const geoip = require ('geoip-lite');
+const subdomain = require('express-subdomain');
 const { connect } = require('./database/multiDb.js');
 
 import path from 'path';
-import {startDb} from './database/db'
+import {startDb} from './database/db';
+import { getOrganization } from './middlewares/organization';
 import {SECRET_KEY, SITE_URL, MAIL_PASS, MAIL_SENDER, MAIL_USER, MAIL_SERVICE} from "./config/constants"
-import {initRoutes} from './routes/routes'
+import { initRoutes, tenantRoutes } from './routes/routes'
 import { User } from './models/User';
 import { Organization } from './models/Organization';
 
+const dbName = getOrganization();
 startDb();
 connect();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
@@ -39,6 +42,7 @@ app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
 })
+app.use(subdomain(dbName, tenantRoutes(app)));
 initRoutes(app);
 // Organization.findOne({urlname: 'alpha'}).populate('employees',"username email -_id")
 // .then((org)=>{
