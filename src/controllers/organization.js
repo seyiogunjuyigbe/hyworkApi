@@ -8,7 +8,7 @@ import { checkUrlExists } from "../middlewares/middleware";
 import { userSchema } from '../models/User';
 import { organizationSchema } from '../models/Organization';
 const { getDBInstance } = require('../database/multiDb.js');
-import { models } from '../models/TenantModels';
+
 
 
 
@@ -32,14 +32,13 @@ renderCreateOrgPage(req,res){
       if (checkUrlExists(req.body.urlname)) { errors.push(`Organization with the username ${req.body.urlname} already exists`) }
       if (errors.length === 0) {
         const dbName = req.body.urlname.toLowerCase();
-        const dbConnection = getDBInstance(dbName);
-        req.db.models = models(dbConnection);
+        getDBInstance(dbName);
         const newOrg = await Organization.create(req.body);
-        // newOrg.urlname = req.body.urlname.toLowerCase();
+        newOrg.urlname = req.body.urlname.toLowerCase();
         newOrg.admin.push(req.user._id);
         newOrg.employees.push(req.user._id);
         newOrg.save();
-        const user = await User.findOne({ _id: req.user._id });
+        const user = await User.findById( req.user._id );
         user.role = 'admin';
         user.createdOrganizations.push(newOrg._id);
         user.save();

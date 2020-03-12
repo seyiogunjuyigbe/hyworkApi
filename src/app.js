@@ -11,7 +11,8 @@ const cloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
 const geoip = require ('geoip-lite');
 const subdomain = require('express-subdomain');
-const { connect } = require('./database/multiDb.js');
+const { connect, getDBInstance } = require('./database/multiDb.js');
+
 
 import path from 'path';
 import {startDb} from './database/db';
@@ -40,6 +41,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(function(req, res, next){
     res.locals.currentUser = req.user;
+    req.dbModels = getDBInstance(req.params.urlname.toLowerCase()).models;
     next();
 });
 

@@ -20,11 +20,6 @@ export const initRoutes = app => {
     });
     app.use('/auth', authRouter);
     app.use('/org', organizationRouter);
-    
- 
-}
-
-export const tenantRoutes = app => {
     app.use('/org/:urlname/u', userRouter);
     app.use('/org', attendanceRouter);
     app.use('/org', shiftRouter);
@@ -36,5 +31,5 @@ export const tenantRoutes = app => {
     app.use('/benefit', benefitRouter);
     app.use('/org', caseRouter)
     app.use('/org', assetRouter)
-
+    
 }
