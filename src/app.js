@@ -42,12 +42,6 @@ app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
 });
-const tRoutes = tenantRoutes(app);
-app.use((req, res, next) => {
-    req.headers.host = req.dbName;
-    subdomain(req.dbName, tRoutes);
-    next();
-})
 
 initRoutes(app);
 // Organization.findOne({urlname: 'alpha'}).populate('employees',"username email -_id")
