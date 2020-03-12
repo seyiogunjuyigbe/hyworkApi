@@ -1,4 +1,7 @@
-
+// Create a new job
+// @Params: urlname
+// Method: POST
+// Access: logged in admin
 import {Job} from '../models/Job';
 import {User} from '../models/User';
 import {Organization} from '../models/Organization'; 
@@ -56,4 +59,29 @@ export const createJob = (req,res)=>{
             })
         }
     })
+}
+
+
+// Fetch a job by ID
+// @Params: urlname, job_id
+// Method: GET
+// Access: logged in employee who is the job creator or assignee
+export const fetchThisJob = (req,res)=>{
+Job.findById(req.params.job_id, (err,thisJob)=>{
+    if(err) return response.error(res,500,err.message)
+    else if(!thisJob) return response.error(res,404, 'Requested job not found')
+    else if (thisJob.createdBy !== req.user.username || !thisJob.assignees.includes(req.user.username)){
+        return response.error(res,403, 'You are not authorized to view this')
+    } else{
+        return response.success(res,200,thisJob)
+    }
+})
+}
+
+// Assign a job to an employee
+// @Params: urlname, job_id
+// Method: POST
+// Access: logged in employee who is the job creator
+export const assignThisJob = (req,res)=>{
+    
 }
