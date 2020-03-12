@@ -14,7 +14,7 @@ const caseRouter = require('./caseRoutes');
 const taskRouter = require('./taskRoutes');
 const assetRouter = require('./assetRoutes');
 const travelRouter = require('./travelRoutes')
-
+const jobRouter = require ('./jobRoutes')
 export const initRoutes = app => {
     app.get('/', (req,res)=>{
         res.send('Hello World!')
@@ -31,7 +31,8 @@ export const initRoutes = app => {
     app.use('/org', leaveRouter); 
     app.use('/org', taskRouter);
     app.use('/benefit', benefitRouter);
-    app.use('/org', caseRouter)
-    app.use('/org', assetRouter)
-    app.use('/org', travelRouter)
+    app.use('/org', caseRouter);
+    app.use('/org', assetRouter);
+    app.use('/org', travelRouter);
+    app.use('/org', jobRouter);
 }

@@ -26,7 +26,6 @@ Organization.findOne({urlname:req.params.urlname}).populate('employees', "userna
                 var i = list.indexOf(respondent);
                 emailList.push(org.employees[i].email);
             })
-            console.log(emailList);
             User.findById(req.user._id, (err,user)=>{
                 if(err)return response.error(res,500,err.message);
                 else if(!user) return response.error(res,422,'User not found')

@@ -77,6 +77,10 @@ var organizationSchema = new Schema({
   travels:[{
     type: Schema.Types.ObjectId,
     ref: 'Travel'
+  }],
+  jobs:[{
+    type: Schema.Types.ObjectId,
+    ref: 'Job'
   }]
 });
 

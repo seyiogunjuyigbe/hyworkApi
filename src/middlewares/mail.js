@@ -119,7 +119,6 @@ export const sendMailToTheseUsers = (req, res, mailOptions, next) => {
                 if (error) {
                     return res.status(500).render('error/500',{message:error});
                 } else {
-                    console.log('mail sent to ')
                     return next()
                 }
             });     
