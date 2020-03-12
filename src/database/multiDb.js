@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const dbMigration = require('./db.migrations');
+
 const mongooseConfig = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -23,6 +25,10 @@ const connect = async () => mongoose.createConnection(
 const getDBInstance = (dbName) => {
     if (_pool[dbName]) return _pool[dbName];
     const newConnection = _pool.default.useDb(dbName);
+    const isModelCompiled = dbMigration(newConnection);
+    _pool[dbName] = newConnection;
+
+    if (!isModelCompiled) getDbInstance(dbName);
     _pool[dbName] = newConnection;
     return newConnection;
 };
