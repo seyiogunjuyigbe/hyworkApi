@@ -1,19 +1,16 @@
-import { File } from "../models/File";
-import { Organization } from "../models/Organization";
-import { crudControllers } from "../../utils/crud";
-
 const response = require('../middlewares/response');
 
-export default crudControllers(File);
+
 
 export async function uploadFile(req, res, next) {
     const { title, description } = req.body;
     const { file } = req;
+    const { File, TenantOrganization } = req.dbModels;
     File.create({ title, description, fileLocationUrl: file.secure_url, uploadedBy: req.user._id }, (err, file) => {
         if (err) {
             response.error(res, 400, err);
         }
-        Organization.findOne({ urlname: req.params.urlname }, (err, org) => {
+        TenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
             if (err) {
                 response.error(res, 404, err)
             }
@@ -29,6 +26,7 @@ export async function uploadFile(req, res, next) {
 
 export async function updateFileDetails(req, res) {
     const { title, description } = req.body;
+    const { File } = req.dbModels;
     const file = await File.findById(req.params.id);
     file.title = title;
     file.description = description;
@@ -43,9 +41,10 @@ export async function updateFileDetails(req, res) {
 export async function fetchFilesByUser(req, res) {
     const { urlname } = req.params;
     let orgFiles = [];
+    const { File, TenantOrganization } = req.dbModels;
     try {
         const files = await File.find({ uploadedBy: req.user._id }).lean().exec();
-        const org = await Organization.findOne({ urlname });
+        const org = await TenantOrganization.findOne({ urlname });
         if (!files) {
             response.error(res, 400, `No files owned by user ${req.user.username}`);
         }
@@ -66,9 +65,10 @@ export async function fetchFilesByUser(req, res) {
 export const fetchAllOrgFiles = async(req, res) => {
     const { urlname } = req.params;
     let orgFiles = [];
+    const { File, TenantOrganization } = req.dbModels;
     try {
         const files = await File.find({}).lean().exec();
-        const org = await Organization.findOne({ urlname });
+        const org = await TenantOrganization.findOne({ urlname });
         if (!files) {
             response.error(res, 400, `No files found`);
         }
@@ -86,4 +86,20 @@ export const fetchAllOrgFiles = async(req, res) => {
     }
 }
 
-
+export const getOneById = async (req, res) => {
+    const { File } = req.dbModels;
+    try {
+      const doc = await File
+        .findById( req.params.id )
+        .lean()
+        .exec();
+  
+      if (!doc) {
+        return res.status(404).end();
+      }
+      res.status(200).json({ data: doc });
+    } catch (error) {
+      console.error(error);
+      res.status(400).end();
+    }
+  };

@@ -1,23 +1,19 @@
-import { Task } from '../models/TenantModels';
-import { Organization } from '../models/Organization';
 import { crudControllers } from '../../utils/crud';
-import { User } from '../models/User';
-import { File } from '../models/File';
+
 // import moment from 'moment';
 const response = require("../middlewares/response");
 const moment = require('moment')
 
-
-export default crudControllers(Task);
 
 //Create Task
 // Route: org/:urlname/task/add/:username
 export const createTask = async (req, res) => {
     const { urlname, username } = req.params;
     const { title, description } = req.body
+    const { Task, User, TenantOrganization } = req.dbModels;
 
     try {
-        const org = await Organization.findOne({ urlname });
+        const org = await TenantOrganization.findOne({ urlname });
         if (org.employees.includes(req.user._id)) {
             Task.create({ title, description }, (err, task) => {
                 if (err) { return response.error(res, 404, err.nessage) }
@@ -42,9 +38,10 @@ export const createTask = async (req, res) => {
 // Add a file to a task
 //Route: org/:urlname/task/:id/add/file/:fileId
 export const addFiletoTask = async (req, res) => {
+    const { Task, File, TenantOrganization } = req.dbModels;
     const { urlname, id, fileId } = req.params;
     try {
-        const org = await Organization.findOne({ urlname });
+        const org = await TenantOrganization.findOne({ urlname });
         if (org.employees.includes(req.user._id)) {
             Task.findById(id, (err, task) => {
                 if (err) { return response.error(res, 404, err.message) }
@@ -67,6 +64,7 @@ export const addFiletoTask = async (req, res) => {
 //Get tasks assigned to a User
 //Route: org/:urlname/task/assignedto/:username
 export const getTasksAssignedToUser = async (req, res) => {
+    const { Task, User } = req.dbModels;
     const { username } = req.params;
     try {
         const user = await User.findOne({ username });
@@ -100,6 +98,8 @@ export const getTasksAssignedToUser = async (req, res) => {
 
 export const getFilesAssignedToTask = async (req, res) => {
     const { id } = req.params;
+    const { Task } = req.dbModels;
+
     try {
         const taskFiles = await Task.findById(id).populate('files');
         if (taskFiles) {
@@ -114,6 +114,8 @@ export const getFilesAssignedToTask = async (req, res) => {
 export const addDeadlineToTask = (req, res) => {
     const { id } = req.params;
     const { deadline } = req.body;
+    const { Task } = req.dbModels;
+
     Task.findById(id, (err, task) => {
         if (err) response.success(res, 500, err);
         if (!task.deadline){

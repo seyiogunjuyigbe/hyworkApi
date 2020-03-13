@@ -9,8 +9,8 @@ import { calcTimeDiffWithoutSec } from '../middlewares/attendanceCalc'
 // Access: Admin
 export const createShift = (req, res) => {
     // Fetch Organization
-    const { tenantOrganization, Shift } = req.dbModels;
-    tenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
+    const { TenantOrganization, Shift } = req.dbModels;
+    TenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
         if (!req.user) {
             return res.status(401).json({ message: 'You need to be logged in' })
         }
@@ -51,8 +51,8 @@ export const createShift = (req, res) => {
 // Update shift
 export const updateShift = (req, res) => {
     console.log(req.params);
-    const { tenantOrganization, Shift } = req.dbModels;
-    tenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
+    const { TenantOrganization, Shift } = req.dbModels;
+    TenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
         if (!req.user) {
             return res.status(401).json({ message: 'You need to be logged in' })
         }
@@ -87,8 +87,8 @@ export const updateShift = (req, res) => {
 
 
 export const fetchShifts = (req, res) => {
-    const { tenantOrganization, Shift } = req.dbModels;
-    tenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
+    const { TenantOrganization, Shift } = req.dbModels;
+    TenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
         if (!req.user) {
             return res.status(401).json({ message: 'You need to be logged in' })
         }
@@ -114,8 +114,8 @@ export const fetchShifts = (req, res) => {
 
 export const deleteShift = (req, res) => {
     console.log(req.params)
-    const { tenantOrganization, Shift } = req.dbModels;
-    tenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
+    const { TenantOrganization, Shift } = req.dbModels;
+    TenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
         if (!req.user) {
             return res.status(401).json({ message: 'You need to be logged in' })
         }
