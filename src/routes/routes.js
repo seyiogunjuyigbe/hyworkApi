@@ -32,4 +32,5 @@ export const initRoutes = app => {
     app.use('/org', caseRouter)
     app.use('/org', assetRouter)
     
+    
 }

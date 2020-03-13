@@ -4,6 +4,7 @@ const dbMigration = require('./db.migrations');
 const mongooseConfig = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false
 }
 const DATABASE_URL = 'mongodb://localhost:27017'
 let _pool = {};

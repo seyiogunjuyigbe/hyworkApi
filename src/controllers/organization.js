@@ -33,11 +33,16 @@ renderCreateOrgPage(req,res){
       if (errors.length === 0) {
         const dbName = req.body.urlname.toLowerCase();
         getDBInstance(dbName);
+        const { TenantOrganization } = getDBInstance(dbName).models;
         const newOrg = await Organization.create(req.body);
         newOrg.urlname = req.body.urlname.toLowerCase();
         newOrg.admin.push(req.user._id);
         newOrg.employees.push(req.user._id);
         newOrg.save();
+        const tOrg = await TenantOrganization.create(req.body);
+        tOrg.admin.push(req.user._id);
+        tOrg.employees.push(req.user._id);
+        tOrg.save();
         const user = await User.findById( req.user._id );
         user.role = 'admin';
         user.createdOrganizations.push(newOrg._id);
@@ -54,9 +59,10 @@ renderCreateOrgPage(req,res){
 
   async addUserToOrganization(req, res) {
     const { email } = req.body;
+    const { User, TenantOrganization } = req.dbModels;
     try {
       const user = await User.findOneAndUpdate({ email }, req.body, { upsert: true, new: true, runValidators: true });
-      const updatedOrganization = await Organization.findOne(
+      const updatedOrganization = await TenantOrganization.findOne(
         { urlname: req.params.urlname }
       );
       updatedOrganization.employees.push(user._id);
@@ -72,7 +78,8 @@ renderCreateOrgPage(req,res){
   },
 
   async fetchOrganization(req, res) {
-    Organization.find({ urlname: req.params.urlname }, (err, org) => {
+    const { TenantOrganization } = req.dbModels;
+    TenantOrganization.find({ urlname: req.params.urlname }, (err, org) => {
       if (org) {
        return res.status(200).render('organization/adminDashboard', {admin:req.user, org, org})
       }
@@ -118,6 +125,7 @@ renderCreateOrgPage(req,res){
   },
 
   async verifyEmployee(req, res) {
+    const { User } = req.dbModels;
     if (!req.params.token) {
       return response.error(res, 400, "No token attached")
     }

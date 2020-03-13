@@ -42,7 +42,7 @@ module.exports = {
     Leave: leaveSchema,
     Location: locationSchema,
     Message: messageSchema,
-    Organization: organizationSchema,
+    TenantOrganization: organizationSchema,
     Project: projectSchema,
     Service: serviceSchema,
     Shift: shiftSchema,
