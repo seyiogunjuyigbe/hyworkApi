@@ -20,7 +20,7 @@ export const initRoutes = app => {
     });
     app.use('/auth', authRouter);
     app.use('/org', organizationRouter);
-    app.use('/org/:urlname/u', userRouter);
+    app.use('/org', userRouter);
     app.use('/org', attendanceRouter);
     app.use('/org', shiftRouter);
     app.use('/location', locationRouter);
