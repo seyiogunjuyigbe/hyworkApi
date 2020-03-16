@@ -13,6 +13,7 @@ const benefitRouter = require('../routes/benefitRoutes');
 const caseRouter = require('./caseRoutes');
 const taskRouter = require('./taskRoutes');
 const assetRouter = require('./assetRoutes');
+const travelRouter = require('./travelRoutes')
 
 export const initRoutes = app => {
     app.get('/', (req,res)=>{
@@ -32,5 +33,5 @@ export const initRoutes = app => {
     app.use('/benefit', benefitRouter);
     app.use('/org', caseRouter)
     app.use('/org', assetRouter)
-
+    app.use('/org', travelRouter)
 }

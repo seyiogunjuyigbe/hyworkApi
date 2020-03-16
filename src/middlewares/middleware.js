@@ -38,3 +38,8 @@ export const orgExists = (req, res, next) => {
         }
     })
 }
+
+export const getDIfferenceinDays = (start,end)=>{
+   var diffInMilliSecs = new Date(end) - new Date(start)
+   return (diffInMilliSecs/(8.64e+7))
+}
