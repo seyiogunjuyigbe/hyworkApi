@@ -28,43 +28,46 @@ export const travelSchema = new Schema({
   },
   isBillableToCustomer: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false
   },
   customerName: {
     type: String,
-    required: true
   },
-  addedBy: {
+  createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  addedAt: {
+  createdAt: {
     type: String,
     required: true
   },
   modifiedBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true
-  },
+     },
   modifiedAt: {
     type: String,
-    required: true
   },
   approvalStatus: {
     type: String,
-    required: true
+    required: true,
+    enum: ['Pending', 'Approved','Declined'],
+    default: 'Pending'
   },
   approvedBy: {
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
   requestor: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
+    required: true
+  },
+  numberOfDays: {
+    type: Number,
     required: true
   }
-});
+},{timestamps:true});
 
 export const Travel = mongoose.model('Travel', travelSchema)
