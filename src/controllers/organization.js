@@ -58,10 +58,14 @@ renderCreateOrgPage(req,res){
   },
 
   async addUserToOrganization(req, res) {
-    const { email } = req.body;
+    const { email, firstName, lastName } = req.body;
     const { User, TenantOrganization } = req.dbModels;
     try {
       const user = await User.findOneAndUpdate({ email }, req.body, { upsert: true, new: true, runValidators: true });
+      // console.log(user);
+      user.username = firstName[0] + firstName[firstName.length - 1] + "." + lastName;
+      user.username = user.username.toLowerCase();
+      user.save();
       const updatedOrganization = await TenantOrganization.findOne(
         { urlname: req.params.urlname }
       );

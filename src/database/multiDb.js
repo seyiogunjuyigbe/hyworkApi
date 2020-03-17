@@ -1,10 +1,17 @@
 const mongoose = require('mongoose');
 const dbMigration = require('./db.migrations');
 
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.set('useNewUrlParser', true);
+
 const mongooseConfig = {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
+    useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+
 }
 const DATABASE_URL = 'mongodb://localhost:27017'
 let _pool = {};

@@ -4,8 +4,9 @@ const response = require('../middlewares/response');
 export const addPhoneNumber = async (req, res) => {
     const { phone } = req.body;
     const { User } = req.dbModels;
+    const { username } = req.params;
     try {
-        const user = await User.findById(req.user._id);
+        const user = await User.findOne({ username });
         if (user) {
             if (!Boolean(user.phoneNumber)) {
                 user.phoneNumber = phone;
@@ -26,9 +27,9 @@ export const updateBioData = async (req, res) => {
     const { dob, maritalStatus, bioMessage } = req.body;
     const { User } = req.dbModels;
     try {
-        const user = await User.findByIdAndUpdate(req.user._id, { maritalStatus, dob, bioMessage });
+        const user = await User.findOneAndUpdate({ username: req.params.username }, { maritalStatus, dob, bioMessage });
         if (user) {
-            response.success(res, 200, "Added Bio Details")
+            response.success(res, 200, "Upodated Bio Details")
         }
     } catch (error) {
         response.error(res, 500, error.message);
@@ -58,7 +59,7 @@ export const addPassword = (req, res) => {
     })
 }
 
-const addDependentToUser = (req, res) => {
+export const addDependentToUser = (req, res) => {
     const { User, Dependent } = req.dbModels;
     const { firstName, lastName, relationship, phoneNumber, email } = req.body;
     const { username } = req.params;
@@ -79,7 +80,7 @@ const addDependentToUser = (req, res) => {
 
 }
 
-const removeDependentFromUser = (req, res) => {
+export const removeDependentFromUser = (req, res) => {
     const { User, Dependent } = req.dbModels;
     const { username, id } = req.params;
     Dependent.findById({id}, (err, dependent) => {
