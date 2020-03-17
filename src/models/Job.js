@@ -42,7 +42,11 @@ var jobSchema = new Schema({
   timeLogs: [{
     type: Schema.Types.ObjectId,
     ref: 'TimeLog'
-  }]
+  }],
+  createdFor: {
+    type: String,
+    required: true
+  }
 });
  
 export const Job = mongoose.model('Job', jobSchema)
