@@ -9,6 +9,7 @@ import {getDIfferenceinDays} from '../middlewares/middleware'
 
 // Create a travel request record
 export const createTravelRecord = (req,res)=>{
+    const { Travel, TenantOrganization, User } = req.dbModels;
     if((new Date(req.body.departureDate)).getTime() >= (new Date(req.body.arrivalDate)).getTime()){
         return response.error(res,422,'arrival date must be later than departure date')
         }
@@ -18,7 +19,7 @@ export const createTravelRecord = (req,res)=>{
         else if(!!req.body.isBillableToCustomer && Boolean(req.body.isBillableToCustomer) == true && !req.body.customerName){
             return response.error(res,422,'Please fill in customer name')
         }
-  Organization.findOne({urlname:req.params.urlname})
+        TenantOrganization.findOne({urlname:req.params.urlname})
   .then((org)=>{
       User.findOne({username:req.body.requestor},(err,thisUser)=>{
         if(err) return response.error(res,500,err.message)
@@ -48,6 +49,7 @@ export const createTravelRecord = (req,res)=>{
 
 // Update travel request records
 export const updateTravelRecord = (req,res)=>{
+    const { Travel, TenantOrganization, User } = req.dbModels;
     User.findOne({username:travel.requestor})
     .then((thisUser)=>{
         if(!user)response.error(res,404,'User not found for this travel record');
@@ -72,7 +74,8 @@ export const updateTravelRecord = (req,res)=>{
 
 
 export const approveTravelRequest = (req,res)=>{
-    Organization.findOne({urlname:req.params.urlname},(err,org)=>{
+    const { Travel, TenantOrganization, User } = req.dbModels;
+    TenantOrganization.findOne({urlname:req.params.urlname},(err,org)=>{
         if(err) return response.error(res,500,err.message);
         else if(!org) return response.error(res,404,'Organization not found');
         else {  
@@ -113,7 +116,8 @@ export const approveTravelRequest = (req,res)=>{
 
 
 export const declineTravelRequest = (req,res)=>{
-    Organization.findOne({urlname:req.params.urlname},(err,org)=>{
+    const { Travel, TenantOrganization, User } = req.dbModels;
+    TenantOrganization.findOne({urlname:req.params.urlname},(err,org)=>{
         if(err) return response.error(res,500,err.message);
         else if(!org) return response.error(res,404,'Organization not found');
         else {  

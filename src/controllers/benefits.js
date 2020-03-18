@@ -1,10 +1,8 @@
-import { Benefit } from '../models/Benefit';
-import { User } from '../models/User';
-
 const response = require('../middlewares/response');
 
 export const createBenefit = async (req, res) => {
     const { title, description, value } = req.body;
+    const { Benefit } = req.dbModels;
 
     const benefit = await Benefit.create({ title, description, value });
 
@@ -16,6 +14,7 @@ export const createBenefit = async (req, res) => {
 };
 
 export const giveUserBenefit = async (req, res) => {
+    const { Benefit, User } = req.dbModels;
     const { id, username } = req.params;
     try {
         const benefit = await Benefit.findById(id);
@@ -39,6 +38,7 @@ export const giveUserBenefit = async (req, res) => {
 }
 
 export const removeBenefitFromUser = async (req, res) => {
+    const { Benefit, User } = req.dbModels;
     const { id, username } = req.params;
     try {
         const benefit = await Benefit.findById(id);
@@ -64,6 +64,7 @@ export const removeBenefitFromUser = async (req, res) => {
 }
 
 export const getAllBenefits = (req, res) => {
+    const { Benefit } = req.dbModels;
     Benefit.find({}, (err, benefits) => {
         if (err) { response.error(res, 404, 'Could not fetch benefits') };
         response.success(res, 200, benefits);

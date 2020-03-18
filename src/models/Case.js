@@ -1,7 +1,6 @@
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const caseSchema = new Schema({
+export const caseSchema = new Schema({
   title: {
     type: String,
     required: true

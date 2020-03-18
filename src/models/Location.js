@@ -1,7 +1,6 @@
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var locationSchema = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const locationSchema = new Schema({
   streetAddress: {
     type: String,
     required: true

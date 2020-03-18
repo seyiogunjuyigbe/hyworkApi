@@ -1,15 +1,12 @@
-import { Organization } from "../models/Organization";
-import { Department } from "../models/Department";
-import { User } from "../models/User";
-import { crudControllers } from "../../utils/crud";
 const response = require("../middlewares/response");
 
 
 //Route: org/:urlname/department/create
 export const createDepartment = async (req, res) => {
     const { title, description } = req.body;
+    const { Department, TenantOrganization } = req.dbModels;
     try {
-        const org = await Organization.findOne({ urlname: req.params.urlname });
+        const org = await TenantOrganization.findOne({ urlname: req.params.urlname });
         Department.create({ title, description, dateCreated: Date.now() }, (err, dept) => {
             if (err) {
                 response.error(res, 404, err)
@@ -26,10 +23,11 @@ export const createDepartment = async (req, res) => {
 
 //Route: org/:urlname/department/:title/addManager/:username
 export const addManager = async (req, res) => {
+    const { Department, TenantOrganization, User } = req.dbModels;
     const { id, username } = req.params;
 
     try {
-        const org = await Organization.findOne({ urlname: req.params.urlname });
+        const org = await TenantOrganization.findOne({ urlname: req.params.urlname });
         Department.findById(id, (err, dept) => {
             if (err) {
                 response.error(res, 404, err);
@@ -53,10 +51,11 @@ export const addManager = async (req, res) => {
 }
 //Route: org/:urlname/department/:title/addEmployee/:username
 export const addEmployee = async (req, res) => {
+    const { Department, TenantOrganization, User } = req.dbModels;
     const { id, username } = req.params;
 
     try {
-        const org = await Organization.findOne({ urlname: req.params.urlname });
+        const org = await TenantOrganization.findOne({ urlname: req.params.urlname });
         Department.findById(id, (err, dept) => {
             if (err) {
                 response.error(res, 404, err);
@@ -82,10 +81,11 @@ export const addEmployee = async (req, res) => {
 
 //Remove employee from department
 export const removeEmployee = async (req, res) => {
+    const { Department, TenantOrganization, User } = req.dbModels;
     const { id, username } = req.params;
 
     try {
-        const org = await Organization.findOne({ urlname: req.params.urlname });
+        const org = await TenantOrganization.findOne({ urlname: req.params.urlname });
         Department.findById(id, (err, dept) => {
             if (err) {
                 response.error(res, 404, err);
@@ -117,9 +117,10 @@ export const removeEmployee = async (req, res) => {
 }
 // Route: /organization/:urlname/department/:title/add
 export const addDeptToOrg = async (req, res) => {
+    const { Department, TenantOrganization, User } = req.dbModels;
     const { id, urlname } = req.params;
     try {
-        const org = await Organization.findOne({ urlname });
+        const org = await TenantOrganization.findOne({ urlname });
         Department.findById(id, (err, dept) => {
             if (err) {
                 return response.error(res, 404, err);
@@ -136,4 +137,20 @@ export const addDeptToOrg = async (req, res) => {
     }
 }
 
-export default crudControllers(Department);
+
+export const removeOne = async (req, res) => {
+    try {
+        const { Department } = req.dbModels;
+        const removed = await Department.findOneAndRemove({
+            _id: req.params.id
+        });
+
+        if (!removed) {
+            return res.status(400).end();
+        }
+        return res.status(200).json({ data: removed });
+    } catch (error) {
+        console.error(error);
+        res.status(400).end();
+    }
+};

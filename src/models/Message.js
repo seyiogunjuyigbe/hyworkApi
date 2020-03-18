@@ -1,7 +1,7 @@
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var messageSchema = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const messageSchema = new Schema({
   sender: {
     type: Schema.Types.ObjectId,
     ref: 'User'

@@ -1,8 +1,16 @@
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var travelSchema = new Schema({
-   placeOfVisit: {
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const travelSchema = new Schema({
+  employeeId: {
+    type: String,
+    required: true
+  },
+  employeeDepartment: {
+    type: Schema.Types.ObjectId,
+    ref: 'Department',
+    required: true
+  },
+  placeOfVisit: {
     type: String,
     required: true
   },
