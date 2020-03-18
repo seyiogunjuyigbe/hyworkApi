@@ -6,7 +6,8 @@ const validate = require("../middlewares/validate");
 const authUser = require('../middlewares/middleware');
 const orgMiddleware = require('../middlewares/organization');
 
-const router = Router();
+const router = Router({mergeParams: true});
+
 // render page to add new organization
 router.get('/new', renderCreateOrgPage)
 

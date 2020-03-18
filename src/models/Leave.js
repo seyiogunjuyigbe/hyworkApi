@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseIdToken = require('mongoose-id-token')
-const leaveSchema = new Schema({
+export const leaveSchema = new Schema({
   dateApplied: {
     type: Date,
   },
