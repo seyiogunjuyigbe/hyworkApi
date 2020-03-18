@@ -1,0 +1,105 @@
+<%- include ('../partials/header') -%>
+<title>Touchcore HRM | Create New Organization</title>
+  </head>
+  <body>
+        <div id="wrapper">
+                <div class="vertical-align-wrap">
+                    <div class="vertical-align-middle auth-main">
+                        <div class="auth-box">
+                            <div class="top">
+                                <img src="/images/touchcore-logo-white.png" alt="Touchcore HRM">   
+                            </div>
+                            <div class="card">
+                                <div class="header">
+                                    <p class="lead">Add New Organization</p>
+                                </div>
+                                <div class="body">
+                                    <form class="form" method="POST" action="/org/new">
+                                      <div class="form-group">
+                                           <label for="name">Organization Name</label>
+                                           <input type="text" name="name" class="form-control" id="name" placeholder="Your company name" required>
+                                      </div>
+                                    <div class="form-group">
+                                        <label for="urlname">Nickname</label>
+                                        <input type="text" name ="urlname" class="form-control" id="urlname" placeholder="This will be your unique id" required>
+                                        <p class="text-secondary" id="urlOutput"> Your unique url: <%=baseUrl%><span id="uniqueUrl"></span> <span class="text-right" id="status"></span></p>
+                                    </div>
+                                    <div class="form-group">
+                                            <label for="category">Category</label>
+                                            <input type="text" name="category" class="form-control" id="category" placeholder="E.g Law firm" required>
+                                        </div>
+                                        <div class="form-group">
+                                                <label for="description">Give a brief description about your company</label>
+                                                <textarea name="description" class="form-control" id="description" placeholder="About your company..." required></textarea>
+                                            </div>
+                                        <div class="form-group">
+                                                <label for="address">Physical Address</label>
+                                                <input type="text" name ="address" class="form-control" id="address" placeholder="Your Office Address" required>
+                                            </div>
+                                        <div class="form-group">
+                                            <label for="country">Country</label>
+                                            <input type="text" name="country" class="form-control" id="country" placeholder="Country" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="city">State/City</label>
+                                            <input type="text" name="city" class="form-control" id="city" placeholder="City" required>                                               
+                                            </div>
+                                            <div class="form-group">
+                                                    <label for="zipcode">Zip code</label>
+                                                    <input type="text" name="zipcode" class="form-control" id="zipcode" placeholder="ZIpcode" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="telephone">Office Telephone</label>
+                                            <input type="tel" name="telephone" class="form-control" id="telephone" placeholder="Office Telephone" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" name="" id="" required> <small>I agree to the terms and conditions</small>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block">CREATE ORGANIZATION</button>
+                                    </form>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="/js/axios.min.js"></script>
+            <script id="js" data="<%=baseUrl%>">
+            var baseUrl = document.querySelector('#js').getAttribute('data'),
+                urlname = document.querySelector('#urlname'),
+                uniqueUrl = document.querySelector('#uniqueUrl'),
+                checkStatus = document.querySelector('#status');
+            urlname.addEventListener('keyup', function(){
+                axios.get(`${baseUrl}check/${urlname.value.toLowerCase()}`)
+                .then((resp)=>{
+                    console.log(resp)
+                    if(resp.status == '200'){
+                        checkStatus.setAttribute('class','text-danger')
+                        checkStatus.textContent = 'This url is already taken';
+                        urlname.setCustomValidity('This url is already taken');
+                        return false;
+                    } else if(resp.status == '204'){
+                        checkStatus.setAttribute('class','text-success')
+                        checkStatus.textContent = 'This url is available';
+                        urlname.setCustomValidity('');
+                        return true;
+                    }
+                    else if(resp.status == '500'){
+                        checkStatus.classList.remove('text-success')
+                        checkStatus.classList.add('text-danger')
+                        checkStatus.textContent = 'We could not verify availability. Please reload page';
+                        urlname.setCustomValidity('You url could not be verified');
+                       return false;
+                    }
+                    urlname.setCustomValidity('');
+
+
+
+                })
+                .catch((error)=>{
+                    console.log('')
+                })
+                uniqueUrl.textContent = urlname.value.toLowerCase();
+            })
+            </script>
+<%- include ('../partials/footer') -%>

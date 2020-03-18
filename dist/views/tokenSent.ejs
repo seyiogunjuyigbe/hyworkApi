@@ -1,0 +1,47 @@
+<%- include ('./partials/header') -%>
+
+    <title>Password Reset Success</title>
+</head>
+<body>
+    <div id="wrapper">
+        <div class="vertical-align-wrap">
+          <div class="vertical-align-middle auth-main">
+            <div class="auth-box">
+                        <div class="top">
+                            <img src="/images/touchcore-logo-white.png" alt="Touchcore HRM">
+                        </div>
+              <div class="card">
+                            <div class="header">
+                                <p class="lead text-success"><%=message%></p>
+                            </div>
+                            <div class="body">
+                               <small>Didn't get the mail?</small> 
+                                <button id="resendBtn" class="btn btn-primary">CLICK TO RESEND</button>
+                                <a href="<%=link%>">Click for now</a>
+                                <span class="text-success" id="status" style="display: none;">Mail resent to your inbox</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p id="hide" data="<%=baseUrl%>" data-="<%=email%>" hidden></p>
+
+        <script src="/js/axios.min.js"></script>
+        <script>
+            var resendBtn = document.querySelector('#resendBtn');
+        var url = document.querySelector('#hide').getAttribute('data');
+        resendBtn.addEventListener('click', function(){
+            document.querySelector('#status').style.display = 'none';
+                resendBtn.textContent = 'Sending';
+              axios.post(`${url}/auth/token/resend`,{email:document.querySelector('#hide').getAttribute('data-')})
+                .then((resp)=>{
+                    console.log(resp)
+                    document.querySelector('#status').style.display = 'block';
+                    resendBtn.textContent = 'CLICK TO RESEND';
+                })   
+                .catch((error)=>console.log(error))   
+        })
+
+        </script>
+  <%- include ('./partials/footer') -%>

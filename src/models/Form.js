@@ -1,7 +1,6 @@
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const formSchema = new Schema({
+export const formSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -12,7 +11,7 @@ const formSchema = new Schema({
   },
   fields: [{
     type: Schema.Types.ObjectId,
-    ref: Field,
+    ref: 'Field',
     required: true
   }],
   urlLink: {

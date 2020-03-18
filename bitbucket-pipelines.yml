@@ -15,3 +15,10 @@ pipelines:
             - npm install
             - npm run build
             - npm run start
+        services: 
+            - mongo
+definitions: 
+  services: 
+    mongo: 
+      image: mongo
+          

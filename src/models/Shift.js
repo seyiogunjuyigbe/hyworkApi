@@ -1,7 +1,6 @@
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var shiftSchema = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const shiftSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -16,15 +15,22 @@ var shiftSchema = new Schema({
   },
   isShiftMarginEnabled: {
     type: Boolean,
-    required: true
+    default: false
   },
-  startMargin: {
-    type: String,
-    required: true
+  startMarginInMinutes: {
+    type: Number,
+    default: 0
   },
-  endMargin: {
+  endMarginInMinutes: {
     type: String,
-    required: true
+    default: 0
+  },
+  createdBy: {
+    type: String
+  },
+  createdFor: {
+    type: Schema.Types.ObjectId,
+    ref: 'Organization'
   }
 });
 

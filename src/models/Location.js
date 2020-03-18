@@ -1,7 +1,6 @@
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var locationSchema = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const locationSchema = new Schema({
   streetAddress: {
     type: String,
     required: true
@@ -19,13 +18,11 @@ var locationSchema = new Schema({
     required: true
   },
   zipCode: {
-    type: String,
-    required: true
+    type: String
   },
   title: {
-    type: String,
-    required: true
+    type: String
   }
 });
 
-const Location = mongoose.model('Location', locationSchema)
+export const Location = mongoose.model('Location', locationSchema);

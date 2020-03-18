@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-import {MODE, LOCAL_DB_URL, TEST_DB_URL, PROD_DB_URL}  from '../config/constants';
+import {MODE, LOCAL_DB_URL, TEST_DB_URL, DEV_DB_URL, PROD_DB_URL}  from '../config/constants';
 export const startDb = () =>{
     var DB_URL;
     if(MODE == 'LOCAL'){
@@ -9,6 +9,8 @@ export const startDb = () =>{
       DB_URL = TEST_DB_URL
     } else if(MODE == 'PROD'){
       DB_URL = PROD_DB_URL
+    }else if(MODE == 'DEV'){
+      DB_URL = DEV_DB_URL
     }
     mongoose.connect(DB_URL, {
         useNewUrlParser: true, 

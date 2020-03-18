@@ -1,37 +1,47 @@
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var organizationSchema = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const organizationSchema = new Schema({
     name: {
     type: String,
     required: true
   },
   location: [{
-    type: location,
-    required: true
+    type: Schema.Types.ObjectId,
+    ref:'Location'
+
   }],
   description: {
+    type: String
+  },
+  urlname: {
     type: String,
-    required: true
-  },
-  admin: {
-    type: Schema.Types.ObjectId,
+    trim: true, 
     required: true,
-    ref: 'User'
+    unique: true
   },
-  users: [{
+
+  category: {
+    type: "String"
+    
+  },
+  // this was changed to a plain array so that the org.admin.includes() function works without hitches.
+  // a mongoose approach will be to use the $in query but I'm not sure how that will play out
+  admin: [],
+  employees: [{
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'User'
   }],
   telephone: {
     type: String,
-    required: true
   },
   staffStength: {
-    type: Number,
-    required: true
+    type: Number
   },
+  department: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Department'
+  }],
   services: [{
     type: Schema.Types.ObjectId,
     ref: 'Service'
@@ -43,7 +53,41 @@ var organizationSchema = new Schema({
   files: [{
     type: Schema.Types.ObjectId,
     ref: 'File'
+  }],
+  shifts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Shift'
+  }],
+  attendance: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Attendance'
+  }], 
+  leaves:[{
+    type: Schema.Types.ObjectId,
+    ref: 'Leave'
+  }],
+  cases: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Case'
+  }],
+  assets:[{
+    type: Schema.Types.ObjectId,
+    ref: 'Asset'
+  }],
+  travels:[{
+    type: Schema.Types.ObjectId,
+    ref: 'Travel'
+  }],
+  jobs:[{
+    type: Schema.Types.ObjectId,
+    ref: 'Job'
   }]
 });
+
+// organizationSchema.pre('save', function(next) {
+//   const org = this;
+
+//   if (org.isModified()
+// })
 
 export const Organization = mongoose.model('Organization', organizationSchema)

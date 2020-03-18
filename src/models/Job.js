@@ -1,9 +1,9 @@
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var jobSchema = new Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+export const jobSchema = new Schema({
   title: {
     type: String,
+    
     required: true
   },
   dateCreated: {
@@ -15,14 +15,16 @@ var jobSchema = new Schema({
   },
   isBillable: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false
   },
   hours: {
     type: Number,
     required: true
   },
   ratePerHour: {
-    type: Number
+    type: Number,
+    default: 0
   },
   attachment: [{
     type: Schema.Types.ObjectId,
@@ -31,21 +33,19 @@ var jobSchema = new Schema({
   workItems: [{
       type: String
   }],
-  assignees: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }],
+  assignees: [],
   createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
     required: true
   },
   timeLogs: [{
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'TimeLog'
-  }]
+  }],
+  createdFor: {
+    type: String,
+    required: true
+  }
 });
-
+ 
 export const Job = mongoose.model('Job', jobSchema)
