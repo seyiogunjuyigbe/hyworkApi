@@ -196,6 +196,10 @@ export const userSchema = new Schema(
         ref: "TimeLog"
       }
     ],
+    jobLogs: [{
+      job_id: String,
+      hours: {type: Number, default: 0}
+    }],
     projects: [
       {
         type: Schema.Types.ObjectId,

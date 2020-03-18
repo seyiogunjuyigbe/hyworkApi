@@ -1,25 +1,34 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-export const timeLogSchema = new Schema({
+
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+const mongooseIdToken = require('mongoose-id-token');
+var timeLogSchema = new Schema({
   startTime: {
-    type: String,
+    type: Number,
     required: true
   },
   endTime: {
-    type: String,
-    required: true
+    type: Number,
   },
+  hoursWorked: {type:Number,default:0},
   description: {
     type: String,
     required: true
   },
+  relatedJob: {type: String,required: true},
   user: {
-    type: user,
+    type: String,
     required: true
   },
   location: {
-    type: location,
-    required: true
+    type: Schema.Types.ObjectId,
+    ref: 'Location'
   }
 });
+var options = {
+  fieldName: "token",
+  createIndex: true,
+  tokenLength: 16
+}
+timeLogSchema.plugin(mongooseIdToken, options)
 export const Timelog = mongoose.model('Timelog', timeLogSchema)
