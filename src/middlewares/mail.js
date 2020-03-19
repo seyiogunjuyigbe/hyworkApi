@@ -32,10 +32,7 @@ export const sendCreateOrganisationEmail = (user, organisation, req, res) => {
 
 export const senduserEmail = (user, organisation, req, res) => {
   const token = user.generateVerificationToken();
-  token.save(function(err, token) {
-    if (err) {
-      return res.status(500).json({ message: err.message })
-    }else {
+  token.save();
       let link = `http://${req.headers.host}/org/${organisation.urlname}/user/${token.token}`
       let transporter = nodemailer.createTransport({
         service: MAIL_SERVICE,
@@ -52,19 +49,17 @@ export const senduserEmail = (user, organisation, req, res) => {
                     You have been added to ${organisation.name}'s workspace. Click on this ${link} to complete your registation\n`
       };
     
-      transporter.sendMail(mailOptions, function(error, info) {
-        if (error) {
-          console.log(error);
-        } else {
+      // transporter.sendMail(mailOptions, function(error, info) {
+      //   if (error) {
+      //     console.log(error);
+      //   } else {
           res.status(200).json({
-            message: "A welcome email has been sent to " + user.email + "."
-          });
-        }
+            link
+            // message: "A welcome email has been sent to " + user.email + "."
+      //     });
+      //   }
       });
     }
-  })
-  
-};
 
 export const sendTokenMail = (user, req, res) => {
   const token = user.generateVerificationToken();

@@ -5,7 +5,8 @@ const crypto = require('crypto');
 const Schema = mongoose.Schema;
 import {Token} from './Token';
 import {SECRET_KEY} from '../config/constants';
-const passportLocalMongoose = require('passport-local-mongoose')
+const passportLocalMongoose = require('passport-local-mongoose');
+
 export const userSchema = new Schema(
   {
     username: {
@@ -53,7 +54,6 @@ export const userSchema = new Schema(
     maritalStatus: {
       type: String,
       enum: ['single', 'married', 'divorced'],
-      default: 'single'
     },
     category: {
       type: String
@@ -232,7 +232,7 @@ export const userSchema = new Schema(
       type: Boolean,
       default: false
   },
-  
+  tempPassword:String,
   resetPasswordToken: {
       type: String,
       required: false
@@ -256,6 +256,7 @@ userSchema.methods.generatePasswordReset = function() {
 };
 
 userSchema.methods.generateVerificationToken = function() {
+  
   let payload = {
       userId: this._id,
       token: crypto.randomBytes(20).toString('hex')
