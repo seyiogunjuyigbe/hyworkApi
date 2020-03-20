@@ -32,7 +32,8 @@ router.put('/:urlname/edit', [
 router.post('/:urlname/addUser', [
     check("email").isEmail().not().isEmpty().withMessage('Enter a valid email address'),
     check('firstName').not().isEmpty().withMessage(`Enter employee's first name`),
-    check('lastName').not().isEmpty().withMessage(`Enter employee's last name`)
+    check('lastName').not().isEmpty().withMessage(`Enter employee's last name`),
+    // check('username').not().isEmpty().withMessage(`Enter employee's unique username`)
 ], [validate, authUser.authUser, orgMiddleware.LoggedUserisAdmin], addUserToOrganization );
 
 //Verify added employee

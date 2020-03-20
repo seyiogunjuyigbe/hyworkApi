@@ -241,7 +241,8 @@ export const userSchema = new Schema(
   resetPasswordExpires: {
       type: Date,
       required: false
-  }
+  },
+  token: String
   },
   { timestamps: true }
 );

@@ -60,34 +60,32 @@ renderCreateOrgPage(req,res){
   },
 
   async addUserToOrganization(req, res) {
-    const { firstName, lastName } = req.body;
+    const { firstName, lastName, username } = req.body;
     const { User, TenantOrganization } = req.dbModels;
     try {
-      const user = await User.create({...req.body,tempPassword:nanoid(8),firstName:firstName.trim(),lastName:lastName.trim()});
-      user.username = (firstName[0] + firstName[firstName.length - 1]+"." +lastName).toLowerCase();
+      const user = await new User({...req.body,tempPassword:nanoid(8),firstName:firstName.trim(),lastName:lastName.trim()});
+      user.username = username.trim().toLowerCase()
       User.register(user,user.tempPassword, (err,user)=>{
         if(err){
           return response.error(res,500,err.message);
       }
       else{
-        //  passport.authenticate("local")(req, res, function(){  
-          user.save((err)=>{
+           user.save((err)=>{
             if(err) return res.status(500).json({err})
-         TenantOrganization.findOne({urlname: req.params.urlname }, (err,updatedOrganization)=>{
+            TenantOrganization.findOne({urlname: req.params.urlname }, (err,updatedOrganization)=>{
           if (err) {
             return response.error(res, 500, err.message);
           } else if(!updatedOrganization) return response.error(res,404,'Organization not found')
-          updatedOrganization.employees.push(user._id);
-          updatedOrganization.save(err => {
-            if (err) {
-              return response.error(res, 500, `User could not be added to organization`);
-            }
-            senduserEmail(user, updatedOrganization, req, res);
-          });
-      })
-       });
-    // })
-    }
+             updatedOrganization.employees.push(user._id);
+             updatedOrganization.save(err => {
+               if (err) {
+                  return response.error(res, 500, `User could not be added to organization`);
+                  }
+                senduserEmail(user, updatedOrganization, req, res);
+                });
+            })
+           });
+          }
       })
     }
     catch (error) {
@@ -198,7 +196,8 @@ renderCreateOrgPage(req,res){
   },
   createPasswordForUser (req,res){
     const{User,Token} = req.dbModels;
-    const {username,token} = req.body;
+    const {username} = req.body;
+    const {token} = req.params;
     Token.findOne({token}, (err,token)=>{
       if(err) return response.error(res,500,err.message)
       else if(!token) return response.error(res,404,'Token not found')
@@ -213,6 +212,7 @@ renderCreateOrgPage(req,res){
                 user.setPassword(req.body.password, (err,user)=>{
                   if(err){return res.status(500).render('500')}
                   user.tempPassword = "";
+
                   user.isVerified = true;  
                 user.save((err) => {
                   if (err) return res.status(500).render('500');
