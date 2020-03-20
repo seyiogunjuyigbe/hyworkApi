@@ -1,6 +1,8 @@
 import {Token} from '../models/Token';
 const nodemailer = require('nodemailer');
 import {MAIL_SERVICE, MAIL_SENDER, MAIL_PASS, MAIL_USER} from '../config/constants'
+import nanoid from 'nanoid';
+const response = require('./response')
 
 export const sendCreateOrganisationEmail = (user, organisation, req, res) => {
   let transporter = nodemailer.createTransport({
@@ -31,12 +33,15 @@ export const sendCreateOrganisationEmail = (user, organisation, req, res) => {
 };
 
 export const senduserEmail = (user, organisation, req, res) => {
-  const token = user.generateVerificationToken();
-  token.save(function(err, token) {
-    if (err) {
-      return res.status(500).json({ message: err.message })
-    }else {
-      let link = `http://${req.headers.host}/org/${organisation.urlname}/user/${token.token}`
+      const {Token} = req.dbModels;
+      Token.create({
+        userId:user._id,
+        token: nanoid(10)
+      }, (err,token)=>{
+        if(err) return response.error(res,500,err.message)
+        else{
+          token.save();
+          let link = `http://${req.headers.host}/org/${organisation.urlname}/user/${token.token}`
       let transporter = nodemailer.createTransport({
         service: MAIL_SERVICE,
         auth: {
@@ -49,22 +54,18 @@ export const senduserEmail = (user, organisation, req, res) => {
         to: user.email,
         subject: `Joined ${organisation.name}`,
         text: `Hello ${user.firstName} \n 
-                    You have been added to ${organisation.name}'s workspace. Click on this ${link} to complete your registation\n`
+               You have been added to ${organisation.name}'s workspace. Click on this ${link} to complete your registation\n`
       };
     
       transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
           console.log(error);
         } else {
-          res.status(200).json({
-            message: "A welcome email has been sent to " + user.email + "."
-          });
+          response.success(res,200, "A welcome email has been sent to " + user.email + ".");
         }
-      });
-    }
-  })
-  
-};
+      })
+      
+    }})}
 
 export const sendTokenMail = (user, req, res) => {
   const token = user.generateVerificationToken();

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {renderCreateOrgPage, createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData, checkIfOrgExists } from "../controllers/organization";
+import {renderCreateOrgPage, createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData, checkIfOrgExists,  createPasswordForUser}  from "../controllers/organization";
 
 const { check } = require('express-validator');
 const validate = require("../middlewares/validate");
@@ -30,14 +30,20 @@ router.put('/:urlname/edit', [
 
 //Add a new user to an organization
 router.post('/:urlname/addUser', [
-    check("email").isEmail().withMessage('Enter a valid email address'),
+    check("email").isEmail().not().isEmpty().withMessage('Enter a valid email address'),
     check('firstName').not().isEmpty().withMessage(`Enter employee's first name`),
-    check('lastName').not().isEmpty().withMessage(`Enter employee's last name`)
+    check('lastName').not().isEmpty().withMessage(`Enter employee's last name`),
+    // check('username').not().isEmpty().withMessage(`Enter employee's unique username`)
 ], [validate, authUser.authUser, orgMiddleware.LoggedUserisAdmin], addUserToOrganization );
 
 //Verify added employee
 router.get('/:urlname/user/:token', verifyEmployee);
-
+// Create password for verified employee
+router.post('/:urlname/user/:token/onboard',[
+    check('username').not().isEmpty().withMessage('Username cannot be empty'),
+    check('token').not().isEmpty().withMessage('Pease supply the token for this reuest'),
+    check('password').not().isEmpty().matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, "i").withMessage('Password must be at least 8 characters long and must include one lowercase character, one uppercase character, a number, and a special character'),
+], validate, createPasswordForUser)
 //Fetch employee data
 router.get('/:urlname/employee/:username', [authUser.authUser, orgMiddleware.LoggedUserisAdmin], fetchEmployeeData);
 // Check if org exists

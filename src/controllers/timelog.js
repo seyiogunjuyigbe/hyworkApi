@@ -89,7 +89,7 @@ export const endTimeLogForThisJob =(req,res)=>{
 
     }
 
-    // Fetch logs for these users for this job\
+    // Fetch logs for these users for this job
     // Params: urlname,job_id,user[i]
     export const fetchUsersLogsForThisJob = (req,res)=>{
         Job.findById(req.params.job_id, (err,job)=>{
