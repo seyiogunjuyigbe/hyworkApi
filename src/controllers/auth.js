@@ -7,13 +7,11 @@ import { Organization } from '../models/Organization';
 passportConfig(passport,User);
 const {validationResult} = require('express-validator');
 
-
 // Render Register Page
 // @route GET /auth/register
 export const renderSignUpPage = (req,res)=>{
 return res.status(200).render('register', {err:null})
 }
-
 
 
 // Register new Admin

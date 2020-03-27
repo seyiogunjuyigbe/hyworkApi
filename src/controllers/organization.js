@@ -293,7 +293,6 @@ renderCreateOrgPage(req,res){
     response.success(res,200,'Successfully logged out')
   },
   fetchMyProfile(req,res){
-    // console.log({currentUser: res.locals, req: req.user})
      if(!req.user){
       return response.error(res,401,'You need to be logged in')
     } else{
