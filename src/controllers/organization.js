@@ -9,6 +9,7 @@ const nanoid = require('nanoid');
 const passport = require('passport');
 import {passportConfig} from '../config/passport';
 import {MAIL_SENDER} from '../config/constants';
+const {validationResult} = require('express-validator');
 passportConfig(passport);
 
 
@@ -242,9 +243,78 @@ renderCreateOrgPage(req,res){
       else if(!org) return response.error(res,204,"Url available")
       else if(org) return response.error(res,200,"Url not available")
     })
+  },
+   orgLoginUser (req,res, next){  
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+    let error = []; errors.array().map((err) => error.push(err.msg));
+    return response.error(res,422,error);
+    } else{ 
+      const {User,TenantOrganization} = req.dbModels;
+      TenantOrganization.findOne({urlname:req.params.urlname}, (err,org)=>{
+        if(err) return response.error(res,500,err.message)
+        else if(!org) return response.error(res,404,'Organization ' + req.params.urlname + ' not found')
+       User.findOne({email: req.body.email}, (err,user)=>{
+           if(err) response.error(res,500, err.message)
+           else if(!user){return response.error(res,403,'No user found with this email address')}
+           else if(!org.employees.includes(user._id)) return response.error(res,403,'You are not a member of this org')
+           else {
+               if(req.body.password){
+                passport.serializeUser(User.serializeUser());
+                passport.deserializeUser(User.deserializeUser());
+                  user.authenticate(req.body.password, (err,found,passwordErr)=>{
+                    if(err){
+                        return response.error(res,500,err.message)
+                    } else if(passwordErr){
+                      return response.error(res,500,'Incorrect Password')
+                    } else if(found){
+                        req.login(user, function(err) {
+                            if(err){return response.error(res,500,err.message)}
+                              req.session.userId = user._id;
+                              req.session.save()
+                            next();
+                          });
+                    }
+                  }) 
+               }
+               
+           }
+       })
+      })
+   }
+   },
+  orgLoginCb (req,res){
+  return res.status(200).json({success:true,message:'Logged in as ' + req.user.username});
+  }, 
+  orgLogoutUser(req,res){
+    req.session.userId = undefined;
+    req.session.destroy();
+    req.logout();
+    response.success(res,200,'Successfully logged out')
+  },
+  fetchMyProfile(req,res){
+     if(!req.user){
+      return response.error(res,401,'You need to be logged in')
+    } else{
+      let {username} = req.user
+      const{User,TenantOrganization} = req.dbModels;
+      const {urlname} = req.params;
+    TenantOrganization.findOne({urlname}, (err,org)=>{
+      if(err) return response.error(res,500,err.message)
+      else if(!org) return response.error(res,404,'Org not found')
+      else{
+        User.findOne({username}, (err,user)=>{
+          if(err) return response.error(res,500,err.message)
+          else if(!user) return response.error(res,404,'User not found')
+          else if(!org.employees.includes(user._id)) return response.error(res,403,'You are not a memner of this org')
+          else{
+            return response.success(res,200,user)
+          }
+        })
+      }
+    })
   }
-
-
+  }
 };
 
 

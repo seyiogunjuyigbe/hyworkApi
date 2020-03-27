@@ -1,5 +1,8 @@
 import { Router } from "express";
-import {renderCreateOrgPage, createOrganization, addUserToOrganization, fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData, checkIfOrgExists,  createPasswordForUser}  from "../controllers/organization";
+import {renderCreateOrgPage,fetchMyProfile, createOrganization, addUserToOrganization, 
+        fetchOrganization, updateOrganization, deleteOrganization, verifyEmployee, fetchEmployeeData, 
+        checkIfOrgExists,renderPasswordPageForUser , createPasswordForUser,  
+        orgLoginUser, orgLoginCb, orgLogoutUser}  from "../controllers/organization";
 
 const { check } = require('express-validator');
 const validate = require("../middlewares/validate");
@@ -29,7 +32,7 @@ router.put('/:urlname/edit', [
 ], [ validate, authUser.authUser, orgMiddleware.LoggedUserisAdmin ], updateOrganization);
 
 //Add a new user to an organization
-router.post('/:urlname/addUser', [
+router.post('/:urlname/user/onboard/new', [
     check("email").isEmail().not().isEmpty().withMessage('Enter a valid email address'),
     check('firstName').not().isEmpty().withMessage(`Enter employee's first name`),
     check('lastName').not().isEmpty().withMessage(`Enter employee's last name`),
@@ -39,6 +42,7 @@ router.post('/:urlname/addUser', [
 //Verify added employee
 router.get('/:urlname/user/:token', verifyEmployee);
 // Create password for verified employee
+router.get('/:urlname/user/:token/onboard', renderPasswordPageForUser)
 router.post('/:urlname/user/:token/onboard',[
     check('username').not().isEmpty().withMessage('Username cannot be empty'),
     check('token').not().isEmpty().withMessage('Pease supply the token for this reuest'),
@@ -48,7 +52,12 @@ router.post('/:urlname/user/:token/onboard',[
 router.get('/:urlname/employee/:username', [authUser.authUser, orgMiddleware.LoggedUserisAdmin], fetchEmployeeData);
 // Check if org exists
 router.get('/check/:urlname', checkIfOrgExists)
-
+router.post("/:urlname/auth/login", [
+    check('email').isEmail().withMessage('Enter a valid email address'),
+    check('password').not().isEmpty().withMessage('Please enter the password for this account'),
+], orgLoginUser,orgLoginCb);
+router.get('/:urlname/auth/logout', orgLogoutUser)
+router.get("/:urlname/profile/me", fetchMyProfile)
 
 
 module.exports = router;

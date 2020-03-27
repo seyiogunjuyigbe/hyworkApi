@@ -4,16 +4,14 @@ const passport = require('passport');
 import {sendTokenMail} from '../middlewares/mail';
 import {passportConfig} from '../config/passport';
 import { Organization } from '../models/Organization';
-passportConfig(passport);
+passportConfig(passport,User);
 const {validationResult} = require('express-validator');
-
 
 // Render Register Page
 // @route GET /auth/register
 export const renderSignUpPage = (req,res)=>{
 return res.status(200).render('register', {err:null})
 }
-
 
 
 // Register new Admin
@@ -96,6 +94,8 @@ export const renderLoginPage = (req,res)=>{
                                     message: 'Unverified account... please check your mail for verification link'
                                 })
                             }
+                            req.session.userId = user._id;
+                            req.session.save()
                             next();
                           });
                     }
@@ -112,10 +112,11 @@ return res.status(200).json({success:true,message:'Logged in as ' + req.user.use
 // Logout User
 // @route GET /auth/logout
 export const logoutUser = (req,res)=>{
+                req.session.userId = undefined;
                 req.session.destroy();
                 req.logout();
                 return res.status(200).redirect('auth/login')
-                    }
+            }
 
 // EMAIL VERIFICATION
 // @route GET /auth/verify/:token
