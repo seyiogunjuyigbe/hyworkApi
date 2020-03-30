@@ -20,8 +20,6 @@ import { getOrganization } from './middlewares/organization';
 import { SECRET_KEY } from "./config/constants"
 import { initRoutes, tenantRoutes } from './routes/routes'
 
-
-
 startDb();
 connect();
 app.set('views', path.join(__dirname, 'views')) // Redirect to the views directory inside the src directory
