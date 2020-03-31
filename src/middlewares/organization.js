@@ -15,8 +15,8 @@ export const orgExists = (req, res, next) => {
 
 export const LoggedUserisEmployee = async (req, res, next) => {
     const { urlname } = req.params;
-
-    Organization.findOne({ urlname }, (err, org) => {
+    const { TenantOrganization } = req.dbModels;
+    TenantOrganization.findOne({ urlname }, (err, org) => {
         if (err) response.error(res, 500, err.message);
         else if (!org) response.error(res, 404, `Organization ${urlname} not found`)
         else if (org.employees.includes(req.user._id)) {

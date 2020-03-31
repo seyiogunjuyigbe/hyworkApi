@@ -5,16 +5,16 @@ import { check } from "express-validator";
 import { authUser } from "../middlewares/middleware";
 import { startTimeLogForThisJob,endTimeLogForThisJob, fetchMyLogsForThisJob, fetchUsersLogsForThisJob } from "../controllers/timelog";
 const validate = require('../middlewares/validate')
-router.post('/:urlname/job/new', authUser, LoggedUserisEmployee,LoggedUserisAdmin, [
+router.post('/:urlname/job/new', authUser, LoggedUserisEmployee, [
     check('title').not().isEmpty().withMessage('Please give this job a title'),
     check('hours').isNumeric().not().isEmpty().withMessage('Please specify number of hours for this job')
 ], validate, createJob);
 
-router.post('/:urlname/job/:job_id/assign', authUser, LoggedUserisEmployee,LoggedUserisAdmin, [
+router.post('/:urlname/job/:job_id/assign', authUser, LoggedUserisEmployee, [
     check('assignees').isArray().not().isEmpty().withMessage('Please assign this job to an employee')
 ], validate, assignThisJob);
 
-router.post('/:urlname/job/:job_id/update', authUser, LoggedUserisEmployee,LoggedUserisAdmin, [
+router.post('/:urlname/job/:job_id/update', authUser, LoggedUserisEmployee, [
     check('title').not().isEmpty().withMessage('Please give this job a title'),
     check('hours').isNumeric().not().isEmpty().withMessage('Please specify number of hours for this job')
 ], validate, updateThisJob);

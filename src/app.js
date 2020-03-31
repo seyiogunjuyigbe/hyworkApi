@@ -68,6 +68,7 @@ app.use('/org/:urlname',function(req,res,next){
              res.locals.currentUser = req.user;   
              return next()
             }
+            else if(!user) { return next()}
         })   
         }
 })

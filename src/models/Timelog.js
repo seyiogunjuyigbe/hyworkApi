@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 const mongooseIdToken = require('mongoose-id-token');
-var timeLogSchema = new Schema({
+export const timeLogSchema = new Schema({
   startTime: {
     type: Number,
     required: true
