@@ -1,6 +1,6 @@
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var _multer = require("../../utils/multer");
 
@@ -20,7 +20,7 @@ var orgMiddleware = require('../middlewares/organization');
 
 router.get('/:urlname/file/allfiles', [authUser.orgExists, authUser.authUser, orgMiddleware.LoggedUserisAdmin], _file.fetchAllOrgFiles);
 router.get('/:urlname/file/myfiles', [authUser.orgExists, authUser.authUser, orgMiddleware.LoggedUserisEmployee], _file.fetchFilesByUser);
-router.get('/:urlname/file/:id', [authUser.orgExists, authUser.authUser, orgMiddleware.LoggedUserisEmployee], _file["default"].getOneById);
+router.get('/:urlname/file/:id', [authUser.orgExists, authUser.authUser], _file.getOneById);
 router.post('/:urlname/file/:id', [authUser.orgExists, authUser.authUser, orgMiddleware.LoggedUserisEmployee], _file.updateFileDetails);
 router.patch('/:urlname/file/upload', [authUser.orgExists, authUser.authUser, parser.single('file')], _file.uploadFile); // router.delete('/:id', controllers.removeOne)
 

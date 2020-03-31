@@ -9,7 +9,7 @@ var _User = require("../models/User");
 
 var _Organization = require("../models/Organization");
 
-var _Shift = require("../models/Shift");
+var _TenantModels = require("../models/TenantModels");
 
 var _attendanceCalc = require("../middlewares/attendanceCalc");
 
@@ -24,7 +24,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 // Access: Admin
 var createShift = function createShift(req, res) {
   // Fetch Organization
-  _Organization.Organization.findOne({
+  var _req$dbModels = req.dbModels,
+      TenantOrganization = _req$dbModels.TenantOrganization,
+      Shift = _req$dbModels.Shift;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }, function (err, org) {
     if (!req.user) {
@@ -52,7 +55,7 @@ var createShift = function createShift(req, res) {
           message: 'Shift end time can not be earlier than start time'
         });
       } else {
-        _Shift.Shift.create(_objectSpread({}, req.body), function (err, shift) {
+        Shift.create(_objectSpread({}, req.body), function (err, shift) {
           if (err) {
             return res.status(500).json({
               message: err.message
@@ -78,8 +81,10 @@ exports.createShift = createShift;
 
 var updateShift = function updateShift(req, res) {
   console.log(req.params);
-
-  _Organization.Organization.findOne({
+  var _req$dbModels2 = req.dbModels,
+      TenantOrganization = _req$dbModels2.TenantOrganization,
+      Shift = _req$dbModels2.Shift;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }, function (err, org) {
     if (!req.user) {
@@ -107,7 +112,7 @@ var updateShift = function updateShift(req, res) {
           message: 'Shift end time can not be earlier than start time'
         });
       } else {
-        _Shift.Shift.findByIdAndUpdate(req.params.shift_id, _objectSpread({}, req.body), function (err, shift) {
+        Shift.findByIdAndUpdate(req.params.shift_id, _objectSpread({}, req.body), function (err, shift) {
           if (err) {
             return res.status(500).json({
               message: err.message
@@ -132,7 +137,10 @@ var updateShift = function updateShift(req, res) {
 exports.updateShift = updateShift;
 
 var fetchShifts = function fetchShifts(req, res) {
-  _Organization.Organization.findOne({
+  var _req$dbModels3 = req.dbModels,
+      TenantOrganization = _req$dbModels3.TenantOrganization,
+      Shift = _req$dbModels3.Shift;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }, function (err, org) {
     if (!req.user) {
@@ -153,7 +161,7 @@ var fetchShifts = function fetchShifts(req, res) {
         message: 'You are unauthorized to fetch shifts'
       });
     } else {
-      _Shift.Shift.find({
+      Shift.find({
         createdFor: org._id
       }, function (err, shifts) {
         if (err) return res.status(500).json({
@@ -172,8 +180,10 @@ exports.fetchShifts = fetchShifts;
 
 var deleteShift = function deleteShift(req, res) {
   console.log(req.params);
-
-  _Organization.Organization.findOne({
+  var _req$dbModels4 = req.dbModels,
+      TenantOrganization = _req$dbModels4.TenantOrganization,
+      Shift = _req$dbModels4.Shift;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }, function (err, org) {
     if (!req.user) {
@@ -193,7 +203,7 @@ var deleteShift = function deleteShift(req, res) {
         message: 'You are unauthorized to delete a shift'
       });
     } else {
-      _Shift.Shift.findByIdAndDelete(req.params.shift_id, function (err, shift) {
+      Shift.findByIdAndDelete(req.params.shift_id, function (err, shift) {
         if (err) {
           return res.status(500).json({
             message: err.message

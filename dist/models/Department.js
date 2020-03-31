@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Department = void 0;
+exports.Department = exports.departmentSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -34,5 +34,6 @@ var departmentSchema = new Schema({
     ref: 'Case'
   }]
 });
+exports.departmentSchema = departmentSchema;
 var Department = mongoose.model('Department', departmentSchema);
 exports.Department = Department;

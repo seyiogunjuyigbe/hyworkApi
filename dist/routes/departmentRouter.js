@@ -1,6 +1,6 @@
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var _department = _interopRequireWildcard(require("../controllers/department"));
 
@@ -19,7 +19,7 @@ var validate = require("../middlewares/validate");
 
 router.post('/:urlname/dept/create', [check("title").not().isEmpty().withMessage("Enter title of Department"), check("description").not().isEmpty().withMessage("Enter description of Department")], [validate, authUser.orgExists], _department.createDepartment);
 router.post('/:urlname/dept/:id/add', [authUser.authUser, authUser.isAdmin, authUser.orgExists], _department.addDeptToOrg);
-router["delete"]('/:urlname/dept/:id/remove', [authUser.orgExists], _department["default"].removeOne);
+router["delete"]('/:urlname/dept/:id/remove', [authUser.orgExists], _department.removeOne);
 router.post('/:urlname/dept/:id/addManager/:username', [authUser.authUser, authUser.isAdmin, authUser.orgExists], _department.addManager);
 router.post('/:urlname/dept/:id/addEmployee/:username', _department.addEmployee);
 router.post('/:urlname/dept/:id/removeEmployee/:username', _department.removeEmployee);

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Leave = void 0;
+exports.Leave = exports.leaveSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -50,6 +50,7 @@ var leaveSchema = new Schema({
     ref: 'User'
   }
 });
+exports.leaveSchema = leaveSchema;
 var options = {
   fieldName: "token",
   createIndex: true,

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Form = void 0;
+exports.Form = exports.formSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -19,7 +19,7 @@ var formSchema = new Schema({
   },
   fields: [{
     type: Schema.Types.ObjectId,
-    ref: Field,
+    ref: 'Field',
     required: true
   }],
   urlLink: {
@@ -27,5 +27,6 @@ var formSchema = new Schema({
     required: true
   }
 });
+exports.formSchema = formSchema;
 var Form = mongoose.model('Form', formSchema);
 exports.Form = Form;

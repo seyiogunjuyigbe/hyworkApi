@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Job = void 0;
+exports.Job = exports.jobSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -22,14 +22,16 @@ var jobSchema = new Schema({
   },
   isBillable: {
     type: Boolean,
-    required: true
+    required: true,
+    "default": false
   },
   hours: {
     type: Number,
     required: true
   },
   ratePerHour: {
-    type: Number
+    type: Number,
+    "default": 0
   },
   attachment: [{
     type: Schema.Types.ObjectId,
@@ -38,21 +40,20 @@ var jobSchema = new Schema({
   workItems: [{
     type: String
   }],
-  assignees: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }],
+  assignees: [],
   createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
     required: true
   },
   timeLogs: [{
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'TimeLog'
-  }]
+  }],
+  createdFor: {
+    type: String,
+    required: true
+  }
 });
+exports.jobSchema = jobSchema;
 var Job = mongoose.model('Job', jobSchema);
 exports.Job = Job;

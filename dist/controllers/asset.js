@@ -24,7 +24,11 @@ var response = require('../middlewares/response'); // Assign a company asset to 
 
 
 var createAsset = function createAsset(req, res) {
-  _Organization.Organization.findOne({
+  var _req$dbModels = req.dbModels,
+      Asset = _req$dbModels.Asset,
+      TenantOrganization = _req$dbModels.TenantOrganization,
+      User = _req$dbModels.User;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }).populate("employees", "username -_id").then(function (org) {
     var list = [];
@@ -38,11 +42,11 @@ var createAsset = function createAsset(req, res) {
     } else if (new Date(req.body.dateAcquired).getTime() >= new Date(req.body.dateReleased).getTime()) {
       return response.error(res, 422, 'Release date must be later than acquired date');
     } else {
-      _User.User.findOne({
+      User.findOne({
         username: req.body.acquiredBy
       }, function (err, user) {
         if (err) return response.error(res, 500, err.message);else if (!user) return response.error(res, 404, 'User does not exist');else {
-          _Asset.Asset.create(_objectSpread({}, req.body, {
+          Asset.create(_objectSpread({}, req.body, {
             createdBy: req.user.username
           }), function (err, asset) {
             if (err) return response.error(res, 500, err.message);else {
@@ -65,7 +69,11 @@ var createAsset = function createAsset(req, res) {
 exports.createAsset = createAsset;
 
 var modifyAsset = function modifyAsset(req, res) {
-  _Organization.Organization.findOne({
+  var _req$dbModels2 = req.dbModels,
+      Asset = _req$dbModels2.Asset,
+      TenantOrganization = _req$dbModels2.TenantOrganization,
+      User = _req$dbModels2.User;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }).populate("employees", "username -_id").then(function (org) {
     var list = [];
@@ -79,11 +87,11 @@ var modifyAsset = function modifyAsset(req, res) {
     } else if (new Date(req.body.dateAcquired).getTime() >= new Date(req.body.dateReleased).getTime()) {
       return response.error(res, 422, 'Release date must be later than acquired date');
     } else {
-      _User.User.findOne({
+      User.findOne({
         username: req.body.acquiredBy
       }, function (err, user) {
         if (err) return response.error(res, 500, err.message);else if (!user) return response.error(res, 404, 'User does not exist');else {
-          _Asset.Asset.findOneAndUpdate({
+          Asset.findOneAndUpdate({
             _id: req.params.asset_id
           }, _objectSpread({}, req.body, {
             modifiedBy: req.user.username
@@ -104,7 +112,8 @@ var modifyAsset = function modifyAsset(req, res) {
 exports.modifyAsset = modifyAsset;
 
 var deleteAsset = function deleteAsset(req, res) {
-  _Asset.Asset.findByIdAndDelete(req.params.asset_id, function (err, asset) {
+  var Asset = req.dbModels.Asset;
+  Asset.findByIdAndDelete(req.params.asset_id, function (err, asset) {
     if (err) return response.error(res, 500, err.message);else if (!asset) return response.error(res, 404, 'Asset not found');else {
       response.success(res, 200, 'Asset record deleted successfully');
     }

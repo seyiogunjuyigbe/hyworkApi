@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Delegation = void 0;
+exports.Delegation = exports.delegationSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -11,17 +11,17 @@ var Schema = mongoose.Schema;
 var delegationSchema = new Schema({
   delegatee: {
     type: Schema.Types.ObjectId,
-    ref: User,
+    ref: 'User',
     required: true
   },
   delegator: {
     type: Schema.Types.ObjectId,
-    ref: User,
+    ref: 'User',
     required: true
   },
   delegatedBy: {
     type: Schema.Types.ObjectId,
-    ref: User,
+    ref: 'User',
     required: true
   },
   isPermanent: {
@@ -37,5 +37,6 @@ var delegationSchema = new Schema({
     required: true
   }
 });
+exports.delegationSchema = delegationSchema;
 var Delegation = mongoose.model('Delegation', delegationSchema);
 exports.Delegation = Delegation;

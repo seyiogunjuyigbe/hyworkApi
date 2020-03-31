@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Attendance = void 0;
+exports.Attendance = exports.attendanceSchema = void 0;
 
 var mongooseIdToken = require('mongoose-id-token');
 
@@ -39,6 +39,7 @@ var attendanceSchema = new Schema({
   },
   seatingLocation: {}
 });
+exports.attendanceSchema = attendanceSchema;
 var options = {
   fieldName: "token",
   createIndex: true,

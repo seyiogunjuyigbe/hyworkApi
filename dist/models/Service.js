@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Service = void 0;
+exports.Service = exports.serviceSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -22,5 +22,6 @@ var serviceSchema = new Schema({
     ref: 'Form'
   }]
 });
+exports.serviceSchema = serviceSchema;
 var Service = mongoose.model('Service', serviceSchema);
 exports.Service = Service;

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Benefit = void 0;
+exports.Benefit = exports.benefitSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -22,8 +22,10 @@ var benefitSchema = new Schema({
     required: true
   },
   beneficiaries: [{
-    type: user
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }]
 });
+exports.benefitSchema = benefitSchema;
 var Benefit = mongoose.model('Benefit', benefitSchema);
 exports.Benefit = Benefit;

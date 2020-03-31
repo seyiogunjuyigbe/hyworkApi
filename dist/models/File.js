@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.File = void 0;
+exports.File = exports.fileSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -26,5 +26,6 @@ var fileSchema = new Schema({
     required: true
   }
 });
+exports.fileSchema = fileSchema;
 var File = mongoose.model('File', fileSchema);
 exports.File = File;

@@ -5,14 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.declineLeave = exports.approveLeave = exports.createLeaveRequest = void 0;
 
-var _User = require("../models/User");
-
-var _Organization = require("../models/Organization");
-
-var _Leave = require("../models/Leave");
-
-var _Department = require("../models/Department");
-
 var _constants = require("../config/constants");
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -21,17 +13,25 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+// import {User} from '../models/TenantModels';
+// import {Organization} from '../models/Organization';
 var validate = require('../middlewares/validate');
 
 var _require = require('express-validator'),
     check = _require.check,
-    validationResult = _require.validationResult;
+    validationResult = _require.validationResult; // import {Leave} from '../models/TenantModels';
+// import {Department} from '../models/TenantModels';
+
 
 var nodemailer = require('nodemailer');
 
 var response = require('../middlewares/response');
 
 var createLeaveRequest = function createLeaveRequest(req, res) {
+  var _req$dbModels = req.dbModels,
+      Leave = _req$dbModels.Leave,
+      Department = _req$dbModels.Department,
+      TenantOrganization = _req$dbModels.TenantOrganization;
   if (!req.user) return response.error(res, 401, 'You need to be signed in');else {
     var errors = validationResult(req);
 
@@ -49,7 +49,7 @@ var createLeaveRequest = function createLeaveRequest(req, res) {
       } else if (new Date(req.body.startDate).getTime() <= new Date().getTime()) {
         return response.error(res, 422, 'Start date can not be earlier than today');
       } else {
-        _Organization.Organization.findOne({
+        TenantOrganization.findOne({
           urlname: req.params.urlname
         }, function (err, org) {
           if (err) return response.error(res, 500, err.message);else if (!org) {
@@ -57,8 +57,7 @@ var createLeaveRequest = function createLeaveRequest(req, res) {
             return response.error(res, 404, 'Organization not found');
           } else {
             var today = new Date();
-
-            _Leave.Leave.create(_objectSpread({}, req.body, {
+            Leave.create(_objectSpread({}, req.body, {
               dateApplied: new Date(),
               applicant: req.user
             }), function (err, leave) {
@@ -66,8 +65,7 @@ var createLeaveRequest = function createLeaveRequest(req, res) {
                 leave.save();
                 org['leaves'].push(leave);
                 org.save();
-
-                _Department.Department.findOne({
+                Department.findOne({
                   employees: {
                     $in: req.user._id
                   }
@@ -117,16 +115,19 @@ var createLeaveRequest = function createLeaveRequest(req, res) {
 exports.createLeaveRequest = createLeaveRequest;
 
 var approveLeave = function approveLeave(req, res) {
-  _Department.Department.findById(req.params.deptId, function (err, dept) {
+  var _req$dbModels2 = req.dbModels,
+      Leave = _req$dbModels2.Leave,
+      Department = _req$dbModels2.Department,
+      User = _req$dbModels2.User;
+  Department.findById(req.params.deptId, function (err, dept) {
     if (err) return response.error(res, 500, err.message);else if (!req.user) return response.error(res, 403, 'You need to be logged in');else if (!dept) return response.error(res, 404, 'Department not found');else if (String(dept.manager) !== String(req.user._id)) return response.error(res, 403, 'You need to be an admin to do that');else {
-      _Leave.Leave.findOne({
+      Leave.findOne({
         token: req.params.token
       }, function (err, leave) {
         if (err) return response.error(res, 500, err.message);else if (!leave) return response.error(res, 404, 'Leave not found');else if (String(leave.applicant) == String(req.user._id)) return response.error(res, 403, 'You cannot respond yto your own leave request');else if (leave.approvalStatus !== 'Pending') return response.error(res, 400, 'Leave request has already been responded to');else {
           leave.approvalStatus = 'Approved';
           leave.save();
-
-          _User.User.findById(leave.applicant, function (err, applicant) {
+          User.findById(leave.applicant, function (err, applicant) {
             if (err) return response.error(res, 500, err.message);else if (!applicant) return response.error(res, 404, 'Leave applicant not found');else {
               var transporter = nodemailer.createTransport({
                 service: _constants.MAIL_SERVICE,
@@ -167,16 +168,19 @@ var approveLeave = function approveLeave(req, res) {
 exports.approveLeave = approveLeave;
 
 var declineLeave = function declineLeave(req, res) {
-  _Department.Department.findById(req.params.deptId, function (err, dept) {
+  var _req$dbModels3 = req.dbModels,
+      Leave = _req$dbModels3.Leave,
+      Department = _req$dbModels3.Department,
+      User = _req$dbModels3.User;
+  Department.findById(req.params.deptId, function (err, dept) {
     if (err) return response.error(res, 500, err.message);else if (!req.user) return response.error(res, 403, 'You need to be logged in');else if (!dept) return response.error(res, 404, 'Department not found');else if (String(dept.manager) !== String(req.user._id)) return response.error(res, 403, 'You need to be an admin to do that');else {
-      _Leave.Leave.findOne({
+      Leave.findOne({
         token: req.params.token
       }, function (err, leave) {
         if (err) return response.error(res, 500, err.message);else if (!leave) return response.error(res, 404, 'Leave not found');else if (String(leave.applicant) == String(req.user._id)) return response.error(res, 403, 'You cannot respond yto your own leave request');else if (leave.approvalStatus !== 'Pending') return response.error(res, 400, 'Leave request has already been responded to');else {
           leave.approvalStatus = 'Declined';
           leave.save();
-
-          _User.User.findById(leave.applicant, function (err, applicant) {
+          User.findById(leave.applicant, function (err, applicant) {
             if (err) return response.error(res, 500, err.message);else if (!applicant) return response.error(res, 404, 'Leave applicant not found');else {
               var transporter = nodemailer.createTransport({
                 service: _constants.MAIL_SERVICE,

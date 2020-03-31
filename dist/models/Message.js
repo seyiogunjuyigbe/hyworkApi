@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Message = void 0;
+exports.Message = exports.messageSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -43,5 +43,6 @@ var messageSchema = new Schema({
     type: String
   }
 });
+exports.messageSchema = messageSchema;
 var Message = mongoose.model('Message', messageSchema);
 exports.Message = Message;

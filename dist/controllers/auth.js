@@ -17,7 +17,7 @@ var _Organization = require("../models/Organization");
 
 var passport = require('passport');
 
-(0, _passport.passportConfig)(passport);
+(0, _passport.passportConfig)(passport, _User.User);
 
 var _require = require('express-validator'),
     validationResult = _require.validationResult; // Render Register Page
@@ -152,6 +152,8 @@ var loginUser = function loginUser(req, res, next) {
                   });
                 }
 
+                req.session.userId = user._id;
+                req.session.save();
                 next();
               });
             }
@@ -176,6 +178,7 @@ var loginCb = function loginCb(req, res) {
 exports.loginCb = loginCb;
 
 var logoutUser = function logoutUser(req, res) {
+  req.session.userId = undefined;
   req.session.destroy();
   req.logout();
   return res.status(200).redirect('auth/login');

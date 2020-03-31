@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Comment = void 0;
+exports.Comment = exports.commentSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -31,5 +31,6 @@ var commentSchema = new Schema({
     ref: 'Task'
   }]
 });
+exports.commentSchema = commentSchema;
 var Comment = mongoose.model('Comment', commentSchema);
 exports.Comment = Comment;

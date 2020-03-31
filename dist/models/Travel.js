@@ -3,12 +3,19 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Travel = void 0;
+exports.Travel = exports.travelSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 var travelSchema = new Schema({
+  employeeId: {
+    type: String
+  },
+  employeeDepartment: {
+    type: Schema.Types.ObjectId,
+    ref: 'Department'
+  },
   placeOfVisit: {
     type: String,
     required: true
@@ -27,7 +34,6 @@ var travelSchema = new Schema({
   },
   isBillableToCustomer: {
     type: Boolean,
-    required: true,
     "default": false
   },
   customerName: {
@@ -70,5 +76,6 @@ var travelSchema = new Schema({
 }, {
   timestamps: true
 });
+exports.travelSchema = travelSchema;
 var Travel = mongoose.model('Travel', travelSchema);
 exports.Travel = Travel;

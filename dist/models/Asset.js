@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Asset = void 0;
+exports.Asset = exports.assetSchema = void 0;
 
 var mongoose = require("mongoose");
 
@@ -33,5 +33,6 @@ var assetSchema = new Schema({
 }, {
   timestamps: true
 });
+exports.assetSchema = assetSchema;
 var Asset = mongoose.model("Asset", assetSchema);
 exports.Asset = Asset;

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Task = void 0;
+exports.Task = exports.taskSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -36,5 +36,6 @@ var taskSchema = new Schema({
     ref: 'File'
   }]
 });
+exports.taskSchema = taskSchema;
 var Task = mongoose.model('Task', taskSchema);
 exports.Task = Task;

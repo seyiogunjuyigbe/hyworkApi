@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Project = void 0;
+exports.Project = exports.projectSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -22,5 +22,6 @@ var projectSchema = new Schema({
     ref: 'Job'
   }]
 });
+exports.projectSchema = projectSchema;
 var Project = mongoose.model('Project', projectSchema);
 exports.Project = Project;

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Case = void 0;
+exports.Case = exports.caseSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -47,5 +47,6 @@ var caseSchema = new Schema({
     "default": 'Pending'
   }
 });
+exports.caseSchema = caseSchema;
 var Case = mongoose.model('Case', caseSchema);
 exports.Case = Case;

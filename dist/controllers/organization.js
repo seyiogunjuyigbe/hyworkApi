@@ -2,15 +2,21 @@
 
 var _Organization = require("../models/Organization");
 
-var _User = require("../models/User");
+var _User3 = require("../models/User");
 
 var _Token = require("../models/Token");
-
-var _crud = require("../../utils/crud");
 
 var _mail = require("../middlewares/mail");
 
 var _middleware = require("../middlewares/middleware");
+
+var _passport = require("../config/passport");
+
+var _constants = require("../config/constants");
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -20,6 +26,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var response = require("../middlewares/response");
 
+var _require = require('../database/multiDb.js'),
+    getDBInstance = _require.getDBInstance;
+
+var nanoid = require('nanoid');
+
+var passport = require('passport');
+
+var _require2 = require('express-validator'),
+    validationResult = _require2.validationResult;
+
+(0, _passport.passportConfig)(passport);
+var baseUrl = "http://localhost:3000";
 var errors = [];
 module.exports = {
   // Render page to create new organization
@@ -33,11 +51,9 @@ module.exports = {
   },
   // Controller that creates a new organization. The user that creates the organization is immediately added as the
   //the an admin of the newly created organisation.
-  createOrganization: function () {
-    var _createOrganization = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee(req, res) {
-      var newOrg, user;
+  createOrganization: function createOrganization(req, res) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var dbName, TenantOrganization, newOrg, tOrg, user;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -53,130 +69,139 @@ module.exports = {
               }
 
               if (!(errors.length === 0)) {
-                _context.next = 21;
+                _context.next = 30;
                 break;
               }
 
-              _context.next = 6;
+              dbName = req.body.urlname.toLowerCase();
+              getDBInstance(dbName);
+              TenantOrganization = getDBInstance(dbName).models.TenantOrganization;
+              _context.next = 9;
               return _Organization.Organization.create(req.body);
 
-            case 6:
+            case 9:
               newOrg = _context.sent;
               newOrg.urlname = req.body.urlname.toLowerCase();
               newOrg.admin.push(req.user._id);
               newOrg.employees.push(req.user._id);
               newOrg.save();
-              _context.next = 13;
-              return _User.User.findOne({
-                _id: req.user._id
-              });
+              _context.next = 16;
+              return TenantOrganization.create(req.body);
 
-            case 13:
+            case 16:
+              tOrg = _context.sent;
+              tOrg.admin.push(req.user._id);
+              tOrg.employees.push(req.user._id);
+              tOrg.save();
+              _context.next = 22;
+              return _User3.User.findById(req.user._id);
+
+            case 22:
               user = _context.sent;
               user.role = 'admin';
               user.createdOrganizations.push(newOrg._id);
               user.save();
               (0, _mail.sendCreateOrganisationEmail)(user, newOrg, req, res);
-              return _context.abrupt("return", res.status(200).redirect("/org/".concat(newOrg.urlname)));
+              return _context.abrupt("return", response.success(res, 200, "Organization ".concat(tOrg.name, " created")));
 
-            case 21:
+            case 30:
               return _context.abrupt("return", res.status(500).render('error/500', {
                 message: errors
               }));
 
-            case 22:
-              _context.next = 27;
+            case 31:
+              _context.next = 36;
               break;
 
-            case 24:
-              _context.prev = 24;
+            case 33:
+              _context.prev = 33;
               _context.t0 = _context["catch"](0);
               return _context.abrupt("return", res.status(500).render('error/500', {
                 message: _context.t0
               }));
 
-            case 27:
+            case 36:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 24]]);
-    }));
+      }, _callee, null, [[0, 33]]);
+    }))();
+  },
+  addUserToOrganization: function addUserToOrganization(req, res) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _req$body, firstName, lastName, username, _req$dbModels, User, TenantOrganization, user;
 
-    function createOrganization(_x, _x2) {
-      return _createOrganization.apply(this, arguments);
-    }
-
-    return createOrganization;
-  }(),
-  addUserToOrganization: function () {
-    var _addUserToOrganization = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee2(req, res) {
-      var email, user, updatedOrganization;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              email = req.body.email;
-              _context2.prev = 1;
-              _context2.next = 4;
-              return _User.User.findOneAndUpdate({
-                email: email
-              }, req.body, {
-                upsert: true,
-                "new": true,
-                runValidators: true
-              });
+              _req$body = req.body, firstName = _req$body.firstName, lastName = _req$body.lastName, username = _req$body.username;
+              _req$dbModels = req.dbModels, User = _req$dbModels.User, TenantOrganization = _req$dbModels.TenantOrganization;
+              _context2.prev = 2;
+              _context2.next = 5;
+              return new User(_objectSpread({}, req.body, {
+                tempPassword: nanoid(8),
+                firstName: firstName.trim(),
+                lastName: lastName.trim()
+              }));
 
-            case 4:
+            case 5:
               user = _context2.sent;
-              _context2.next = 7;
-              return _Organization.Organization.findOne({
-                urlname: req.params.urlname
-              });
-
-            case 7:
-              updatedOrganization = _context2.sent;
-              updatedOrganization.employees.push(user._id);
-              updatedOrganization.save(function (err) {
+              user.username = username.trim().toLowerCase();
+              User.register(user, user.tempPassword, function (err, user) {
                 if (err) {
-                  return response.error(res, 500, "User could not be added to organization");
-                }
+                  return response.error(res, 500, err.message);
+                } else {
+                  user.save(function (err) {
+                    if (err) return res.status(500).json({
+                      err: err
+                    });
+                    TenantOrganization.findOne({
+                      urlname: req.params.urlname
+                    }, function (err, updatedOrganization) {
+                      if (err) {
+                        return response.error(res, 500, err.message);
+                      } else if (!updatedOrganization) return response.error(res, 404, 'Organization not found');
 
-                (0, _mail.senduserEmail)(user, updatedOrganization, req, res);
+                      updatedOrganization.employees.push(user._id);
+                      updatedOrganization.save(function (err) {
+                        if (err) {
+                          return response.error(res, 500, "User could not be added to organization");
+                        }
+
+                        (0, _mail.senduserEmail)(user, updatedOrganization, req, res);
+                        response.success(res, 200, "Successfully added ".concat(user.firstName, " ").concat(user.lastName));
+                      });
+                    });
+                  });
+                }
               });
-              _context2.next = 15;
+              _context2.next = 13;
               break;
 
-            case 12:
-              _context2.prev = 12;
-              _context2.t0 = _context2["catch"](1);
+            case 10:
+              _context2.prev = 10;
+              _context2.t0 = _context2["catch"](2);
               response.error(res, 500, _context2.t0.message);
 
-            case 15:
+            case 13:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[1, 12]]);
-    }));
-
-    function addUserToOrganization(_x3, _x4) {
-      return _addUserToOrganization.apply(this, arguments);
-    }
-
-    return addUserToOrganization;
-  }(),
-  fetchOrganization: function () {
-    var _fetchOrganization = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee3(req, res) {
+      }, _callee2, null, [[2, 10]]);
+    }))();
+  },
+  fetchOrganization: function fetchOrganization(req, res) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var TenantOrganization;
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              _Organization.Organization.find({
+              TenantOrganization = req.dbModels.TenantOrganization;
+              TenantOrganization.findOne({
                 urlname: req.params.urlname
               }, function (err, org) {
                 if (org) {
@@ -191,24 +216,16 @@ module.exports = {
                 }
               });
 
-            case 1:
+            case 2:
             case "end":
               return _context3.stop();
           }
         }
       }, _callee3);
-    }));
-
-    function fetchOrganization(_x5, _x6) {
-      return _fetchOrganization.apply(this, arguments);
-    }
-
-    return fetchOrganization;
-  }(),
-  deleteOrganization: function () {
-    var _deleteOrganization = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee4(req, res) {
+    }))();
+  },
+  deleteOrganization: function deleteOrganization(req, res) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
       return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
@@ -229,18 +246,10 @@ module.exports = {
           }
         }
       }, _callee4);
-    }));
-
-    function deleteOrganization(_x7, _x8) {
-      return _deleteOrganization.apply(this, arguments);
-    }
-
-    return deleteOrganization;
-  }(),
-  updateOrganization: function () {
-    var _updateOrganization = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee5(req, res) {
+    }))();
+  },
+  updateOrganization: function updateOrganization(req, res) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
       return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
@@ -261,25 +270,17 @@ module.exports = {
           }
         }
       }, _callee5);
-    }));
-
-    function updateOrganization(_x9, _x10) {
-      return _updateOrganization.apply(this, arguments);
-    }
-
-    return updateOrganization;
-  }(),
-  fetchEmployeeData: function () {
-    var _fetchEmployeeData = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee6(req, res) {
+    }))();
+  },
+  fetchEmployeeData: function fetchEmployeeData(req, res) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
       var user;
       return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
           switch (_context6.prev = _context6.next) {
             case 0:
               _context6.next = 2;
-              return _User.User.findOne({
+              return _User3.User.findOne({
                 username: req.params.username
               }).lean().exec();
 
@@ -307,81 +308,224 @@ module.exports = {
           }
         }
       }, _callee6);
-    }));
+    }))();
+  },
+  verifyEmployee: function verifyEmployee(req, res) {
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+      var _req$dbModels2, User, Token;
 
-    function fetchEmployeeData(_x11, _x12) {
-      return _fetchEmployeeData.apply(this, arguments);
-    }
-
-    return fetchEmployeeData;
-  }(),
-  verifyEmployee: function () {
-    var _verifyEmployee = _asyncToGenerator(
-    /*#__PURE__*/
-    regeneratorRuntime.mark(function _callee7(req, res) {
       return regeneratorRuntime.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
+              _req$dbModels2 = req.dbModels, User = _req$dbModels2.User, Token = _req$dbModels2.Token;
+
               if (req.params.token) {
-                _context7.next = 2;
+                _context7.next = 3;
                 break;
               }
 
               return _context7.abrupt("return", response.error(res, 400, "No token attached"));
 
-            case 2:
-              _Token.Token.findOne({
+            case 3:
+              Token.findOne({
                 token: req.params.token
               }, function (err, token) {
-                if (!token) {
+                if (err) return response.error(res, 500, err.message);else if (!token) {
                   return response.error(res, 400, 'We were unable to find a valid token. Your token may have expired.');
                 }
 
                 if (token) {
-                  _User.User.findOne({
+                  User.findOne({
                     _id: token.userId
                   }, function (err, user) {
                     if (!user) {
                       return response.error(res, 400, 'We were unable to find a user for this token.');
-                    }
-
-                    if (user.isVerified) {
+                    } else if (user.isVerified) {
                       return response.error(res, 400, 'This user has already been verified.');
+                    } else {
+                      user.isVerified = true;
+                      user.save();
+                      return res.redirect(200, "/org/".concat(req.params.urlname, "/user/").concat(token.token, "/onboard"));
                     }
-
-                    user.isVerified = true;
-                    user.save(function (err) {
-                      if (err) {
-                        return res.status(500).json({
-                          message: err.message
-                        });
-                      }
-                    });
-                    response.success(res, 200, user);
                   });
                 }
               });
 
-            case 3:
+            case 4:
             case "end":
               return _context7.stop();
           }
         }
       }, _callee7);
-    }));
+    }))();
+  },
+  renderPasswordPageForUser: function renderPasswordPageForUser(req, res) {
+    var _req$dbModels3 = req.dbModels,
+        User = _req$dbModels3.User,
+        Token = _req$dbModels3.Token;
 
-    function verifyEmployee(_x13, _x14) {
-      return _verifyEmployee.apply(this, arguments);
+    if (!req.params.token) {
+      return response.error(res, 400, "No token attached");
     }
 
-    return verifyEmployee;
-  }(),
+    Token.findOne({
+      token: req.params.token
+    }, function (err, token) {
+      if (err) return response.error(res, 500, err.message);else if (!token) {
+        return response.error(res, 400, 'We were unable to find a valid token. Your token may have expired.');
+      }
+
+      if (token) {
+        User.findOne({
+          _id: token.userId
+        }, function (err, user) {
+          if (!user) {
+            return response.error(res, 400, 'We were unable to find a user for this token.');
+          } else {
+            return res.render('createPassword', {
+              user: user,
+              token: token.token,
+              urlname: req.params.urlname
+            });
+          }
+        });
+      }
+    });
+  },
+  createPasswordForUser: function createPasswordForUser(req, res) {
+    var _req$dbModels4 = req.dbModels,
+        User = _req$dbModels4.User,
+        Token = _req$dbModels4.Token;
+    var username = req.body.username;
+    var token = req.params.token;
+    Token.findOne({
+      token: token
+    }, function (err, token) {
+      if (err) return response.error(res, 500, err.message);else if (!token) return response.error(res, 404, 'Token not found');else {
+        User.findOne({
+          username: username
+        }, function (err, user) {
+          if (err) return response.error(res, 500, err.message);else if (!user) return response.error(res, 404, 'User not found');else if (req.body.password !== req.body.confirmPassword) {
+            return response.error(res, 422, 'Passwords do not match');
+          } else {
+            user.setPassword(req.body.password, function (err, user) {
+              if (err) {
+                return res.status(500).render('500');
+              }
+
+              user.tempPassword = "";
+              user.isVerified = true;
+              user.save(function (err) {
+                if (err) return res.status(500).render('500');else {
+                  // send email 
+                  var mailOptions = {
+                    to: user.email,
+                    from: _constants.MAIL_SENDER,
+                    subject: "Your password has been set",
+                    text: "Hi ".concat(user.username, " \n \n                  This is a confirmation that the password for your account ").concat(user.email, " has just been set.\n")
+                  };
+                  (0, _mail.sendMailToTheseUsers)(req, res, mailOptions);
+                  response.success(res, 200, 'User has been fully onboarded');
+                }
+              });
+            });
+          }
+        });
+      }
+    });
+  },
   checkIfOrgExists: function checkIfOrgExists(req, res, next) {
     _Organization.Organization.findOne({
       urlname: req.params.urlname
     }, function (err, org) {
       if (err) return err;else if (!org) return response.error(res, 204, "Url available");else if (org) return response.error(res, 200, "Url not available");
     });
+  },
+  orgLoginUser: function orgLoginUser(req, res, next) {
+    var errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      var error = [];
+      errors.array().map(function (err) {
+        return error.push(err.msg);
+      });
+      return response.error(res, 422, error);
+    } else {
+      var _req$dbModels5 = req.dbModels,
+          _User = _req$dbModels5.User,
+          TenantOrganization = _req$dbModels5.TenantOrganization;
+      TenantOrganization.findOne({
+        urlname: req.params.urlname
+      }, function (err, org) {
+        if (err) return response.error(res, 500, err.message);else if (!org) return response.error(res, 404, 'Organization ' + req.params.urlname + ' not found');
+
+        _User.findOne({
+          email: req.body.email
+        }, function (err, user) {
+          if (err) response.error(res, 500, err.message);else if (!user) {
+            return response.error(res, 403, 'No user found with this email address');
+          } else if (!org.employees.includes(user._id)) return response.error(res, 403, 'You are not a member of this org');else {
+            if (req.body.password) {
+              passport.serializeUser(_User.serializeUser());
+              passport.deserializeUser(_User.deserializeUser());
+              user.authenticate(req.body.password, function (err, found, passwordErr) {
+                if (err) {
+                  return response.error(res, 500, err.message);
+                } else if (passwordErr) {
+                  return response.error(res, 500, 'Incorrect Password');
+                } else if (found) {
+                  req.login(user, function (err) {
+                    if (err) {
+                      return response.error(res, 500, err.message);
+                    }
+
+                    req.session.userId = user._id;
+                    req.session.save();
+                    next();
+                  });
+                }
+              });
+            }
+          }
+        });
+      });
+    }
+  },
+  orgLoginCb: function orgLoginCb(req, res) {
+    return res.status(200).json({
+      success: true,
+      message: 'Logged in as ' + req.user.username
+    });
+  },
+  orgLogoutUser: function orgLogoutUser(req, res) {
+    req.session.userId = undefined;
+    req.session.destroy();
+    req.logout();
+    response.success(res, 200, 'Successfully logged out');
+  },
+  fetchMyProfile: function fetchMyProfile(req, res) {
+    if (!req.user) {
+      return response.error(res, 401, 'You need to be logged in');
+    } else {
+      var username = req.user.username;
+      var _req$dbModels6 = req.dbModels,
+          _User2 = _req$dbModels6.User,
+          TenantOrganization = _req$dbModels6.TenantOrganization;
+      var urlname = req.params.urlname;
+      TenantOrganization.findOne({
+        urlname: urlname
+      }, function (err, org) {
+        if (err) return response.error(res, 500, err.message);else if (!org) return response.error(res, 404, 'Org not found');else {
+          _User2.findOne({
+            username: username
+          }, function (err, user) {
+            if (err) return response.error(res, 500, err.message);else if (!user) return response.error(res, 404, 'User not found');else if (!org.employees.includes(user._id)) return response.error(res, 403, 'You are not a memner of this org');else {
+              return response.success(res, 200, user);
+            }
+          });
+        }
+      });
+    }
   }
 };

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Organization = void 0;
+exports.Organization = exports.organizationSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -81,11 +81,16 @@ var organizationSchema = new Schema({
   travels: [{
     type: Schema.Types.ObjectId,
     ref: 'Travel'
+  }],
+  jobs: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Job'
   }]
 }); // organizationSchema.pre('save', function(next) {
 //   const org = this;
 //   if (org.isModified()
 // })
 
+exports.organizationSchema = organizationSchema;
 var Organization = mongoose.model('Organization', organizationSchema);
 exports.Organization = Organization;

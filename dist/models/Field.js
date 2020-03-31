@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Field = void 0;
+exports.Field = exports.fieldSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -22,5 +22,6 @@ var fieldSchema = new Schema({
     required: true
   }
 });
+exports.fieldSchema = fieldSchema;
 var Field = mongoose.model('Field', fieldSchema);
 exports.Field = Field;

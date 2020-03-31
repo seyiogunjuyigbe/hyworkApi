@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Location = void 0;
+exports.Location = exports.locationSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -32,5 +32,6 @@ var locationSchema = new Schema({
     type: String
   }
 });
+exports.locationSchema = locationSchema;
 var Location = mongoose.model('Location', locationSchema);
 exports.Location = Location;
