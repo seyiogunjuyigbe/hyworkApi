@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.MAIL_USER = exports.MAIL_PASS = exports.MAIL_SENDER = exports.MAIL_SERVICE = exports.TWITTER_CONSUMER_SECRET = exports.TWITTER_CONSUMER_KEY = exports.FACEBOOK_APP_SECRET = exports.FACEBOOK_APP_ID = exports.GOOGLE_CLIENT_SECRET = exports.GOOGLE_CLIENT_ID = exports.CLOUDINARY_API_SECRET = exports.CLOUDINARY_API_KEY = exports.CLOUDINARY_CLOUD_NAME = exports.CLOUDINARY_FOLDER = exports.PROD_DB_URL = exports.TEST_DB_URL = exports.LOCAL_DB_URL = exports.MODE = exports.SITE_URL = exports.DEV_DB_URL = exports.SECRET_KEY = exports.PORT = void 0;
+exports.TENANT_DATABASE_POOL = exports.MAIL_USER = exports.MAIL_PASS = exports.MAIL_SENDER = exports.MAIL_SERVICE = exports.TWITTER_CONSUMER_SECRET = exports.TWITTER_CONSUMER_KEY = exports.FACEBOOK_APP_SECRET = exports.FACEBOOK_APP_ID = exports.GOOGLE_CLIENT_SECRET = exports.GOOGLE_CLIENT_ID = exports.CLOUDINARY_API_SECRET = exports.CLOUDINARY_API_KEY = exports.CLOUDINARY_CLOUD_NAME = exports.CLOUDINARY_FOLDER = exports.PROD_DB_URL = exports.TEST_DB_URL = exports.LOCAL_DB_URL = exports.MODE = exports.SITE_URL = exports.DEV_DB_URL = exports.SECRET_KEY = exports.PORT = void 0;
 
 var _dotenv = _interopRequireDefault(require("dotenv"));
 
@@ -33,7 +33,9 @@ var _process$env = process.env,
     MAIL_SERVICE = _process$env.MAIL_SERVICE,
     MAIL_SENDER = _process$env.MAIL_SENDER,
     MAIL_PASS = _process$env.MAIL_PASS,
-    MAIL_USER = _process$env.MAIL_USER;
+    MAIL_USER = _process$env.MAIL_USER,
+    TENANT_DATABASE_POOL = _process$env.TENANT_DATABASE_POOL;
+exports.TENANT_DATABASE_POOL = TENANT_DATABASE_POOL;
 exports.MAIL_USER = MAIL_USER;
 exports.MAIL_PASS = MAIL_PASS;
 exports.MAIL_SENDER = MAIL_SENDER;
