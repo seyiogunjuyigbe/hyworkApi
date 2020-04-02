@@ -1,4 +1,4 @@
-import { CLOUDINARY_FOLDER, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from "../src/config/constants";
+import { CLOUDINARY_FOLDER, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from "../config/constants";
 const cloudinary = require('cloudinary');
 const multer = require('multer');
 const cloudinaryStorage = require('multer-storage-cloudinary');
