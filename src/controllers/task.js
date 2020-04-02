@@ -1,4 +1,4 @@
-import { crudControllers } from '../../utils/crud';
+import { crudControllers } from '../utils/crud';
 
 // import moment from 'moment';
 const response = require("../middlewares/response");

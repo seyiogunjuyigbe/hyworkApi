@@ -1,8 +1,8 @@
 const router = require('express').Router();
-import { upload } from '../../utils/multer';
+import { upload } from '../utils/multer';
 import { uploadFile, fetchAllFiles, fetchFilesByUser, updateFileDetails, fetchAllOrgFiles, getOneById } from "../controllers/file";
 import controllers from "../controllers/file";
-const parser = require('../../utils/cloudinary');
+const parser = require('../utils/cloudinary');
 const authUser = require("../middlewares/middleware");
 const orgMiddleware = require('../middlewares/organization');
 
