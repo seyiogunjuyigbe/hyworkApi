@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Goal = exports.goalSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var goalSchema = new Schema({
+var goalSchema = exports.goalSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -33,6 +32,4 @@ var goalSchema = new Schema({
     ref: 'User'
   }
 });
-exports.goalSchema = goalSchema;
-var Goal = mongoose.model('Goal', goalSchema);
-exports.Goal = Goal;
+var Goal = exports.Goal = mongoose.model('Goal', goalSchema);

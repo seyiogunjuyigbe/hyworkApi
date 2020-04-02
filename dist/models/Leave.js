@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Leave = exports.leaveSchema = void 0;
 
 var mongoose = require('mongoose');
 
@@ -11,7 +10,7 @@ var Schema = mongoose.Schema;
 
 var mongooseIdToken = require('mongoose-id-token');
 
-var leaveSchema = new Schema({
+var leaveSchema = exports.leaveSchema = new Schema({
   dateApplied: {
     type: Date
   },
@@ -50,12 +49,10 @@ var leaveSchema = new Schema({
     ref: 'User'
   }
 });
-exports.leaveSchema = leaveSchema;
 var options = {
   fieldName: "token",
   createIndex: true,
   tokenLength: 8
 };
 leaveSchema.plugin(mongooseIdToken, options);
-var Leave = mongoose.model('Leave', leaveSchema);
-exports.Leave = Leave;
+var Leave = exports.Leave = mongoose.model('Leave', leaveSchema);

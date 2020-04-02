@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.deleteShift = exports.fetchShifts = exports.updateShift = exports.createShift = void 0;
+exports.deleteShift = exports.fetchShifts = exports.updateShift = exports.createShift = undefined;
 
 var _User = require("../models/User");
 
@@ -22,7 +22,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 // create a workshift schedule
 // @POST /:urlname/shifts/new
 // Access: Admin
-var createShift = function createShift(req, res) {
+var createShift = exports.createShift = function createShift(req, res) {
   // Fetch Organization
   var _req$dbModels = req.dbModels,
       TenantOrganization = _req$dbModels.TenantOrganization,
@@ -77,9 +77,7 @@ var createShift = function createShift(req, res) {
 }; // Update shift
 
 
-exports.createShift = createShift;
-
-var updateShift = function updateShift(req, res) {
+var updateShift = exports.updateShift = function updateShift(req, res) {
   console.log(req.params);
   var _req$dbModels2 = req.dbModels,
       TenantOrganization = _req$dbModels2.TenantOrganization,
@@ -134,9 +132,7 @@ var updateShift = function updateShift(req, res) {
   });
 };
 
-exports.updateShift = updateShift;
-
-var fetchShifts = function fetchShifts(req, res) {
+var fetchShifts = exports.fetchShifts = function fetchShifts(req, res) {
   var _req$dbModels3 = req.dbModels,
       TenantOrganization = _req$dbModels3.TenantOrganization,
       Shift = _req$dbModels3.Shift;
@@ -176,9 +172,7 @@ var fetchShifts = function fetchShifts(req, res) {
   });
 };
 
-exports.fetchShifts = fetchShifts;
-
-var deleteShift = function deleteShift(req, res) {
+var deleteShift = exports.deleteShift = function deleteShift(req, res) {
   console.log(req.params);
   var _req$dbModels4 = req.dbModels,
       TenantOrganization = _req$dbModels4.TenantOrganization,
@@ -221,5 +215,3 @@ var deleteShift = function deleteShift(req, res) {
     }
   });
 };
-
-exports.deleteShift = deleteShift;

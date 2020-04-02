@@ -4,7 +4,9 @@ require("core-js/stable");
 
 require("regenerator-runtime/runtime");
 
-var _path = _interopRequireDefault(require("path"));
+var _path = require("path");
+
+var _path2 = _interopRequireDefault(_path);
 
 var _db = require("./database/db");
 
@@ -48,9 +50,9 @@ var _require = require('./database/multiDb.js'),
 
 (0, _db.startDb)();
 connect();
-app.set('views', _path["default"].join(__dirname, 'views')); // Redirect to the views directory inside the src directory
+app.set('views', _path2["default"].join(__dirname, 'views')); // Redirect to the views directory inside the src directory
 
-app.use(express["static"](_path["default"].join(__dirname, '../public'))); // load local css and js files
+app.use(express["static"](_path2["default"].join(__dirname, '../public'))); // load local css and js files
 
 app.set('view engine', 'ejs');
 app.use(function (req, res, next) {

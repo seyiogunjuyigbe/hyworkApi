@@ -3,14 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Attendance = exports.attendanceSchema = void 0;
 
 var mongooseIdToken = require('mongoose-id-token');
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var attendanceSchema = new Schema({
+var attendanceSchema = exports.attendanceSchema = new Schema({
   date: {
     type: String,
     required: true
@@ -39,12 +38,10 @@ var attendanceSchema = new Schema({
   },
   seatingLocation: {}
 });
-exports.attendanceSchema = attendanceSchema;
 var options = {
   fieldName: "token",
   createIndex: true,
   tokenLength: 16
 };
 attendanceSchema.plugin(mongooseIdToken, options);
-var Attendance = mongoose.model('Attendance', attendanceSchema);
-exports.Attendance = Attendance;
+var Attendance = exports.Attendance = mongoose.model('Attendance', attendanceSchema);

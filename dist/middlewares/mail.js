@@ -3,13 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sendMailToTheseUsers = exports.sendTokenMail = exports.senduserEmail = exports.sendCreateOrganisationEmail = void 0;
+exports.sendMailToTheseUsers = exports.sendTokenMail = exports.senduserEmail = exports.sendCreateOrganisationEmail = undefined;
 
 var _Token = require("../models/Token");
 
 var _constants = require("../config/constants");
 
-var _nanoid = _interopRequireDefault(require("nanoid"));
+var _nanoid = require("nanoid");
+
+var _nanoid2 = _interopRequireDefault(_nanoid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -17,7 +19,7 @@ var nodemailer = require('nodemailer');
 
 var response = require('./response');
 
-var sendCreateOrganisationEmail = function sendCreateOrganisationEmail(user, organisation, req, res) {
+var sendCreateOrganisationEmail = exports.sendCreateOrganisationEmail = function sendCreateOrganisationEmail(user, organisation, req, res) {
   var transporter = nodemailer.createTransport({
     service: _constants.MAIL_SERVICE,
     auth: {
@@ -42,13 +44,11 @@ var sendCreateOrganisationEmail = function sendCreateOrganisationEmail(user, org
   });
 };
 
-exports.sendCreateOrganisationEmail = sendCreateOrganisationEmail;
-
-var senduserEmail = function senduserEmail(user, organisation, req, res) {
+var senduserEmail = exports.senduserEmail = function senduserEmail(user, organisation, req, res) {
   var Token = req.dbModels.Token;
   Token.create({
     userId: user._id,
-    token: (0, _nanoid["default"])(10)
+    token: (0, _nanoid2["default"])(10)
   }, function (err, token) {
     if (err) return response.error(res, 500, err.message);else {
       token.save();
@@ -77,9 +77,7 @@ var senduserEmail = function senduserEmail(user, organisation, req, res) {
   });
 };
 
-exports.senduserEmail = senduserEmail;
-
-var sendTokenMail = function sendTokenMail(user, req, res) {
+var sendTokenMail = exports.sendTokenMail = function sendTokenMail(user, req, res) {
   var token = user.generateVerificationToken();
   token.save(function (err, token) {
     if (err) {
@@ -120,9 +118,7 @@ var sendTokenMail = function sendTokenMail(user, req, res) {
   });
 };
 
-exports.sendTokenMail = sendTokenMail;
-
-var sendMailToTheseUsers = function sendMailToTheseUsers(req, res, mailOptions, next) {
+var sendMailToTheseUsers = exports.sendMailToTheseUsers = function sendMailToTheseUsers(req, res, mailOptions, next) {
   var transporter = nodemailer.createTransport({
     service: _constants.MAIL_SERVICE,
     auth: {
@@ -140,5 +136,3 @@ var sendMailToTheseUsers = function sendMailToTheseUsers(req, res, mailOptions, 
     }
   });
 };
-
-exports.sendMailToTheseUsers = sendMailToTheseUsers;

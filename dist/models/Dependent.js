@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Dependent = exports.dependentSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var dependentSchema = new Schema({
+var dependentSchema = exports.dependentSchema = new Schema({
   firstName: {
     type: String,
     required: true,
@@ -36,6 +35,4 @@ var dependentSchema = new Schema({
     ref: 'Location'
   }
 });
-exports.dependentSchema = dependentSchema;
-var Dependent = mongoose.model('Dependent', dependentSchema);
-exports.Dependent = Dependent;
+var Dependent = exports.Dependent = mongoose.model('Dependent', dependentSchema);

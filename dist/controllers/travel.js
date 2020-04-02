@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.declineTravelRequest = exports.approveTravelRequest = exports.updateTravelRecord = exports.createTravelRecord = void 0;
+exports.declineTravelRequest = exports.approveTravelRequest = exports.updateTravelRecord = exports.createTravelRecord = undefined;
 
 var _Travel = require("../models/Travel");
 
@@ -26,7 +26,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var response = require('../middlewares/response');
 
 // Create a travel request record
-var createTravelRecord = function createTravelRecord(req, res) {
+var createTravelRecord = exports.createTravelRecord = function createTravelRecord(req, res) {
   var _req$dbModels = req.dbModels,
       Travel = _req$dbModels.Travel,
       TenantOrganization = _req$dbModels.TenantOrganization,
@@ -69,9 +69,7 @@ var createTravelRecord = function createTravelRecord(req, res) {
 }; // Update travel request records
 
 
-exports.createTravelRecord = createTravelRecord;
-
-var updateTravelRecord = function updateTravelRecord(req, res) {
+var updateTravelRecord = exports.updateTravelRecord = function updateTravelRecord(req, res) {
   var _req$dbModels2 = req.dbModels,
       Travel = _req$dbModels2.Travel,
       TenantOrganization = _req$dbModels2.TenantOrganization,
@@ -94,9 +92,7 @@ var updateTravelRecord = function updateTravelRecord(req, res) {
   });
 };
 
-exports.updateTravelRecord = updateTravelRecord;
-
-var approveTravelRequest = function approveTravelRequest(req, res) {
+var approveTravelRequest = exports.approveTravelRequest = function approveTravelRequest(req, res) {
   var _req$dbModels3 = req.dbModels,
       Travel = _req$dbModels3.Travel,
       TenantOrganization = _req$dbModels3.TenantOrganization,
@@ -133,9 +129,7 @@ var approveTravelRequest = function approveTravelRequest(req, res) {
   });
 };
 
-exports.approveTravelRequest = approveTravelRequest;
-
-var declineTravelRequest = function declineTravelRequest(req, res) {
+var declineTravelRequest = exports.declineTravelRequest = function declineTravelRequest(req, res) {
   var _req$dbModels4 = req.dbModels,
       Travel = _req$dbModels4.Travel,
       TenantOrganization = _req$dbModels4.TenantOrganization,
@@ -171,5 +165,3 @@ var declineTravelRequest = function declineTravelRequest(req, res) {
     }
   });
 };
-
-exports.declineTravelRequest = declineTravelRequest;

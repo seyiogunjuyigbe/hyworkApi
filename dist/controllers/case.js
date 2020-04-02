@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.inviteRespondentToCase = exports.changeCaseStatus = exports.fethThiscase = exports.respondToCase = exports.createCase = void 0;
+exports.inviteRespondentToCase = exports.changeCaseStatus = exports.fethThiscase = exports.respondToCase = exports.createCase = undefined;
 
 var _TenantModels = require("../models/TenantModels");
 
@@ -41,7 +41,7 @@ var nodemailer = require('nodemailer');
 // POST /org/:urlname/case/new
 // Parms: urlname
 // req.body: title, category, description, respondents[i]
-var createCase = function createCase(req, res) {
+var createCase = exports.createCase = function createCase(req, res) {
   var _req$dbModels = req.dbModels,
       TenantOrganization = _req$dbModels.TenantOrganization,
       Case = _req$dbModels.Case,
@@ -96,9 +96,7 @@ var createCase = function createCase(req, res) {
 // req.body: notes
 
 
-exports.createCase = createCase;
-
-var respondToCase = function respondToCase(req, res) {
+var respondToCase = exports.respondToCase = function respondToCase(req, res) {
   var _req$dbModels2 = req.dbModels,
       TenantOrganization = _req$dbModels2.TenantOrganization,
       Case = _req$dbModels2.Case,
@@ -149,9 +147,7 @@ var respondToCase = function respondToCase(req, res) {
 // @GET /org/:urlname/case/:case_id/view
 
 
-exports.respondToCase = respondToCase;
-
-var fethThiscase = function fethThiscase(req, res) {
+var fethThiscase = exports.fethThiscase = function fethThiscase(req, res) {
   var _req$dbModels3 = req.dbModels,
       TenantOrganization = _req$dbModels3.TenantOrganization,
       Case = _req$dbModels3.Case;
@@ -173,9 +169,7 @@ var fethThiscase = function fethThiscase(req, res) {
 // req.body: status
 
 
-exports.fethThiscase = fethThiscase;
-
-var changeCaseStatus = function changeCaseStatus(req, res) {
+var changeCaseStatus = exports.changeCaseStatus = function changeCaseStatus(req, res) {
   var _req$dbModels4 = req.dbModels,
       TenantOrganization = _req$dbModels4.TenantOrganization,
       Case = _req$dbModels4.Case;
@@ -204,9 +198,7 @@ var changeCaseStatus = function changeCaseStatus(req, res) {
 // Body: newRespondents[i]
 
 
-exports.changeCaseStatus = changeCaseStatus;
-
-var inviteRespondentToCase = function inviteRespondentToCase(req, res) {
+var inviteRespondentToCase = exports.inviteRespondentToCase = function inviteRespondentToCase(req, res) {
   var _req$dbModels5 = req.dbModels,
       TenantOrganization = _req$dbModels5.TenantOrganization,
       Case = _req$dbModels5.Case;
@@ -262,5 +254,3 @@ var inviteRespondentToCase = function inviteRespondentToCase(req, res) {
     }
   });
 };
-
-exports.inviteRespondentToCase = inviteRespondentToCase;

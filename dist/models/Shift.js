@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Shift = exports.shiftSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var shiftSchema = new Schema({
+var shiftSchema = exports.shiftSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -41,6 +40,4 @@ var shiftSchema = new Schema({
     ref: 'Organization'
   }
 });
-exports.shiftSchema = shiftSchema;
-var Shift = mongoose.model('Shift', shiftSchema);
-exports.Shift = Shift;
+var Shift = exports.Shift = mongoose.model('Shift', shiftSchema);

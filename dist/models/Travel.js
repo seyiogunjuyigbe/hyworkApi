@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Travel = exports.travelSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var travelSchema = new Schema({
+var travelSchema = exports.travelSchema = new Schema({
   employeeId: {
     type: String
   },
@@ -76,6 +75,4 @@ var travelSchema = new Schema({
 }, {
   timestamps: true
 });
-exports.travelSchema = travelSchema;
-var Travel = mongoose.model('Travel', travelSchema);
-exports.Travel = Travel;
+var Travel = exports.Travel = mongoose.model('Travel', travelSchema);

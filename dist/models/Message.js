@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Message = exports.messageSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var messageSchema = new Schema({
+var messageSchema = exports.messageSchema = new Schema({
   sender: {
     type: Schema.Types.ObjectId,
     ref: 'User'
@@ -43,6 +42,4 @@ var messageSchema = new Schema({
     type: String
   }
 });
-exports.messageSchema = messageSchema;
-var Message = mongoose.model('Message', messageSchema);
-exports.Message = Message;
+var Message = exports.Message = mongoose.model('Message', messageSchema);

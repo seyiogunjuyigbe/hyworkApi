@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Organization = exports.organizationSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var organizationSchema = new Schema({
+var organizationSchema = exports.organizationSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -91,6 +90,4 @@ var organizationSchema = new Schema({
 //   if (org.isModified()
 // })
 
-exports.organizationSchema = organizationSchema;
-var Organization = mongoose.model('Organization', organizationSchema);
-exports.Organization = Organization;
+var Organization = exports.Organization = mongoose.model('Organization', organizationSchema);

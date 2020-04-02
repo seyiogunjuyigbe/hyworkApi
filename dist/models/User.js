@@ -3,14 +3,14 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.User = exports.userSchema = void 0;
+exports.User = exports.userSchema = undefined;
+
+var _ref,
+    _this = void 0;
 
 var _Token = require("./Token");
 
 var _constants = require("../config/constants");
-
-var _ref,
-    _this = void 0;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -26,7 +26,7 @@ var Schema = mongoose.Schema;
 
 var passportLocalMongoose = require('passport-local-mongoose');
 
-var userSchema = new Schema((_ref = {
+var userSchema = exports.userSchema = new Schema((_ref = {
   username: {
     type: String,
     trim: true,
@@ -219,7 +219,6 @@ var userSchema = new Schema((_ref = {
 }), _defineProperty(_ref, "token", String), _ref), {
   timestamps: true
 });
-exports.userSchema = userSchema;
 userSchema.plugin(passportLocalMongoose); // userSchema.methods.comparePassword = function(password) {
 //   return bcrypt.compareSync(password, this.password);
 // };
@@ -241,5 +240,4 @@ userSchema.methods.generateUsername = function () {
   _this.username = _this.firstName[0] + _this.firstName[_this.firstName.length - 1] + "." + _this.lastName;
 };
 
-var User = mongoose.model('User', userSchema);
-exports.User = User;
+var User = exports.User = mongoose.model('User', userSchema);

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addDeadlineToTask = exports.getFilesAssignedToTask = exports.getTasksAssignedToUser = exports.addFiletoTask = exports.createTask = void 0;
+exports.addDeadlineToTask = exports.getFilesAssignedToTask = exports.getTasksAssignedToUser = exports.addFiletoTask = exports.createTask = undefined;
 
 var _crud = require("../../utils/crud");
 
@@ -18,7 +18,7 @@ var moment = require('moment'); //Create Task
 // Route: org/:urlname/task/add/:username
 
 
-var createTask = /*#__PURE__*/function () {
+var createTask = /*#__PURE__*/exports.createTask = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
     var _req$params, urlname, username, _req$body, title, description, _req$dbModels, Task, User, TenantOrganization, org;
 
@@ -94,9 +94,7 @@ var createTask = /*#__PURE__*/function () {
 //Route: org/:urlname/task/:id/add/file/:fileId
 
 
-exports.createTask = createTask;
-
-var addFiletoTask = /*#__PURE__*/function () {
+var addFiletoTask = /*#__PURE__*/exports.addFiletoTask = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
     var _req$dbModels2, Task, File, TenantOrganization, _req$params2, urlname, id, fileId, org;
 
@@ -159,9 +157,7 @@ var addFiletoTask = /*#__PURE__*/function () {
 //Route: org/:urlname/task/assignedto/:username
 
 
-exports.addFiletoTask = addFiletoTask;
-
-var getTasksAssignedToUser = /*#__PURE__*/function () {
+var getTasksAssignedToUser = /*#__PURE__*/exports.getTasksAssignedToUser = function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
     var _req$dbModels3, Task, User, username, user;
 
@@ -226,9 +222,7 @@ var getTasksAssignedToUser = /*#__PURE__*/function () {
 // }
 
 
-exports.getTasksAssignedToUser = getTasksAssignedToUser;
-
-var getFilesAssignedToTask = /*#__PURE__*/function () {
+var getFilesAssignedToTask = /*#__PURE__*/exports.getFilesAssignedToTask = function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(req, res) {
     var id, Task, taskFiles;
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
@@ -269,9 +263,7 @@ var getFilesAssignedToTask = /*#__PURE__*/function () {
   };
 }();
 
-exports.getFilesAssignedToTask = getFilesAssignedToTask;
-
-var addDeadlineToTask = function addDeadlineToTask(req, res) {
+var addDeadlineToTask = exports.addDeadlineToTask = function addDeadlineToTask(req, res) {
   var id = req.params.id;
   var deadline = req.body.deadline;
   var Task = req.dbModels.Task;
@@ -287,5 +279,3 @@ var addDeadlineToTask = function addDeadlineToTask(req, res) {
     return response.error(res, 404, 'Deadline already added to this task');
   });
 };
-
-exports.addDeadlineToTask = addDeadlineToTask;

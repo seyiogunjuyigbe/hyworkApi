@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.declineLeave = exports.approveLeave = exports.createLeaveRequest = void 0;
+exports.declineLeave = exports.approveLeave = exports.createLeaveRequest = undefined;
 
 var _constants = require("../config/constants");
 
@@ -27,7 +27,7 @@ var nodemailer = require('nodemailer');
 
 var response = require('../middlewares/response');
 
-var createLeaveRequest = function createLeaveRequest(req, res) {
+var createLeaveRequest = exports.createLeaveRequest = function createLeaveRequest(req, res) {
   var _req$dbModels = req.dbModels,
       Leave = _req$dbModels.Leave,
       Department = _req$dbModels.Department,
@@ -112,9 +112,7 @@ var createLeaveRequest = function createLeaveRequest(req, res) {
   }
 };
 
-exports.createLeaveRequest = createLeaveRequest;
-
-var approveLeave = function approveLeave(req, res) {
+var approveLeave = exports.approveLeave = function approveLeave(req, res) {
   var _req$dbModels2 = req.dbModels,
       Leave = _req$dbModels2.Leave,
       Department = _req$dbModels2.Department,
@@ -165,9 +163,7 @@ var approveLeave = function approveLeave(req, res) {
   });
 };
 
-exports.approveLeave = approveLeave;
-
-var declineLeave = function declineLeave(req, res) {
+var declineLeave = exports.declineLeave = function declineLeave(req, res) {
   var _req$dbModels3 = req.dbModels,
       Leave = _req$dbModels3.Leave,
       Department = _req$dbModels3.Department,
@@ -217,5 +213,3 @@ var declineLeave = function declineLeave(req, res) {
     }
   });
 };
-
-exports.declineLeave = declineLeave;

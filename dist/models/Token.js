@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Token = exports.tokenSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var tokenSchema = new Schema({
+var tokenSchema = exports.tokenSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -27,6 +26,4 @@ var tokenSchema = new Schema({
 }, {
   timestamps: true
 });
-exports.tokenSchema = tokenSchema;
-var Token = mongoose.model('Token', tokenSchema);
-exports.Token = Token;
+var Token = exports.Token = mongoose.model('Token', tokenSchema);

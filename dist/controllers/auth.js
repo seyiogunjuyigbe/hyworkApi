@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.resendToken = exports.verifyAdminRegistrationToken = exports.verifyToken = exports.logoutUser = exports.loginCb = exports.loginUser = exports.renderLoginPage = exports.registerNewUser = exports.renderSignUpPage = void 0;
+exports.resendToken = exports.verifyAdminRegistrationToken = exports.verifyToken = exports.logoutUser = exports.loginCb = exports.loginUser = exports.renderLoginPage = exports.registerNewUser = exports.renderSignUpPage = undefined;
 
 var _User = require("../models/User");
 
@@ -24,7 +24,7 @@ var _require = require('express-validator'),
 // @route GET /auth/register
 
 
-var renderSignUpPage = function renderSignUpPage(req, res) {
+var renderSignUpPage = exports.renderSignUpPage = function renderSignUpPage(req, res) {
   return res.status(200).render('register', {
     err: null
   });
@@ -32,9 +32,7 @@ var renderSignUpPage = function renderSignUpPage(req, res) {
 // @route POST /auth/register.
 
 
-exports.renderSignUpPage = renderSignUpPage;
-
-var registerNewUser = function registerNewUser(req, res) {
+var registerNewUser = exports.registerNewUser = function registerNewUser(req, res) {
   var errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -93,9 +91,7 @@ var registerNewUser = function registerNewUser(req, res) {
 // @ROUTE GET /auth/login
 
 
-exports.registerNewUser = registerNewUser;
-
-var renderLoginPage = function renderLoginPage(req, res) {
+var renderLoginPage = exports.renderLoginPage = function renderLoginPage(req, res) {
   if (!req.user) return res.status(200).render('login', {
     url: "http://" + req.headers.host,
     err: null
@@ -105,9 +101,7 @@ var renderLoginPage = function renderLoginPage(req, res) {
 // export const loginUser = passport.authenticate('local-login')
 
 
-exports.renderLoginPage = renderLoginPage;
-
-var loginUser = function loginUser(req, res, next) {
+var loginUser = exports.loginUser = function loginUser(req, res, next) {
   var errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -164,9 +158,7 @@ var loginUser = function loginUser(req, res, next) {
   }
 };
 
-exports.loginUser = loginUser;
-
-var loginCb = function loginCb(req, res) {
+var loginCb = exports.loginCb = function loginCb(req, res) {
   return res.status(200).json({
     success: true,
     message: 'Logged in as ' + req.user.username
@@ -175,9 +167,7 @@ var loginCb = function loginCb(req, res) {
 // @route GET /auth/logout
 
 
-exports.loginCb = loginCb;
-
-var logoutUser = function logoutUser(req, res) {
+var logoutUser = exports.logoutUser = function logoutUser(req, res) {
   req.session.userId = undefined;
   req.session.destroy();
   req.logout();
@@ -186,9 +176,7 @@ var logoutUser = function logoutUser(req, res) {
 // @route GET /auth/verify/:token
 
 
-exports.logoutUser = logoutUser;
-
-var verifyToken = function verifyToken(req, res) {
+var verifyToken = exports.verifyToken = function verifyToken(req, res) {
   if (!req.params.token) {
     return res.status(404).json({
       message: "We were unable to find a user for this token."
@@ -237,9 +225,7 @@ var verifyToken = function verifyToken(req, res) {
   });
 };
 
-exports.verifyToken = verifyToken;
-
-var verifyAdminRegistrationToken = function verifyAdminRegistrationToken(req, res) {
+var verifyAdminRegistrationToken = exports.verifyAdminRegistrationToken = function verifyAdminRegistrationToken(req, res) {
   if (!req.params.token) {
     return res.status(400).json({
       message: "We were unable to find a user for this token."
@@ -290,9 +276,7 @@ var verifyAdminRegistrationToken = function verifyAdminRegistrationToken(req, re
 // @route POST user/verify/resend
 
 
-exports.verifyAdminRegistrationToken = verifyAdminRegistrationToken;
-
-var resendToken = function resendToken(req, res) {
+var resendToken = exports.resendToken = function resendToken(req, res) {
   var email = req.body.email;
 
   _User.User.findOne({
@@ -320,5 +304,3 @@ var resendToken = function resendToken(req, res) {
     (0, _mail.sendTokenMail)(user, req, res);
   });
 };
-
-exports.resendToken = resendToken;

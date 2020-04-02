@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.removeOne = exports.addDeptToOrg = exports.removeEmployee = exports.addEmployee = exports.addManager = exports.createDepartment = void 0;
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -12,7 +11,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var response = require("../middlewares/response"); //Route: org/:urlname/department/create
 
 
-var createDepartment = /*#__PURE__*/function () {
+var createDepartment = /*#__PURE__*/exports.createDepartment = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
     var _req$body, title, description, _req$dbModels, Department, TenantOrganization, org;
 
@@ -65,9 +64,7 @@ var createDepartment = /*#__PURE__*/function () {
 }(); //Route: org/:urlname/department/:title/addManager/:username
 
 
-exports.createDepartment = createDepartment;
-
-var addManager = /*#__PURE__*/function () {
+var addManager = /*#__PURE__*/exports.addManager = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
     var _req$dbModels2, Department, TenantOrganization, User, _req$params, id, username, org;
 
@@ -128,9 +125,7 @@ var addManager = /*#__PURE__*/function () {
 }(); //Route: org/:urlname/department/:title/addEmployee/:username
 
 
-exports.addManager = addManager;
-
-var addEmployee = /*#__PURE__*/function () {
+var addEmployee = /*#__PURE__*/exports.addEmployee = function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
     var _req$dbModels3, Department, TenantOrganization, User, _req$params2, id, username, org;
 
@@ -191,9 +186,7 @@ var addEmployee = /*#__PURE__*/function () {
 }(); //Remove employee from department
 
 
-exports.addEmployee = addEmployee;
-
-var removeEmployee = /*#__PURE__*/function () {
+var removeEmployee = /*#__PURE__*/exports.removeEmployee = function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(req, res) {
     var _req$dbModels4, Department, TenantOrganization, User, _req$params3, id, username, org;
 
@@ -260,9 +253,7 @@ var removeEmployee = /*#__PURE__*/function () {
 }(); // Route: /organization/:urlname/department/:title/add
 
 
-exports.removeEmployee = removeEmployee;
-
-var addDeptToOrg = /*#__PURE__*/function () {
+var addDeptToOrg = /*#__PURE__*/exports.addDeptToOrg = function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
     var _req$dbModels5, Department, TenantOrganization, User, _req$params4, id, urlname, org;
 
@@ -314,9 +305,7 @@ var addDeptToOrg = /*#__PURE__*/function () {
   };
 }();
 
-exports.addDeptToOrg = addDeptToOrg;
-
-var removeOne = /*#__PURE__*/function () {
+var removeOne = /*#__PURE__*/exports.removeOne = function () {
   var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(req, res) {
     var Department, removed;
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
@@ -363,5 +352,3 @@ var removeOne = /*#__PURE__*/function () {
     return _ref6.apply(this, arguments);
   };
 }();
-
-exports.removeOne = removeOne;

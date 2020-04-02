@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initRoutes = void 0;
+exports.initRoutes = undefined;
 
 var _auth = require("../controllers/auth");
 
@@ -39,7 +39,7 @@ var travelRouter = require('./travelRoutes');
 
 var jobRouter = require('./jobRoutes');
 
-var initRoutes = function initRoutes(app) {
+var initRoutes = exports.initRoutes = function initRoutes(app) {
   app.get('/', function (req, res) {
     res.send('Hello World!');
   });
@@ -59,5 +59,3 @@ var initRoutes = function initRoutes(app) {
   app.use('/org', travelRouter);
   app.use('/org', jobRouter);
 };
-
-exports.initRoutes = initRoutes;

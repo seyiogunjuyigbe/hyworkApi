@@ -1,16 +1,22 @@
 "use strict";
 
-var _chai = _interopRequireDefault(require("chai"));
+var _chai = require("chai");
 
-var _chaiHttp = _interopRequireDefault(require("chai-http"));
+var _chai2 = _interopRequireDefault(_chai);
 
-var _app = _interopRequireDefault(require("../app"));
+var _chaiHttp = require("chai-http");
+
+var _chaiHttp2 = _interopRequireDefault(_chaiHttp);
+
+var _app = require("../app");
+
+var _app2 = _interopRequireDefault(_app);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var expect = _chai["default"].expect;
+var expect = _chai2["default"].expect;
 
-_chai["default"].use(_chaiHttp["default"]);
+_chai2["default"].use(_chaiHttp2["default"]);
 
 var signinUrl = '/user/login';
 var signupUrl = '/user/register';
@@ -23,7 +29,7 @@ var regularUser = {
 describe('AUTH CONTROLLER', function () {
   describe('POST SIGN IN', function () {
     it('it should login a user with valid email and password', function (done) {
-      _chai["default"].request(_app["default"]).post(signinUrl).send({
+      _chai2["default"].request(_app2["default"]).post(signinUrl).send({
         email: 'johnDoe@mail.com',
         // valid login details
         password: '123456'
@@ -36,7 +42,7 @@ describe('AUTH CONTROLLER', function () {
       });
     });
     it('it should return 400 error if creden', function (done) {
-      _chai["default"].request(_app["default"]).post(signinUrl).send({
+      _chai2["default"].request(_app2["default"]).post(signinUrl).send({
         email: 'bad email format',
         password: 1234
       }).end(function (error, res) {
@@ -47,7 +53,7 @@ describe('AUTH CONTROLLER', function () {
       });
     });
     it('it should return 401 error if login credentials are incorrect', function (done) {
-      _chai["default"].request(_app["default"]).post(signinUrl).send({
+      _chai2["default"].request(_app2["default"]).post(signinUrl).send({
         email: 'wrong@email.com',
         password: '1234'
       }).end(function (error, res) {
@@ -60,7 +66,7 @@ describe('AUTH CONTROLLER', function () {
   });
   describe('POST REGULAR USER SIGN UP', function () {
     it('should create a new user using username, name, email and password', function (done) {
-      _chai["default"].request(_app["default"]).post(signupUrl).send({
+      _chai2["default"].request(_app2["default"]).post(signupUrl).send({
         name: 'Regualar E. User',
         username: 'on_a_regs_ting',
         email: 'regular@regular.com',
@@ -81,7 +87,7 @@ describe('AUTH CONTROLLER', function () {
       });
     });
     it('should respond with 400 error from missing parameter', function (done) {
-      _chai["default"].request(_app["default"]).post(signupUrl).send({
+      _chai2["default"].request(_app2["default"]).post(signupUrl).send({
         name: 'Bad User',
         email: 'email@email.com',
         password: '1234%'
@@ -93,7 +99,7 @@ describe('AUTH CONTROLLER', function () {
       });
     });
     it('should respond with validation errors for bad inputs', function (done) {
-      _chai["default"].request(_app["default"]).post(signupUrl).send({
+      _chai2["default"].request(_app2["default"]).post(signupUrl).send({
         name: 'Bad User',
         username: 'bad_username',
         email: 'bad email :-p',
@@ -107,8 +113,8 @@ describe('AUTH CONTROLLER', function () {
       });
     });
     it('should respond with 409 error if user is a duplicate', function (done) {
-      _chai["default"].request(_app["default"]).post(signupUrl).send(regularUser).end(function (error, res) {
-        _chai["default"].request(_app["default"]).post(signupUrl).send(regularUser).end(function (e, res) {
+      _chai2["default"].request(_app2["default"]).post(signupUrl).send(regularUser).end(function (error, res) {
+        _chai2["default"].request(_app2["default"]).post(signupUrl).send(regularUser).end(function (e, res) {
           expect(res).to.have.status(409);
           expect(res.body.success).to.be.equal(false);
           expect(res.body.message).to.be.equal('User with this email already exists');

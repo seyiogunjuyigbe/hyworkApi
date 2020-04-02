@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.removeDependentFromUser = exports.addDependentToUser = exports.addPassword = exports.updateBioData = exports.addPhoneNumber = void 0;
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -11,7 +10,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var response = require('../middlewares/response');
 
-var addPhoneNumber = /*#__PURE__*/function () {
+var addPhoneNumber = /*#__PURE__*/exports.addPhoneNumber = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
     var phone, User, username, user;
     return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -69,9 +68,7 @@ var addPhoneNumber = /*#__PURE__*/function () {
   };
 }();
 
-exports.addPhoneNumber = addPhoneNumber;
-
-var updateBioData = /*#__PURE__*/function () {
+var updateBioData = /*#__PURE__*/exports.updateBioData = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
     var _req$body, dob, maritalStatus, bioMessage, User, user;
 
@@ -119,9 +116,7 @@ var updateBioData = /*#__PURE__*/function () {
   };
 }();
 
-exports.updateBioData = updateBioData;
-
-var addPassword = function addPassword(req, res) {
+var addPassword = exports.addPassword = function addPassword(req, res) {
   var User = req.dbModels.User;
   var _req$body2 = req.body,
       password = _req$body2.password,
@@ -153,9 +148,7 @@ var addPassword = function addPassword(req, res) {
   });
 };
 
-exports.addPassword = addPassword;
-
-var addDependentToUser = function addDependentToUser(req, res) {
+var addDependentToUser = exports.addDependentToUser = function addDependentToUser(req, res) {
   var _req$dbModels = req.dbModels,
       User = _req$dbModels.User,
       Dependent = _req$dbModels.Dependent;
@@ -191,9 +184,7 @@ var addDependentToUser = function addDependentToUser(req, res) {
   });
 };
 
-exports.addDependentToUser = addDependentToUser;
-
-var removeDependentFromUser = function removeDependentFromUser(req, res) {
+var removeDependentFromUser = exports.removeDependentFromUser = function removeDependentFromUser(req, res) {
   var _req$dbModels2 = req.dbModels,
       User = _req$dbModels2.User,
       Dependent = _req$dbModels2.Dependent;
@@ -224,8 +215,6 @@ var removeDependentFromUser = function removeDependentFromUser(req, res) {
     });
   });
 };
-
-exports.removeDependentFromUser = removeDependentFromUser;
 
 var updateBioMessage = function updateBioMessage(req, res) {
   var User = req.dbModels.User;

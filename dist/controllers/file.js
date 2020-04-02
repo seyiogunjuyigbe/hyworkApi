@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.uploadFile = uploadFile;
 exports.updateFileDetails = updateFileDetails;
 exports.fetchFilesByUser = fetchFilesByUser;
-exports.getOneById = exports.fetchAllOrgFiles = void 0;
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -167,7 +166,7 @@ function _fetchFilesByUser() {
   return _fetchFilesByUser.apply(this, arguments);
 }
 
-var fetchAllOrgFiles = /*#__PURE__*/function () {
+var fetchAllOrgFiles = /*#__PURE__*/exports.fetchAllOrgFiles = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
     var urlname, orgFiles, _req$dbModels, File, TenantOrganization, files, org;
 
@@ -230,9 +229,7 @@ var fetchAllOrgFiles = /*#__PURE__*/function () {
   };
 }();
 
-exports.fetchAllOrgFiles = fetchAllOrgFiles;
-
-var getOneById = /*#__PURE__*/function () {
+var getOneById = /*#__PURE__*/exports.getOneById = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
     var File, doc;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -279,5 +276,3 @@ var getOneById = /*#__PURE__*/function () {
     return _ref2.apply(this, arguments);
   };
 }();
-
-exports.getOneById = getOneById;

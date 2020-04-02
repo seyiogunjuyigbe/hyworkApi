@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Form = exports.formSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var formSchema = new Schema({
+var formSchema = exports.formSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -27,6 +26,4 @@ var formSchema = new Schema({
     required: true
   }
 });
-exports.formSchema = formSchema;
-var Form = mongoose.model('Form', formSchema);
-exports.Form = Form;
+var Form = exports.Form = mongoose.model('Form', formSchema);

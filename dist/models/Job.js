@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Job = exports.jobSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var jobSchema = new Schema({
+var jobSchema = exports.jobSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -54,6 +53,4 @@ var jobSchema = new Schema({
     required: true
   }
 });
-exports.jobSchema = jobSchema;
-var Job = mongoose.model('Job', jobSchema);
-exports.Job = Job;
+var Job = exports.Job = mongoose.model('Job', jobSchema);

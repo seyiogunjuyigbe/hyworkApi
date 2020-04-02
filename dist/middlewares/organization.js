@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.checkDBExists = exports.LoggedUserisAdmin = exports.LoggedUserisEmployee = exports.orgExists = void 0;
+exports.checkDBExists = exports.LoggedUserisAdmin = exports.LoggedUserisEmployee = exports.orgExists = undefined;
 
 var _Organization = require("../models/Organization");
 
@@ -15,7 +15,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var response = require("../middlewares/response");
 
-var orgExists = function orgExists(req, res, next) {
+var orgExists = exports.orgExists = function orgExists(req, res, next) {
   var urlname = req.params.urlname;
 
   _Organization.Organization.findOne({
@@ -29,9 +29,7 @@ var orgExists = function orgExists(req, res, next) {
   });
 };
 
-exports.orgExists = orgExists;
-
-var LoggedUserisEmployee = /*#__PURE__*/function () {
+var LoggedUserisEmployee = /*#__PURE__*/exports.LoggedUserisEmployee = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res, next) {
     var urlname, TenantOrganization;
     return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -63,9 +61,7 @@ var LoggedUserisEmployee = /*#__PURE__*/function () {
   };
 }();
 
-exports.LoggedUserisEmployee = LoggedUserisEmployee;
-
-var LoggedUserisAdmin = /*#__PURE__*/function () {
+var LoggedUserisAdmin = /*#__PURE__*/exports.LoggedUserisAdmin = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res, next) {
     var urlname;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -97,9 +93,7 @@ var LoggedUserisAdmin = /*#__PURE__*/function () {
   };
 }();
 
-exports.LoggedUserisAdmin = LoggedUserisAdmin;
-
-var checkDBExists = function checkDBExists(req, res, next) {
+var checkDBExists = exports.checkDBExists = function checkDBExists(req, res, next) {
   _Organization.Organization.findOne({
     urlname: req.headers.host.toLowerCase()
   }, function (err, org) {
@@ -108,5 +102,3 @@ var checkDBExists = function checkDBExists(req, res, next) {
     }
   });
 };
-
-exports.checkDBExists = checkDBExists;

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchManyUsersAttendance = exports.fetchThisUserAttendance = exports.fetchMyAttendance = exports.clockOut = exports.clockIn = void 0;
+exports.fetchManyUsersAttendance = exports.fetchThisUserAttendance = exports.fetchMyAttendance = exports.clockOut = exports.clockIn = undefined;
 
 var _TenantModels = require("../models/TenantModels");
 
@@ -19,7 +19,7 @@ var geoip = require('geoip-lite'); // Clock in user
 // @body: :shiftId
 
 
-var clockIn = function clockIn(req, res) {
+var clockIn = exports.clockIn = function clockIn(req, res) {
   if (req.user) {
     _Organization.Organization.findOne({
       urlname: req.params.urlname,
@@ -136,9 +136,7 @@ var clockIn = function clockIn(req, res) {
 // POST
 
 
-exports.clockIn = clockIn;
-
-var clockOut = function clockOut(req, res) {
+var clockOut = exports.clockOut = function clockOut(req, res) {
   if (req.user) {
     _User.User.findById(req.user._id, function (err, user) {
       if (err) {
@@ -211,8 +209,6 @@ var clockOut = function clockOut(req, res) {
   }
 };
 
-exports.clockOut = clockOut;
-
 var fetchAttendance = function fetchAttendance(req, res, user, startDate, endDate) {
   // getEach date from  start date till end date
   var lastDate = new Date(endDate);
@@ -276,7 +272,7 @@ var fetchAttendance = function fetchAttendance(req, res, user, startDate, endDat
 // Access: logged in employee
 
 
-var fetchMyAttendance = function fetchMyAttendance(req, res) {
+var fetchMyAttendance = exports.fetchMyAttendance = function fetchMyAttendance(req, res) {
   if (req.user) {
     var begin = new Date(req.query.startDate).toDateString();
     var end = new Date(req.query.endDate).toDateString();
@@ -291,9 +287,7 @@ var fetchMyAttendance = function fetchMyAttendance(req, res) {
 // Access: logged in admin
 
 
-exports.fetchMyAttendance = fetchMyAttendance;
-
-var fetchThisUserAttendance = function fetchThisUserAttendance(req, res) {
+var fetchThisUserAttendance = exports.fetchThisUserAttendance = function fetchThisUserAttendance(req, res) {
   _User.User.findOne({
     username: req.params.user
   }, function (err, user) {
@@ -321,9 +315,7 @@ var fetchThisUserAttendance = function fetchThisUserAttendance(req, res) {
 // query: user
 
 
-exports.fetchThisUserAttendance = fetchThisUserAttendance;
-
-var fetchManyUsersAttendance = function fetchManyUsersAttendance(req, res) {
+var fetchManyUsersAttendance = exports.fetchManyUsersAttendance = function fetchManyUsersAttendance(req, res) {
   var begin = new Date(req.query.startDate).toDateString();
   var endT = new Date(req.query.endDate).toDateString();
 
@@ -391,5 +383,3 @@ var fetchManyUsersAttendance = function fetchManyUsersAttendance(req, res) {
     }
   });
 };
-
-exports.fetchManyUsersAttendance = fetchManyUsersAttendance;

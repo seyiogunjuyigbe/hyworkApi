@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.changePassword = exports.resetPassword = exports.reset = exports.recover = exports.recoverPass = void 0;
+exports.changePassword = exports.resetPassword = exports.reset = exports.recover = exports.recoverPass = undefined;
 
 var _constants = require("../config/constants");
 
@@ -23,7 +23,7 @@ var transporter = nodemailer.createTransport({
 }); // @route GET /auth/password/recover
 // Render page for password recovery
 
-var recoverPass = function recoverPass(req, res) {
+var recoverPass = exports.recoverPass = function recoverPass(req, res) {
   return res.status(200).render('recoverPassword', {
     message: null
   });
@@ -31,9 +31,7 @@ var recoverPass = function recoverPass(req, res) {
 // Recover Password - Generates token and Sends password reset email
 
 
-exports.recoverPass = recoverPass;
-
-var recover = function recover(req, res) {
+var recover = exports.recover = function recover(req, res) {
   var errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -97,9 +95,7 @@ var recover = function recover(req, res) {
 // Reset Password - Validate password reset token and shows the password reset view
 
 
-exports.recover = recover;
-
-var reset = function reset(req, res) {
+var reset = exports.reset = function reset(req, res) {
   var errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -136,9 +132,7 @@ var reset = function reset(req, res) {
 // Reset Password
 
 
-exports.reset = reset;
-
-var resetPassword = function resetPassword(req, res) {
+var resetPassword = exports.resetPassword = function resetPassword(req, res) {
   var errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -202,9 +196,7 @@ var resetPassword = function resetPassword(req, res) {
 // @POST
 
 
-exports.resetPassword = resetPassword;
-
-var changePassword = function changePassword(req, res) {
+var changePassword = exports.changePassword = function changePassword(req, res) {
   var errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -237,5 +229,3 @@ var changePassword = function changePassword(req, res) {
     });
   }
 };
-
-exports.changePassword = changePassword;

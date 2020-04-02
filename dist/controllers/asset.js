@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.deleteAsset = exports.modifyAsset = exports.createAsset = void 0;
+exports.deleteAsset = exports.modifyAsset = exports.createAsset = undefined;
 
 var _Asset = require("../models/Asset");
 
@@ -23,7 +23,7 @@ var response = require('../middlewares/response'); // Assign a company asset to 
 // req.body:  title, type, description, acquiredBy, dateAcquired,dateReleased
 
 
-var createAsset = function createAsset(req, res) {
+var createAsset = exports.createAsset = function createAsset(req, res) {
   var _req$dbModels = req.dbModels,
       Asset = _req$dbModels.Asset,
       TenantOrganization = _req$dbModels.TenantOrganization,
@@ -66,9 +66,7 @@ var createAsset = function createAsset(req, res) {
   });
 };
 
-exports.createAsset = createAsset;
-
-var modifyAsset = function modifyAsset(req, res) {
+var modifyAsset = exports.modifyAsset = function modifyAsset(req, res) {
   var _req$dbModels2 = req.dbModels,
       Asset = _req$dbModels2.Asset,
       TenantOrganization = _req$dbModels2.TenantOrganization,
@@ -109,9 +107,7 @@ var modifyAsset = function modifyAsset(req, res) {
   });
 };
 
-exports.modifyAsset = modifyAsset;
-
-var deleteAsset = function deleteAsset(req, res) {
+var deleteAsset = exports.deleteAsset = function deleteAsset(req, res) {
   var Asset = req.dbModels.Asset;
   Asset.findByIdAndDelete(req.params.asset_id, function (err, asset) {
     if (err) return response.error(res, 500, err.message);else if (!asset) return response.error(res, 404, 'Asset not found');else {
@@ -119,5 +115,3 @@ var deleteAsset = function deleteAsset(req, res) {
     }
   });
 };
-
-exports.deleteAsset = deleteAsset;

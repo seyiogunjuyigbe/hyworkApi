@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Comment = exports.commentSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var commentSchema = new Schema({
+var commentSchema = exports.commentSchema = new Schema({
   timeSent: {
     type: String,
     required: true
@@ -31,6 +30,4 @@ var commentSchema = new Schema({
     ref: 'Task'
   }]
 });
-exports.commentSchema = commentSchema;
-var Comment = mongoose.model('Comment', commentSchema);
-exports.Comment = Comment;
+var Comment = exports.Comment = mongoose.model('Comment', commentSchema);

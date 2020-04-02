@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getDIfferenceinDays = exports.orgExists = exports.isAdmin = exports.authUser = exports.checkUrlExists = void 0;
+exports.getDIfferenceinDays = exports.orgExists = exports.isAdmin = exports.authUser = exports.checkUrlExists = undefined;
 
 var _Organization = require("../models/Organization");
 
 var response = require("../middlewares/response");
 
-var checkUrlExists = function checkUrlExists(url) {
+var checkUrlExists = exports.checkUrlExists = function checkUrlExists(url) {
   _Organization.Organization.find({
     urlname: url
   }, function (err, org) {
@@ -21,9 +21,7 @@ var checkUrlExists = function checkUrlExists(url) {
   });
 };
 
-exports.checkUrlExists = checkUrlExists;
-
-var authUser = function authUser(req, res, next) {
+var authUser = exports.authUser = function authUser(req, res, next) {
   if (req.user) {
     return next();
   } else {
@@ -31,9 +29,7 @@ var authUser = function authUser(req, res, next) {
   }
 };
 
-exports.authUser = authUser;
-
-var isAdmin = function isAdmin(req, res, next) {
+var isAdmin = exports.isAdmin = function isAdmin(req, res, next) {
   if (req.user.role === "admin") {
     return next();
   } else {
@@ -43,9 +39,7 @@ var isAdmin = function isAdmin(req, res, next) {
   }
 };
 
-exports.isAdmin = isAdmin;
-
-var orgExists = function orgExists(req, res, next) {
+var orgExists = exports.orgExists = function orgExists(req, res, next) {
   var urlname = req.params.urlname;
 
   _Organization.Organization.findOne({
@@ -59,11 +53,7 @@ var orgExists = function orgExists(req, res, next) {
   });
 };
 
-exports.orgExists = orgExists;
-
-var getDIfferenceinDays = function getDIfferenceinDays(start, end) {
+var getDIfferenceinDays = exports.getDIfferenceinDays = function getDIfferenceinDays(start, end) {
   var diffInMilliSecs = new Date(end) - new Date(start);
   return diffInMilliSecs / 8.64e+7;
 };
-
-exports.getDIfferenceinDays = getDIfferenceinDays;

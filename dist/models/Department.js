@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Department = exports.departmentSchema = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var departmentSchema = new Schema({
+var departmentSchema = exports.departmentSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -34,6 +33,4 @@ var departmentSchema = new Schema({
     ref: 'Case'
   }]
 });
-exports.departmentSchema = departmentSchema;
-var Department = mongoose.model('Department', departmentSchema);
-exports.Department = Department;
+var Department = exports.Department = mongoose.model('Department', departmentSchema);
