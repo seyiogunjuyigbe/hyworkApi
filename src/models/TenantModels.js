@@ -22,7 +22,7 @@ import { delegationSchema } from './Delegation';
 import { departmentSchema } from './Department';
 import { dependentSchema } from './Dependent';
 import { fieldSchema } from './Field';
-import { timeLogSchema } from './TimeLog';
+import { timeLogSchema } from './Timelog';
 
 
 
