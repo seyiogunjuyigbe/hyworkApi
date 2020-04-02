@@ -6,6 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _TenantModels = require("../models/TenantModels");
 
-var _crud = require("../../utils/crud");
+var _crud = require("../utils/crud");
 
 exports["default"] = (0, _crud.crudControllers)(_TenantModels.Location);

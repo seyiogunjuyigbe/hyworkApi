@@ -1,6 +1,6 @@
 "use strict";
 
-var _multer = require("../../utils/multer");
+var _multer = require("../utils/multer");
 
 var _file = require("../controllers/file");
 
@@ -10,7 +10,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 var router = require('express').Router();
 
-var parser = require('../../utils/cloudinary');
+var parser = require('../utils/cloudinary');
 
 var authUser = require("../middlewares/middleware");
 
