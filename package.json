@@ -32,6 +32,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "cloudinary": "^1.18.1",
+    "core-js": "^3.6.4",
     "cross-env": "^6.0.3",
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
@@ -55,7 +56,8 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.0.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {
     "jest": "^25.1.0",
