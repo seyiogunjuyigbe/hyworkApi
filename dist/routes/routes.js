@@ -11,9 +11,8 @@ var _password = require("../controllers/password");
 
 var authRouter = require('./authRoutes');
 
-var userRouter = require('./userRoute.js');
+var userRouter = require('./userRoute.js'); // const locationRouter = require('./locationRoute.js');
 
-var locationRouter = require('./locationRoute.js');
 
 var organizationRouter = require('./organizationRoute');
 
@@ -47,8 +46,8 @@ var initRoutes = exports.initRoutes = function initRoutes(app) {
   app.use('/org', organizationRouter);
   app.use('/org', userRouter);
   app.use('/org', attendanceRouter);
-  app.use('/org', shiftRouter);
-  app.use('/location', locationRouter);
+  app.use('/org', shiftRouter); // app.use('/location', locationRouter);
+
   app.use('/org', fileRouter);
   app.use('/org', departmentRouter);
   app.use('/org', leaveRouter);
