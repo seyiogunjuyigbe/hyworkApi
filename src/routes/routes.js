@@ -29,7 +29,7 @@ export const initRoutes = app => {
     app.use('/org', departmentRouter);
     app.use('/org', leaveRouter); 
     app.use('/org', taskRouter);
-    app.use('/benefit', benefitRouter);
+    app.use('/org', benefitRouter);
     app.use('/org', caseRouter);
     app.use('/org', assetRouter);
     app.use('/org', travelRouter);
