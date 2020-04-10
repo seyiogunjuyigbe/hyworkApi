@@ -9,11 +9,11 @@ router.post('/:urlname/asset/new', [
     check('title').isString().not().isEmpty().withMessage('This asset needs a title'),
     check('description').isString().withMessage('Pleade enter a valid string as description'),
     check('acquiredBy').isString().not().isEmpty().withMessage('Please specify the recipient of this asset'),
-], validate, authUser,LoggedUserisAdmin, createAsset);
+], validate, authUser, createAsset);
 router.post('/:urlname/asset/:asset_id/update', [
     check('title').isString().not().isEmpty().withMessage('This asset needs a title'),
-    check('description').isString().withMessage('Pleade enter a valid string as description'),
+    check('description').isString().withMessage('Please enter a valid string as description'),
     check('acquiredBy').isString().not().isEmpty().withMessage('Please specify the recipient of this asset'),
-], validate, authUser,LoggedUserisAdmin, modifyAsset)
-router.get("/:urlname/asset/:asset_id/delete", authUser,LoggedUserisAdmin, deleteAsset)
+], validate, authUser, modifyAsset)
+router.get("/:urlname/asset/:asset_id/delete", authUser, deleteAsset)
 module.exports = router;

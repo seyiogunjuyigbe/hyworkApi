@@ -2,13 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 export const travelSchema = new Schema({
   employeeId: {
-    type: String,
-    required: true
+    type: String
   },
   employeeDepartment: {
     type: Schema.Types.ObjectId,
-    ref: 'Department',
-    required: true
+    ref: 'Department'
   },
   placeOfVisit: {
     type: String,
@@ -28,7 +26,6 @@ export const travelSchema = new Schema({
   },
   isBillableToCustomer: {
     type: Boolean,
-    required: true,
     default: false
   },
   customerName: {

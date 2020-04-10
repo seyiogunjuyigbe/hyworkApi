@@ -3,11 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchManyUsersAttendance = exports.fetchThisUserAttendance = exports.fetchMyAttendance = exports.clockOut = exports.clockIn = void 0;
+exports.fetchManyUsersAttendance = exports.fetchThisUserAttendance = exports.fetchMyAttendance = exports.clockOut = exports.clockIn = undefined;
 
-var _Attendance = require("../models/Attendance");
-
-var _Shift = require("../models/Shift");
+var _TenantModels = require("../models/TenantModels");
 
 var _Organization = require("../models/Organization");
 
@@ -21,7 +19,7 @@ var geoip = require('geoip-lite'); // Clock in user
 // @body: :shiftId
 
 
-var clockIn = function clockIn(req, res) {
+var clockIn = exports.clockIn = function clockIn(req, res) {
   if (req.user) {
     _Organization.Organization.findOne({
       urlname: req.params.urlname,
@@ -38,7 +36,7 @@ var clockIn = function clockIn(req, res) {
           message: 'Organization not found, please join one'
         });
       } else {
-        _Shift.Shift.findById(req.params.shift_id, function (err, shift) {
+        _TenantModels.Shift.findById(req.params.shift_id, function (err, shift) {
           if (err) {
             return res.status(500).json({
               message: err.message
@@ -60,7 +58,7 @@ var clockIn = function clockIn(req, res) {
             } // Check if user has clocked in
 
 
-            _Attendance.Attendance.findOne({
+            _TenantModels.Attendance.findOne({
               user: req.user.username,
               clockOutStatus: 'Working'
             }, function (err, foundAttendance) {
@@ -69,7 +67,7 @@ var clockIn = function clockIn(req, res) {
                   message: 'You are clocked in already'
                 });
               } else {
-                _Attendance.Attendance.create({
+                _TenantModels.Attendance.create({
                   date: today.toDateString(),
                   clockIn: today.getHours() + ':' + today.getMinutes(),
                   user: req.user.username,
@@ -138,9 +136,7 @@ var clockIn = function clockIn(req, res) {
 // POST
 
 
-exports.clockIn = clockIn;
-
-var clockOut = function clockOut(req, res) {
+var clockOut = exports.clockOut = function clockOut(req, res) {
   if (req.user) {
     _User.User.findById(req.user._id, function (err, user) {
       if (err) {
@@ -148,7 +144,7 @@ var clockOut = function clockOut(req, res) {
           message: 'no User found'
         });
       } else {
-        _Shift.Shift.findById(req.params.shift_id, function (err, shift) {
+        _TenantModels.Shift.findById(req.params.shift_id, function (err, shift) {
           if (err) {
             return res.status(500).json({
               message: err.message
@@ -160,7 +156,7 @@ var clockOut = function clockOut(req, res) {
           } else {
             var closeTime = new Date();
 
-            _Attendance.Attendance.findOne({
+            _TenantModels.Attendance.findOne({
               token: req.body.token
             }, function (err, attendance) {
               if (err) {
@@ -213,8 +209,6 @@ var clockOut = function clockOut(req, res) {
   }
 };
 
-exports.clockOut = clockOut;
-
 var fetchAttendance = function fetchAttendance(req, res, user, startDate, endDate) {
   // getEach date from  start date till end date
   var lastDate = new Date(endDate);
@@ -233,7 +227,7 @@ var fetchAttendance = function fetchAttendance(req, res, user, startDate, endDat
 
   var dateArr = getDateArray(startDate, lastDate); // Fetch attendance for each date for this employee from start date till end date
 
-  _Attendance.Attendance.find({
+  _TenantModels.Attendance.find({
     user: user
   }, function (err, records) {
     var recordArr = [];
@@ -278,7 +272,7 @@ var fetchAttendance = function fetchAttendance(req, res, user, startDate, endDat
 // Access: logged in employee
 
 
-var fetchMyAttendance = function fetchMyAttendance(req, res) {
+var fetchMyAttendance = exports.fetchMyAttendance = function fetchMyAttendance(req, res) {
   if (req.user) {
     var begin = new Date(req.query.startDate).toDateString();
     var end = new Date(req.query.endDate).toDateString();
@@ -293,9 +287,7 @@ var fetchMyAttendance = function fetchMyAttendance(req, res) {
 // Access: logged in admin
 
 
-exports.fetchMyAttendance = fetchMyAttendance;
-
-var fetchThisUserAttendance = function fetchThisUserAttendance(req, res) {
+var fetchThisUserAttendance = exports.fetchThisUserAttendance = function fetchThisUserAttendance(req, res) {
   _User.User.findOne({
     username: req.params.user
   }, function (err, user) {
@@ -323,9 +315,7 @@ var fetchThisUserAttendance = function fetchThisUserAttendance(req, res) {
 // query: user
 
 
-exports.fetchThisUserAttendance = fetchThisUserAttendance;
-
-var fetchManyUsersAttendance = function fetchManyUsersAttendance(req, res) {
+var fetchManyUsersAttendance = exports.fetchManyUsersAttendance = function fetchManyUsersAttendance(req, res) {
   var begin = new Date(req.query.startDate).toDateString();
   var endT = new Date(req.query.endDate).toDateString();
 
@@ -350,7 +340,7 @@ var fetchManyUsersAttendance = function fetchManyUsersAttendance(req, res) {
     });
   }
 
-  _Attendance.Attendance.find({
+  _TenantModels.Attendance.find({
     $or: list
   }).sort({
     user: 'asc'
@@ -393,5 +383,3 @@ var fetchManyUsersAttendance = function fetchManyUsersAttendance(req, res) {
     }
   });
 };
-
-exports.fetchManyUsersAttendance = fetchManyUsersAttendance;

@@ -3,9 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.inviteRespondentToCase = exports.changeCaseStatus = exports.fethThiscase = exports.respondToCase = exports.createCase = void 0;
+exports.inviteRespondentToCase = exports.changeCaseStatus = exports.fethThiscase = exports.respondToCase = exports.createCase = undefined;
 
-var _Case = require("../models/Case");
+var _TenantModels = require("../models/TenantModels");
 
 var _Organization = require("../models/Organization");
 
@@ -41,8 +41,12 @@ var nodemailer = require('nodemailer');
 // POST /org/:urlname/case/new
 // Parms: urlname
 // req.body: title, category, description, respondents[i]
-var createCase = function createCase(req, res) {
-  _Organization.Organization.findOne({
+var createCase = exports.createCase = function createCase(req, res) {
+  var _req$dbModels = req.dbModels,
+      TenantOrganization = _req$dbModels.TenantOrganization,
+      Case = _req$dbModels.Case,
+      User = _req$dbModels.User;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }).populate('employees', "username email -_id").then(function (org) {
     var list = [];
@@ -59,10 +63,9 @@ var createCase = function createCase(req, res) {
         emailList.push(org.employees[i].email);
       });
       console.log(emailList);
-
-      _User.User.findById(req.user._id, function (err, user) {
+      User.findById(req.user._id, function (err, user) {
         if (err) return response.error(res, 500, err.message);else if (!user) return response.error(res, 422, 'User not found');else {
-          _Case.Case.create(_objectSpread({}, req.body, {
+          Case.create(_objectSpread({}, req.body, {
             createdBy: user.username
           }), function (err, newCase) {
             if (err) return response.error(res, 500, err.message);else {
@@ -93,18 +96,20 @@ var createCase = function createCase(req, res) {
 // req.body: notes
 
 
-exports.createCase = createCase;
-
-var respondToCase = function respondToCase(req, res) {
-  _Organization.Organization.findOne({
+var respondToCase = exports.respondToCase = function respondToCase(req, res) {
+  var _req$dbModels2 = req.dbModels,
+      TenantOrganization = _req$dbModels2.TenantOrganization,
+      Case = _req$dbModels2.Case,
+      Comment = _req$dbModels2.Comment;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }).populate("employees").exec(function (err, org) {
     if (!org.cases.includes(req.params.case_id)) return response.error(res, 404, 'Case not found');else {
-      _Case.Case.findById(req.params.case_id).populate('comments').exec(function (err, thisCase) {
-        if (err) response.error(res, 500, err.message);else if (!thisCase) return response.error(res, 404, 'Case not found');else if (thisCase.createdBy !== req.user._id && !thisCase.respondents.includes(req.user.username)) {
+      Case.findById(req.params.case_id).populate('comments').exec(function (err, thisCase) {
+        if (err) response.error(res, 500, err.message);else if (!thisCase) return response.error(res, 404, 'Case not found');else if (thisCase.createdBy !== req.user.username && !thisCase.respondents.includes(req.user.username)) {
           return response.error(res, 403, 'You are not authorized as you are neither the creator of this case nor are you one of the respondents');
         } else {
-          _Comment.Comment.create(_objectSpread({}, req.body, {
+          Comment.create(_objectSpread({}, req.body, {
             sender: req.user,
             sentFor: thisCase,
             timeSent: new Date().toUTCString(),
@@ -130,9 +135,7 @@ var respondToCase = function respondToCase(req, res) {
               html: " \n                                        <p style=\"font-family:candara;font-size:1.2em\">A new response by ".concat(comment.sender.firstName, " ").concat(comment.sender.lastName, " to case: ").concat(thisCase.title, ".</p>\n                                        <ul>\n                                        <li style=\"font-family:candara;font-size:1.2em\">Case: ").concat(thisCase.title, "</li>\n                                        <li style=\"font-family:candara;font-size:1.2em\">Comment: ").concat(comment.notes, "</li>\n                                        <li style=\"font-family:candara;font-size:1.2em\">Sent on: ").concat(comment.timeSent, "</li>\n                                        </ul>\n                                        <a href=\"http://").concat(req.headers.host, "/org/").concat(org.urlname, "/case/").concat(thisCase._id, "/view\" style=\"font-family:candara;font-size:1.2em\">Click to view case</a>\n\n                                            ")
             };
             (0, _mail.sendMailToTheseUsers)(req, res, mailOptions);
-            console.log({
-              thisCase: thisCase
-            });
+            response.success(res, 200, "Response received");
           })["catch"](function (err) {
             return response.error(res, 500, err.message);
           });
@@ -144,14 +147,15 @@ var respondToCase = function respondToCase(req, res) {
 // @GET /org/:urlname/case/:case_id/view
 
 
-exports.respondToCase = respondToCase;
-
-var fethThiscase = function fethThiscase(req, res) {
-  _Organization.Organization.findOne({
+var fethThiscase = exports.fethThiscase = function fethThiscase(req, res) {
+  var _req$dbModels3 = req.dbModels,
+      TenantOrganization = _req$dbModels3.TenantOrganization,
+      Case = _req$dbModels3.Case;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }).populate("employees").exec(function (err, org) {
     if (!org.cases.includes(req.params.case_id)) return response.error(res, 404, 'Case not found');else {
-      _Case.Case.findById(req.params.case_id).populate('comments', "notes sender timeSent").exec(function (err, thisCase) {
+      Case.findById(req.params.case_id).populate('comments', "notes sender timeSent").exec(function (err, thisCase) {
         if (err) response.error(res, 500, err.message);else if (!thisCase) return response.error(res, 404, 'Case not found');else if (thisCase.createdBy !== req.user._id && !thisCase.respondents.includes(req.user.username)) {
           return response.error(res, 403, 'You are not authorized as you are neither the creator of this case nor are you one of the respondents');
         } else {
@@ -165,14 +169,15 @@ var fethThiscase = function fethThiscase(req, res) {
 // req.body: status
 
 
-exports.fethThiscase = fethThiscase;
-
-var changeCaseStatus = function changeCaseStatus(req, res) {
-  _Organization.Organization.findOne({
+var changeCaseStatus = exports.changeCaseStatus = function changeCaseStatus(req, res) {
+  var _req$dbModels4 = req.dbModels,
+      TenantOrganization = _req$dbModels4.TenantOrganization,
+      Case = _req$dbModels4.Case;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }).populate("employees").exec(function (err, org) {
     if (!org.cases.includes(req.params.case_id)) return response.error(res, 404, 'Case not found');else {
-      _Case.Case.findById(req.params.case_id, function (err, thisCase) {
+      Case.findById(req.params.case_id, function (err, thisCase) {
         if (err) {
           return response.error(res, 500, err.message);
         } else if (!thisCase) return response.error(res, 404, 'Case not found');else if (thisCase.createdBy !== req.user.username) {
@@ -193,10 +198,11 @@ var changeCaseStatus = function changeCaseStatus(req, res) {
 // Body: newRespondents[i]
 
 
-exports.changeCaseStatus = changeCaseStatus;
-
-var inviteRespondentToCase = function inviteRespondentToCase(req, res) {
-  _Organization.Organization.findOne({
+var inviteRespondentToCase = exports.inviteRespondentToCase = function inviteRespondentToCase(req, res) {
+  var _req$dbModels5 = req.dbModels,
+      TenantOrganization = _req$dbModels5.TenantOrganization,
+      Case = _req$dbModels5.Case;
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }).populate("employees").exec(function (err, org) {
     if (!org.cases.includes(req.params.case_id)) return response.error(res, 404, 'Case not found');else {
@@ -205,6 +211,7 @@ var inviteRespondentToCase = function inviteRespondentToCase(req, res) {
       org.employees.forEach(function (employee) {
         return list.push(employee.username);
       });
+      console.log(list);
 
       if (!list.includes.apply(list, _toConsumableArray(req.body.newRespondents))) {
         return response.error(res, 422, 'You have included a respondent who is not an employee of this organization');
@@ -213,8 +220,7 @@ var inviteRespondentToCase = function inviteRespondentToCase(req, res) {
           var i = list.indexOf(respondent);
           emailList.push(org.employees[i].email);
         });
-
-        _Case.Case.findById(req.params.case_id, function (err, thisCase) {
+        Case.findById(req.params.case_id, function (err, thisCase) {
           var _thisCase$respondents;
 
           if (err) {
@@ -239,10 +245,7 @@ var inviteRespondentToCase = function inviteRespondentToCase(req, res) {
                   html: " \n                                <p style=\"font-family:candara;font-size:1.2em\">Your response is needed on this ongoing thread:  ".concat(thisCase.title, ".</p>\n                                <ul>\n                                <li style=\"font-family:candara;font-size:1.2em\">Case: ").concat(thisCase.title, "</li>\n                                <li style=\"font-family:candara;font-size:1.2em\">You were invited by: ").concat(req.user.firstName, " ").concat(req.user.lastName, " </li>\n                                </ul>\n                                <a href=\"http://").concat(req.headers.host, "/org/").concat(org.urlname, "/case/").concat(thisCase._id, "/view\" style=\"font-family:candara;font-size:1.2em\">Click to view case</a>\n\n                                    ")
                 };
                 (0, _mail.sendMailToTheseUsers)(req, res, mailOptions);
-                console.log({
-                  thisCase: thisCase
-                });
-                return response.success(res, 200, 'Respondents have been notified to join this thread');
+                return response.success(res, 200, 'Respondent have been notified to join this thread');
               }
             });
           }
@@ -251,5 +254,3 @@ var inviteRespondentToCase = function inviteRespondentToCase(req, res) {
     }
   });
 };
-
-exports.inviteRespondentToCase = inviteRespondentToCase;

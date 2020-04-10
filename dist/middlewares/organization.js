@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LoggedUserisAdmin = exports.LoggedUserisEmployee = exports.orgExists = void 0;
+exports.checkDBExists = exports.LoggedUserisAdmin = exports.LoggedUserisEmployee = exports.orgExists = undefined;
 
 var _Organization = require("../models/Organization");
 
@@ -15,7 +15,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var response = require("../middlewares/response");
 
-var orgExists = function orgExists(req, res, next) {
+var orgExists = exports.orgExists = function orgExists(req, res, next) {
   var urlname = req.params.urlname;
 
   _Organization.Organization.findOne({
@@ -29,22 +29,16 @@ var orgExists = function orgExists(req, res, next) {
   });
 };
 
-exports.orgExists = orgExists;
-
-var LoggedUserisEmployee =
-/*#__PURE__*/
-function () {
-  var _ref = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(req, res, next) {
-    var urlname;
+var LoggedUserisEmployee = /*#__PURE__*/exports.LoggedUserisEmployee = function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res, next) {
+    var urlname, TenantOrganization;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             urlname = req.params.urlname;
-
-            _Organization.Organization.findOne({
+            TenantOrganization = req.dbModels.TenantOrganization;
+            TenantOrganization.findOne({
               urlname: urlname
             }, function (err, org) {
               if (err) response.error(res, 500, err.message);else if (!org) response.error(res, 404, "Organization ".concat(urlname, " not found"));else if (org.employees.includes(req.user._id)) {
@@ -54,7 +48,7 @@ function () {
               }
             });
 
-          case 2:
+          case 3:
           case "end":
             return _context.stop();
         }
@@ -67,14 +61,8 @@ function () {
   };
 }();
 
-exports.LoggedUserisEmployee = LoggedUserisEmployee;
-
-var LoggedUserisAdmin =
-/*#__PURE__*/
-function () {
-  var _ref2 = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee2(req, res, next) {
+var LoggedUserisAdmin = /*#__PURE__*/exports.LoggedUserisAdmin = function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res, next) {
     var urlname;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
@@ -105,4 +93,12 @@ function () {
   };
 }();
 
-exports.LoggedUserisAdmin = LoggedUserisAdmin;
+var checkDBExists = exports.checkDBExists = function checkDBExists(req, res, next) {
+  _Organization.Organization.findOne({
+    urlname: req.headers.host.toLowerCase()
+  }, function (err, org) {
+    if (org) {
+      next();
+    }
+  });
+};

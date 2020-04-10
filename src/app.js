@@ -13,7 +13,8 @@ const geoip = require('geoip-lite');
 const subdomain = require('express-subdomain');
 const { connect, getDBInstance } = require('./database/multiDb.js');
 
-
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import path from 'path';
 import { startDb } from './database/db';
 import { getOrganization } from './middlewares/organization';
@@ -66,6 +67,7 @@ app.use('/org/:urlname',function(req,res,next){
              res.locals.currentUser = req.user;   
              return next()
             }
+            else if(!user) { return next()}
         })   
         }
 })

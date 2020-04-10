@@ -22,7 +22,7 @@ router.post('/:urlname/travel/:travel_id/update',[
     check('requestor').not().isEmpty().withMessage('This travel request has no requestor')
 
 ], validate, authUser, LoggedUserisEmployee,updateTravelRecord);
-router.get('/:urlname/travel/:travel_id/approve', authUser, LoggedUserisEmployee,LoggedUserisAdmin,approveTravelRequest)
-router.get('/:urlname/travel/:travel_id/decline', authUser, LoggedUserisEmployee,LoggedUserisAdmin,declineTravelRequest)
+router.get('/:urlname/travel/:travel_id/approve', authUser, LoggedUserisEmployee, approveTravelRequest)
+router.get('/:urlname/travel/:travel_id/decline', authUser, LoggedUserisEmployee, declineTravelRequest)
 
 module.exports = router;

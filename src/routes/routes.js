@@ -2,7 +2,7 @@ import { registerNewUser, loginUser, verifyToken, resendToken } from "../control
 import {recover, reset, resetPassword} from '../controllers/password';
 const authRouter = require('./authRoutes');
 const userRouter = require('./userRoute.js');
-const locationRouter = require('./locationRoute.js');
+// const locationRouter = require('./locationRoute.js');
 const organizationRouter = require('./organizationRoute');
 const fileRouter = require('./fileRoute');
 const attendanceRouter = require('./attendanceRoutes.js');
@@ -24,12 +24,12 @@ export const initRoutes = app => {
     app.use('/org', userRouter);
     app.use('/org', attendanceRouter);
     app.use('/org', shiftRouter);
-    app.use('/location', locationRouter);
+    // app.use('/location', locationRouter);
     app.use('/org', fileRouter);
     app.use('/org', departmentRouter);
     app.use('/org', leaveRouter); 
     app.use('/org', taskRouter);
-    app.use('/benefit', benefitRouter);
+    app.use('/org', benefitRouter);
     app.use('/org', caseRouter);
     app.use('/org', assetRouter);
     app.use('/org', travelRouter);

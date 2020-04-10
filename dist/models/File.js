@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.File = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var fileSchema = new Schema({
+var fileSchema = exports.fileSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -26,5 +25,4 @@ var fileSchema = new Schema({
     required: true
   }
 });
-var File = mongoose.model('File', fileSchema);
-exports.File = File;
+var File = exports.File = mongoose.model('File', fileSchema);

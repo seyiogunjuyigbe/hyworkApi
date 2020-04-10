@@ -12,10 +12,10 @@ const orgMiddleware = require('../middlewares/organization');
 const router = Router({mergeParams: true});
 
 // render page to add new organization
-router.get('/new', renderCreateOrgPage)
+router.get('/', renderCreateOrgPage)
 
 // Create an organization
-router.post('/new', [
+router.post('/', [
     check("name").not().isEmpty().withMessage("Enter Organisation's name"),
     check("description").not().isEmpty().withMessage("Enter description of organization"),
     check("urlname").not().isEmpty().withMessage("Enter url of Organization")
@@ -36,7 +36,7 @@ router.post('/:urlname/user/onboard/new', [
     check("email").isEmail().not().isEmpty().withMessage('Enter a valid email address'),
     check('firstName').not().isEmpty().withMessage(`Enter employee's first name`),
     check('lastName').not().isEmpty().withMessage(`Enter employee's last name`),
-    // check('username').not().isEmpty().withMessage(`Enter employee's unique username`)
+    check('username').not().isEmpty().withMessage(`Enter employee's unique username`)
 ], [validate, authUser.authUser, orgMiddleware.LoggedUserisAdmin], addUserToOrganization );
 
 //Verify added employee

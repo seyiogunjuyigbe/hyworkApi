@@ -21,6 +21,6 @@ router.post('/:urlname/case/:case_id/status/change',
             check('status').not().isEmpty().withMessage('Please specify new case status'),validate,
             authUser,LoggedUserisEmployee,changeCaseStatus);
 router.post('/:urlname/case/:case_id/respondents/new',
-            check('respondents').isArray().not().isEmpty().withMessage('Please specify a minimum of 1 new respondent'),validate,
+            check('newRespondents').isArray().not().isEmpty().withMessage('Please specify a minimum of 1 new respondent'),validate,
             authUser,LoggedUserisEmployee,inviteRespondentToCase)
 module.exports = router;

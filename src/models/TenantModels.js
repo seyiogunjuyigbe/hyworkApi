@@ -22,6 +22,7 @@ import { delegationSchema } from './Delegation';
 import { departmentSchema } from './Department';
 import { dependentSchema } from './Dependent';
 import { fieldSchema } from './Field';
+import { timeLogSchema } from './Timelog';
 
 
 
@@ -47,6 +48,7 @@ module.exports = {
     Service: serviceSchema,
     Shift: shiftSchema,
     Task: taskSchema,
+    Timelog: timeLogSchema,
     Token: tokenSchema,
     Travel: travelSchema,
     User: userSchema

@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Asset = void 0;
 
 var mongoose = require("mongoose");
 
 var Schema = mongoose.Schema;
-var assetSchema = new Schema({
+var assetSchema = exports.assetSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -33,5 +32,4 @@ var assetSchema = new Schema({
 }, {
   timestamps: true
 });
-var Asset = mongoose.model("Asset", assetSchema);
-exports.Asset = Asset;
+var Asset = exports.Asset = mongoose.model("Asset", assetSchema);

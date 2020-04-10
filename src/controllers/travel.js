@@ -50,18 +50,13 @@ export const createTravelRecord = (req,res)=>{
 // Update travel request records
 export const updateTravelRecord = (req,res)=>{
     const { Travel, TenantOrganization, User } = req.dbModels;
-    User.findOne({username:travel.requestor})
-    .then((thisUser)=>{
+    User.findOne({username: req.body.requestor})
+    .then((user)=>{
         if(!user)response.error(res,404,'User not found for this travel record');
-        else{
-        if(user.username !== travel.requestor || travel.approvalStatus !== 'Pending') return response.error(res,403,'You cannot edit this request as it has been attended to')
        else{
     Travel.findByIdAndUpdate(req.params.travel_id, {...req.body, numberOfDays: getDIfferenceinDays(req.body.departureDate,req.body.arrivalDate),modifiedBy:req.user,modifiedAt: new Date().toTimeString()}, (err,travel)=>{
         if(err)return response.error(res,500,err.message)
         else if(!travel) response.error(res,404,'Travel record not found');
-        else if(travel.createdBy !== req.user.username){
-            return response.error(res,403,"You're not authorized to do so")
-        }
         else  { 
             travel.save()
            return response.success(res,200,'Travel record updated sucessfully')
@@ -69,7 +64,7 @@ export const updateTravelRecord = (req,res)=>{
     })
 }
         }
-    })
+    )
 }
 
 
