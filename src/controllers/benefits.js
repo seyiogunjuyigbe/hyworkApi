@@ -13,6 +13,37 @@ export const createBenefit = async (req, res) => {
 
 };
 
+export const fetchBenefit = async (req, res) => {
+    const { Benefit } = req.dbModels;
+    Benefit.find({}, (err, benefits) => {
+        if(err) { 
+            return response.error(res, 500, err.message);
+        }
+        else if(!benefits) {
+            return response.error(res, 404, 'Could not find benefits')
+        } else {
+            return response.success(res, 200, benefits);
+        }
+
+    })
+}
+
+
+export const fetchBenefitOfUser =  (req, res) => {
+    const { User } = req.dbModels;
+    User.findOne({username: req.body.username }).populate("benefits").exec((err, user) => {
+        if(err) { 
+            return response.error(res, 500, err.message);
+        }
+        else if(!user) {
+            return response.error(res, 404, 'Could not find user')
+        } else {
+            return response.success(res, 200, user.benefits);
+        }
+
+    }
+    )}
+
 export const giveUserBenefit = async (req, res) => {
     const { Benefit, User } = req.dbModels;
     const { id, username } = req.params;
