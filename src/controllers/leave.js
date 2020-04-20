@@ -200,3 +200,101 @@ export const declineLeave = (req, res) => {
   })
 
 }
+
+export const fetchMyLeaveRecords = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({applicant:req.user._id})
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
+
+export const fetchLeaveRecordsForUser=(req,res)=>{
+  const {Leave} = req.dbModels;
+  const {username} = req.query;
+  if(!username){
+    return response.error(res,400,'Please specify employee')
+  }
+  var leaveArr=[];
+  Leave.find({}).populate('applicant', 'username -_id')
+  .then(records=>{
+    records.forEach(record=>{
+      if(String(record.applicant)==String(username)){
+        leaveArr.push(leave)
+      }
+    })
+    return response.success(res,200,leaveArr)
+  })
+  .catch(err=>{
+    return response.error(res,500,err.message)
+  })
+}
+
+export const fetchLeaveRecordsByDept=(req,res)=>{
+  const {Leave,Department} = req.dbModels;
+  const {deptId} = req.params
+  var leaveArr=[];
+  Department.findById(deptId)
+  .then(dept=>{
+  Leave.find({}).populate('applicant', 'username department -_id').sort('username')
+  .then(records=>{
+    records.forEach(record=>{
+      if(String(record.applicant.department)==String(dept._id)){
+        leaveArr.push(leave)
+      }
+    })
+    return response.success(res,200,leaveArr)
+  })
+})
+  .catch(err=>{
+    return response.error(res,500,err.message)
+  })
+
+}
+
+export const fetchApprovedLeaveRequests = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({approvalStatus:'Approved'}).sort('username')
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
+
+export const fetchDeclinedLeaveRequests = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({approvalStatus:'Declined'}).sort('username')
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
+export const fetchPendingLeaveRequests = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({approvalStatus:'Pending'}).sort('username')
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
