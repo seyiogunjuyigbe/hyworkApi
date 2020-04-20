@@ -13,6 +13,7 @@ export const shiftSchema = new Schema({
     type: String,
     required: true
   },
+  break: Number,
   isShiftMarginEnabled: {
     type: Boolean,
     default: false
