@@ -2,12 +2,23 @@
 // @Params: urlname
 // Method: POST
 // Access: logged in admin
-import { Job } from '../models/Job';
-import { User } from '../models/User';
-import { Organization } from '../models/Organization';
 const response = require('../middlewares/response')
 import { sendMailToTheseUsers } from '../middlewares/mail';
 import { MAIL_SENDER } from '../config/constants'
+export const createProject =(req,res)=>{
+    let{Project} = req.dbModels
+    let{urlname} = req.params
+let {title,description}= req.body
+Project.create({title,description})
+.then(project=>{
+    project.save();
+    return response.success(res,200,'Project created successfully')
+})
+.catch(err=>{
+    return response.error(res,500,err.message)
+})
+
+}
 export const createJob = (req, res) => {
     let { urlname } = req.params
     const { TenantOrganization, Job } = req.dbModels
@@ -190,6 +201,28 @@ export const updateThisJob = (req, res) => {
                     }
                     return response.success(res, 200, 'this job has been successfully updated')
                 }
+            })
+        }
+    })
+}
+export const addJobToProject=(req,res)=>{
+    let{Project,Job} = req.dbModels;
+    let {project_id,job_id} = req.params;
+    Project.findOne({token:project_id})
+    .then(project=>{
+        if(!project) return response.error(res,404,'Project not found');
+        else{
+            Job.findOne({token:job_id})
+            .then(job=>{
+                if(!job) return response.error(res,404,'Job not found');
+                else{
+                    project.jobs.push(job);
+                    project.save();
+                    return response.success(res,200,'Job added to project successfully')
+                }
+            })
+            .catch(err=>{
+                return response.error(res,500,err.message)
             })
         }
     })
