@@ -91,3 +91,16 @@ export const deleteAsset = (req, res) => {
         }
     })
 }
+export const fetchAssets = (req,res)=>{
+    const {Asset} = req.dbModels;
+    Asset.find({}) 
+    .then(assets=>{
+        if(!assets) return response.success(res,204, 'No assets found')
+        else{
+            return response.success(res,200,assets)
+        }
+    })
+    .catch(err=>{
+        return response.error(res,500,err.message)
+    })
+}

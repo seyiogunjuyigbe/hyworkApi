@@ -1,5 +1,3 @@
-import { Job } from '../models/Job';
-import { User } from '../models/User'
 const response = require('../middlewares/response')
 import { checkIfJobLogExists, checkIfJobLogExistsAndUpdate } from '../middlewares/timelog'
 export const startTimeLogForThisJob = (req, res) => {
@@ -120,3 +118,73 @@ export const fetchUsersLogsForThisJob = (req, res) => {
     })
 }
 
+export const submitTimesheetForThisJob = (req,res)=>{
+    const {Timelog, Timesheet} = req.dbModels;
+    const {startDate, endDate} = req.query;
+    const start = new Date(startDate).getTime();
+    const end = new Date(endDate).getTime();
+    Timelog.find({user: req.user.username, relatedJob: req.params.job_id, startTime:{$gte : start}, endTime: {$lte: end}})
+    .then(logs=>{
+        Timesheet.create({
+            startDate,
+            endDate,
+            owner: req.user,
+            logs,
+        })
+        .then(sheet=>{
+            sheet.save();
+            return response.success(res,200,'Timesheet submitted successfully')
+        })
+        .catch(err=>{
+            return response.error(res,500,err.message)
+        })
+    })
+}
+
+export const fetchTimesheetForThisJob = (req,res)=>{
+    const {Timesheet} = req.dbModels;
+    const {sheet_id} = req.params;
+    Timesheet.findOne({token:sheet_id})
+        .then(sheet=>{
+            if(!sheet) return response.error(res,404,'Sheet not found')
+            else{
+                return response.success(res,200,sheet)
+            }
+        })
+        .catch(err=>{
+            return response.error(res,500,err.message)
+        })
+}
+
+export const approveTimesheetForThisJob = (req,res)=>{
+    const {Timesheet} = req.dbModels;
+    const {sheet_id} = req.params;
+    Timesheet.findOne({token:sheet_id})
+        .then(sheet=>{
+            if(!sheet) return response.error(res,404,'Sheet not found')
+            else{
+                sheet.approvalStatus = 'approved';
+                sheet.save()
+                return response.success(res,200,sheet)
+            }
+        })
+        .catch(err=>{
+            return response.error(res,500,err.message)
+        })
+}
+export const rejectTimesheetForThisJob = (req,res)=>{
+    const {Timesheet} = req.dbModels;
+    const {sheet_id} = req.params;
+    Timesheet.findOne({token:sheet_id})
+        .then(sheet=>{
+            if(!sheet) return response.error(res,404,'Sheet not found')
+            else{
+                sheet.approvalStatus = 'rejected';
+                sheet.save()
+                return response.success(res,200,sheet)
+            }
+        })
+        .catch(err=>{
+            return response.error(res,500,err.message)
+        })
+}

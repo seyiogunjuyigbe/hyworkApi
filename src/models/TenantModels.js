@@ -23,7 +23,7 @@ import { departmentSchema } from './Department';
 import { dependentSchema } from './Dependent';
 import { fieldSchema } from './Field';
 import { timeLogSchema } from './Timelog';
-
+import {timesheetSchema} from './Timesheet'
 
 
 module.exports = {
@@ -49,6 +49,7 @@ module.exports = {
     Shift: shiftSchema,
     Task: taskSchema,
     Timelog: timeLogSchema,
+    Timesheet: timesheetSchema,
     Token: tokenSchema,
     Travel: travelSchema,
     User: userSchema

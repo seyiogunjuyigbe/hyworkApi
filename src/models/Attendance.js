@@ -34,7 +34,7 @@ export const attendanceSchema = new Schema({
 var options = {
   fieldName: "token",
   createIndex: true,
-  tokenLength: 16
+  tokenLength: 8
 }
 attendanceSchema.plugin(mongooseIdToken, options)
 export const Attendance = mongoose.model('Attendance', attendanceSchema)
