@@ -24,6 +24,37 @@ export async function uploadFile(req, res, next) {
 }
 
 
+export async function uploadFileByDepartment(req, res, next) {
+    const { title, description } = req.body;
+    const { file } = req;
+    const { File, TenantOrganization, Department } = req.dbModels;
+    Department.findById(req.params.deptId, (err, dept) => {
+        if (err) {
+            response.error(res, 400, err);
+        }
+        else if(dept) {
+            File.create({ title, description, fileLocationUrl: file.secure_url, uploadedBy: req.user._id, department: dept._id}, (err, file) => {
+                if (err) {
+                    response.error(res, 400, err);
+                }
+                TenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
+                    if (err) {
+                        response.error(res, 404, err)
+                    }
+                    org.files.push(file._id)
+                    org.save();
+                    response.success(res, 200, "File uploaded successfully")
+        
+                })
+            })
+        }
+        
+    })
+    
+
+}
+
+
 export async function updateFileDetails(req, res) {
     const { title, description } = req.body;
     const { File } = req.dbModels;
