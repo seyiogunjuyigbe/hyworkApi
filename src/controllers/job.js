@@ -208,11 +208,11 @@ export const updateThisJob = (req, res) => {
 export const addJobToProject=(req,res)=>{
     let{Project,Job} = req.dbModels;
     let {project_id,job_id} = req.params;
-    Project.findOne({token:project_id})
+    Project.findById(project_id)
     .then(project=>{
         if(!project) return response.error(res,404,'Project not found');
         else{
-            Job.findOne({token:job_id})
+            Job.findById(job_id)
             .then(job=>{
                 if(!job) return response.error(res,404,'Job not found');
                 else{

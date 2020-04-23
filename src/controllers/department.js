@@ -154,3 +154,11 @@ export const removeOne = async (req, res) => {
         res.status(400).end();
     }
 };
+
+export const getAllDepartments = (req, res) => {
+    const { Department } = req.dbModels;
+    Department.find({}, (err, dept) => {
+        if (err) { response.error(res, 404, 'Could not fetch benefits') };
+        response.success(res, 200, dept);
+    });
+}

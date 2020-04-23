@@ -103,7 +103,7 @@ export const removeDependentFromUser = (req, res) => {
 }
 
 
-const updateBioMessage = (req, res) => {
+export const updateBioMessage = (req, res) => {
     const { User } = req.dbModels;
     const { username } = req.params;
     const { bioMessage } = req.body;
@@ -118,14 +118,14 @@ const updateBioMessage = (req, res) => {
     });
 }
 
-const addAddress = (req, res) => {
+export const addAddress = (req, res) => {
     const { User } = req.dbModels;
     const { username } = req.params;
     const { address } = req.body;
 
     User.findOne({username}, (err, user) => {
         if(err) {
-            response.error(res, 404, err);
+            response.error(res, 500, err);
         }
         user.address = address;
         user.save();
@@ -134,3 +134,24 @@ const addAddress = (req, res) => {
 
 }
 
+export const addReportingTo = (req, res) => {
+    const { User } = req.dbModels;
+    const { username } = req.params;
+    const { skills } = req.body;
+
+    User.findById(req.user._id, (err, currentUser) => {
+        if(err) {
+            response.error(res, 500, err);
+        }
+        User.findOne({ username }, (err, user) => {
+            if(err) {
+                response.error(res, 500, err);
+            }
+            else if(user) {
+                currentUser.reportingTo = user._id;
+                currentUser.save();
+                response.success(res, 200, 'Successfully added direct supervisor to user');
+            }
+        })
+    })
+}

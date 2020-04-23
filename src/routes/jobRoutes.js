@@ -7,7 +7,7 @@ import { startTimeLogForThisJob,endTimeLogForThisJob, fetchMyLogsForThisJob,
     fetchUsersLogsForThisJob,submitTimesheetForThisJob,approveTimesheetForThisJob, fetchTimesheetForThisJob,
     rejectTimesheetForThisJob } from "../controllers/timelog";
 const validate = require('../middlewares/validate');
-router.post('/:urlname/job/new', authUser, LoggedUserisEmployee, [
+router.post('/:urlname/project/new', authUser, LoggedUserisEmployee, [
     check('title').not().isEmpty().withMessage('Please give this project a title'),
     check('description').not().isEmpty().withMessage('Please give description to project')
 ], validate,createProject)
@@ -38,7 +38,7 @@ router.post('/:urlname/job/:job_id/log/:token/end', authUser,LoggedUserisEmploye
 router.get('/:urlname/project/:project_id/job/add/:job_id', authUser,LoggedUserisEmployee, addJobToProject)
 router.get('/:urlname/job/:job_id/logs/fetch/me', authUser,LoggedUserisEmployee,fetchMyLogsForThisJob);
 router.get('/:urlname/job/:job_id/logs/fetch/many', authUser,LoggedUserisEmployee, fetchUsersLogsForThisJob);
-router.get('/:urlname/job/:job_id/logs/submit?startDate=&endDate=', authUser, submitTimesheetForThisJob);
+router.post('/:urlname/job/:job_id/logs/submit', authUser, submitTimesheetForThisJob);
 router.get('/:urlname/job/:job_id/logs/sheet/:sheet_id/fetch', authUser, fetchTimesheetForThisJob),
 router.get('/:urlname/job/:job_id/logs/sheet/:sheet_id/approve', authUser,LoggedUserisAdmin, approveTimesheetForThisJob)
 router.get('/:urlname/job/:job_id/logs/sheet/:sheet_id/reject', authUser,LoggedUserisAdmin, rejectTimesheetForThisJob)
