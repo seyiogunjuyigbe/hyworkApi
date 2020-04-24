@@ -219,6 +219,20 @@ export const fetchMyLeaveRecords = (req,res)=>{
    })
 }
 
+export const fetchAllLeaveRecords = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({})
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
+
 export const fetchLeaveRecordsForUser=(req,res)=>{
   const {Leave} = req.dbModels;
   const {username} = req.query;
