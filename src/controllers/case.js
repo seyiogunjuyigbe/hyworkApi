@@ -232,4 +232,15 @@ export const inviteRespondentToCase = (req, res) => {
             }
         }
     })
+
+
+}
+
+
+export const getAllCases = (req, res) => {
+    const { Cases } = req.dbModels;
+    Cases.find({}, (err, cases) => {
+        if (err) { response.error(res, 404, 'Could not fetch cases') }
+        response.success(res, 200, cases);
+    });
 }
