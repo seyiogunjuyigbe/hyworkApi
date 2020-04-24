@@ -43,9 +43,9 @@ export const createLeaveRequest = (req, res) => {
                 Department.findById(req.params.deptId).populate('manager').exec((err, department) => {
                   if (err) return response.error(res, 500, err.message)
                   else if (!department) response.error(res, 404, 'Department not found')
-                  else if (!department.employees.includes(req.user._id)) {
-                    return response.error(res, 401, 'You do not belong to any department in this organization')
-                  }
+                  // else if (!department.employees.includes(req.user._id)) {
+                  //   return response.error(res, 401, 'You do not belong to any department in this organization')
+                  // }
                   else {
                     if (!department.manager) return response.error(res, 404, 'Manager not found')
                     else {
