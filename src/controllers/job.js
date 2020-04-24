@@ -12,7 +12,7 @@ let {title,description}= req.body
 Project.create({title,description})
 .then(project=>{
     project.save();
-    return response.success(res,200,'Project created successfully')
+    return response.success(res,200,project)
 })
 .catch(err=>{
     return response.error(res,500,err.message)
