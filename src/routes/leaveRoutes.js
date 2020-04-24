@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 import {createLeaveRequest, approveLeave, declineLeave, fetchApprovedLeaveRequests,
     fetchDeclinedLeaveRequests,fetchLeaveRecordsByDept,fetchLeaveRecordsForUser, 
-    fetchMyLeaveRecords,fetchPendingLeaveRequests} from '../controllers/leave';
+    fetchMyLeaveRecords,fetchPendingLeaveRequests, fetchAllLeaveRecords} from '../controllers/leave';
 import { check,sanitize } from 'express-validator';
 router.post('/:urlname/d/:deptId/leave/new', [
     check('title').not().isEmpty().withMessage('Leave has to have a title'),
@@ -10,6 +10,7 @@ router.post('/:urlname/d/:deptId/leave/new', [
 router.get('/:urlname/d/:deptId/leave/:token/approve', approveLeave);
 router.get('/:urlname/d/:deptId/leave/:token/decline', declineLeave);
 router.get('/:urlname/d/:deptId/leaves/fetch/all', fetchLeaveRecordsByDept);
+router.get('/:urlname/leaves/fetch/all', fetchAllLeaveRecords);
 router.get('/:urlname/d/:deptId/leaves/fetch?username=', fetchLeaveRecordsForUser);
 router.get('/:urlname/d/:deptId/leaves/fetch/me', fetchMyLeaveRecords);
 router.get('/:urlname/d/:deptId/leaves/fetch/approved', fetchApprovedLeaveRequests);
