@@ -5,6 +5,7 @@ const { check, validationResult } = require('express-validator');
 // import {Leave} from '../models/TenantModels';
 // import {Department} from '../models/TenantModels';
 const nodemailer = require('nodemailer');
+const sgTransport = require('nodemailer-sendgrid-transport');
 const response = require('../middlewares/response');
 import { MAIL_PASS, MAIL_SENDER, MAIL_SERVICE, MAIL_USER, SENDGRID_USERNAME, SENDGRID_PASSWORD } from '../config/constants';
 
