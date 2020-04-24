@@ -31,6 +31,8 @@ export async function uploadFileByDepartment(req, res, next) {
     Department.findById(req.params.deptId, (err, dept) => {
         if (err) {
             response.error(res, 400, err);
+        }else if(!dept) {
+            response.error(res, 404, 'Dept not found')
         }
         else if(dept) {
             File.create({ title, description, fileLocationUrl: file.secure_url, uploadedBy: req.user._id, department: dept._id}, (err, file) => {

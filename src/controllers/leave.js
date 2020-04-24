@@ -40,7 +40,7 @@ export const createLeaveRequest = (req, res) => {
                 leave.save();
                 org['leaves'].push(leave)
                 org.save();
-                Department.findOne({ employees: { $in: req.user._id } }).populate('manager').exec((err, department) => {
+                Department.findById(req.params.deptId).populate('manager').exec((err, department) => {
                   if (err) return response.error(res, 500, err.message)
                   else if (!department) response.error(res, 404, 'Department not found')
                   else if (!department.employees.includes(req.user._id)) {
