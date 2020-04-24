@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 // import {Department} from '../models/TenantModels';
 const nodemailer = require('nodemailer');
 const response = require('../middlewares/response');
-import { MAIL_PASS, MAIL_SENDER, MAIL_SERVICE, MAIL_USER } from '../config/constants';
+import { MAIL_PASS, MAIL_SENDER, MAIL_SERVICE, MAIL_USER, SENDGRID_USERNAME, SENDGRID_PASSWORD } from '../config/constants';
 
 export const createLeaveRequest = (req, res) => {
   const { Leave, Department, TenantOrganization } = req.dbModels;
@@ -49,13 +49,14 @@ export const createLeaveRequest = (req, res) => {
                   else {
                     if (!department.manager) return response.error(res, 404, 'Manager not found')
                     else {
-                      let transporter = nodemailer.createTransport({
-                        service: MAIL_SERVICE,
+                      const options = {
                         auth: {
-                          user: MAIL_USER,
-                          pass: MAIL_PASS
+                          api_user: SENDGRID_USERNAME,
+                          api_key: SENDGRID_PASSWORD
                         }
-                      });
+                      };
+                      
+                      const transporter = nodemailer.createTransport(sgTransport(options));
                       let mailOptions = {
                         from: MAIL_SENDER,
                         to: department.manager.email,
@@ -109,13 +110,14 @@ export const approveLeave = (req, res) => {
             if (err) return response.error(res, 500, err.message);
             else if (!applicant) return response.error(res, 404, 'Leave applicant not found');
             else {
-              let transporter = nodemailer.createTransport({
-                service: MAIL_SERVICE,
+              const options = {
                 auth: {
-                  user: MAIL_USER,
-                  pass: MAIL_PASS
+                  api_user: SENDGRID_USERNAME,
+                  api_key: SENDGRID_PASSWORD
                 }
-              });
+              };
+              
+              const transporter = nodemailer.createTransport(sgTransport(options));
               let mailOptions = {
                 from: MAIL_SENDER,
                 to: applicant.email,
@@ -166,13 +168,14 @@ export const declineLeave = (req, res) => {
             if (err) return response.error(res, 500, err.message);
             else if (!applicant) return response.error(res, 404, 'Leave applicant not found');
             else {
-              let transporter = nodemailer.createTransport({
-                service: MAIL_SERVICE,
+              const options = {
                 auth: {
-                  user: MAIL_USER,
-                  pass: MAIL_PASS
+                  api_user: SENDGRID_USERNAME,
+                  api_key: SENDGRID_PASSWORD
                 }
-              });
+              };
+              
+              const transporter = nodemailer.createTransport(sgTransport(options));
               let mailOptions = {
                 from: MAIL_SENDER,
                 to: applicant.email,
