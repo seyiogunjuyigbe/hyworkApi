@@ -94,9 +94,8 @@ if(err) return response.error(res,500,err.message)
     })
 }
 export const calculateUserRating=(req,res)=>{
-    const {employee_id,} = req.body;
     const {User,Rating,Appraisal} = req.dbModels;
-    const {token} = req.params
+    const {token,employee_id} = req.params
     User.findById(employee_id)
     .then(employee=>{
         if(!employee) return response.error(res,404,'Employee not found')
@@ -113,7 +112,8 @@ export const calculateUserRating=(req,res)=>{
                             ratings.forEach(rating=>{
                                 total += rating.value
                             })
-                            console.log(total)
+                            var percentage = `${(((total/ratings.length)/appraisal.max) * 100).toFixed(1)}%`;
+                            return response.success(res,200,percentage)
                         }
                     })
                 }

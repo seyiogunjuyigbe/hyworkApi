@@ -25,4 +25,5 @@ router.post('/:urlname/appraisal/:token/rate', authUser,orgExists,
     check('employee_id').not().isEmpty().withMessage('Employee ID is required'),
     check('value').not().isEmpty().withMessage('Rating value is required'),
 ], validate, addRating)
+router.get('/:urlname/appraisal/:token/rating/fetch/:employee_id',orgExists,authUser,isAdmin,calculateUserRating)
 module.exports = router;
