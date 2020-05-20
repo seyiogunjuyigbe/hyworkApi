@@ -14,7 +14,8 @@ const caseRouter = require('./caseRoutes');
 const taskRouter = require('./taskRoutes');
 const assetRouter = require('./assetRoutes');
 const travelRouter = require('./travelRoutes')
-const jobRouter = require ('./jobRoutes')
+const jobRouter = require ('./jobRoutes');
+const ratingRouter = require('./rating')
 export const initRoutes = app => {
     app.get('/', (req,res)=>{
         res.send('Hello World!')
@@ -24,6 +25,7 @@ export const initRoutes = app => {
     app.use('/org', userRouter);
     app.use('/org', attendanceRouter);
     app.use('/org', shiftRouter);
+    app.use('/org', ratingRouter)
     // app.use('/location', locationRouter);
     app.use('/org', fileRouter);
     app.use('/org', departmentRouter);

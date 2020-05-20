@@ -24,10 +24,11 @@ import { dependentSchema } from './Dependent';
 import { fieldSchema } from './Field';
 import { timeLogSchema } from './Timelog';
 import {timesheetSchema} from './Timesheet'
-
-
+import {appraisalSchema} from './Appraisal'
+import{ratingSchema} from './Rating'
 module.exports = {
     Asset: assetSchema,
+    Appraisal:appraisalSchema,
     Attendance: attendanceSchema,
     Benefit: benefitSchema,
     Case: caseSchema,
@@ -45,6 +46,7 @@ module.exports = {
     Message: messageSchema,
     TenantOrganization: organizationSchema,
     Project: projectSchema,
+    Rating: ratingSchema,
     Service: serviceSchema,
     Shift: shiftSchema,
     Task: taskSchema,
