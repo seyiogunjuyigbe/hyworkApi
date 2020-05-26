@@ -26,6 +26,9 @@ import { timeLogSchema } from './Timelog';
 import {timesheetSchema} from './Timesheet'
 import {appraisalSchema} from './Appraisal'
 import{ratingSchema} from './Rating'
+import {roleSchema} from './Role'
+import {kraSchema} from './Kra';
+import {feedbackSchema} from './Feedback'
 module.exports = {
     Asset: assetSchema,
     Appraisal:appraisalSchema,
@@ -36,17 +39,20 @@ module.exports = {
     Delegation: delegationSchema,
     Department: departmentSchema,
     Dependent: dependentSchema,
+    Feedback: feedbackSchema,
     Form: formSchema,
     File: fileSchema,
     Field: fieldSchema,
     Goal: goalSchema,
     Job: jobSchema,
+    Kra: kraSchema,
     Leave: leaveSchema,
     Location: locationSchema,
     Message: messageSchema,
     TenantOrganization: organizationSchema,
     Project: projectSchema,
     Rating: ratingSchema,
+    Role: roleSchema,
     Service: serviceSchema,
     Shift: shiftSchema,
     Task: taskSchema,

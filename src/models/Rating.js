@@ -4,9 +4,13 @@ const mongooseIdToken = require('mongoose-id-token')
 export const ratingSchema = new Schema({
     employee_id: String,
     type: {
-        type: String
-    },
+        type: String,
+        enum:['Feedback', 'KRA'],
+        required:'You need to specify Appraisal type (Feedback, KRA)'
+      },
+    kra_token: String,
     value: Number,
+    max_value: Number,
     cycle_token: String,
     assessor_id: String,
 })

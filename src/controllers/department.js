@@ -67,6 +67,8 @@ export const addEmployee = async (req, res) => {
                 if (dept.employees.includes(user._id)) {
                     return response.error(res, 500, `${user.firstName} ${user.lastName} is already a member of department ${dept.title}`)
                 }
+                user.department = dept;
+                user.save()
                 dept.employees.push(user._id);
                 dept.save();
                 return response.success(res, 200, `Added ${user.firstName} to department ${dept.title}`);
@@ -113,7 +115,7 @@ export const removeEmployee = async (req, res) => {
         });
     } catch (error) {
         return response.error(res, 500, error.message)
-    }
+    } 
 }
 // Route: /organization/:urlname/department/:title/add
 export const addDeptToOrg = async (req, res) => {
