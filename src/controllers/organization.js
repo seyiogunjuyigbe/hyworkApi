@@ -51,7 +51,6 @@ module.exports = {
         user.createdOrganizations.push(newOrg._id);
         user.save();
         sendCreateOrganisationEmail(user, newOrg, req, res);
-        return response.success(res, 200, `Organization ${tOrg.name} created`);
       } else {
         return res.status(500).render('error/500', { message: errors })
       }
@@ -83,7 +82,7 @@ module.exports = {
                   return response.error(res, 500, `User could not be added to organization`);
                 }
                 senduserEmail(user, updatedOrganization, req, res);
-                response.success(res, 200, `Successfully added ${user.firstName} ${user.lastName}`);
+                // response.success(res, 200, `Successfully added ${user.firstName} ${user.lastName}`);
               });
             })
           });

@@ -104,6 +104,10 @@ export const userSchema = new Schema(
         ref: "Dependent"
       }
     ],
+    role: {
+      type: Schema.Types.ObjectId,
+      ref: "Role"
+    },
     travels: {
       type: Schema.Types.ObjectId,
       ref: "Travel"
@@ -114,6 +118,10 @@ export const userSchema = new Schema(
         ref: "User"
       }
     ],
+    kras:[{
+      type: Schema.Types.ObjectId,
+      ref: 'Kra'
+    }],
     skills: [],
     benefits: [
       {

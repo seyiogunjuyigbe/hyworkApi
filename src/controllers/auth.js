@@ -43,7 +43,7 @@ export const registerNewUser = (req, res) => {
                   console.log(err);
                   return res.status(500).render('register',{success:false, err: err.message});
               }
-              else{
+              else{ 
                 passport.authenticate("local")(req, res, function(){
                     sendTokenMail(newUser,req,res);
                     newUser.save();

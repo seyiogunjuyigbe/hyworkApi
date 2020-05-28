@@ -24,6 +24,4 @@ router.post('/:urlname/case/:case_id/respondents/new',
             check('newRespondents').isArray().not().isEmpty().withMessage('Please specify a minimum of 1 new respondent'),validate,
             authUser,LoggedUserisEmployee,inviteRespondentToCase);
 router.get('/:urlname/case/fetch/all', getAllCases);
-
-
 module.exports = router;
