@@ -97,9 +97,6 @@ export const fetchShifts = (req, res) => {
         } else if (!org) {
             return res.status(404).json({ params: req.params, message: 'No organization with this name was found... please check again' })
         }
-        else if (!org.admin.includes((req.user._id))) {
-            return res.status(401).json({ message: 'You are unauthorized to fetch shifts' })
-        }
         else {
             Shift.find({ createdFor: org._id }, (err, shifts) => {
                 if (err) return res.status(500).json({ message: err.message })

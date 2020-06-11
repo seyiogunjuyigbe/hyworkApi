@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Task = void 0;
 
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var taskSchema = new Schema({
+var taskSchema = exports.taskSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -36,5 +35,4 @@ var taskSchema = new Schema({
     ref: 'File'
   }]
 });
-var Task = mongoose.model('Task', taskSchema);
-exports.Task = Task;
+var Task = exports.Task = mongoose.model('Task', taskSchema);

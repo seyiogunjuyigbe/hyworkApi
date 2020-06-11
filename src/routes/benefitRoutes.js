@@ -9,7 +9,7 @@ router.post('/:urlname/benefit/new',[
     check("description").not().isEmpty().withMessage("Enter Benefit Description"),
     check("value").isNumeric().withMessage("Enter a Float Number")
 ], [ validate ], createBenefit);
-router.get('/:urlname/benefit/all', getAllBenefits );
+router.get('/:urlname/benefit/fetch/all', getAllBenefits );
 router.post('/:urlname/benefit/:id/user/:username', giveUserBenefit );
 router.get('/:urlname/benefit/:id/user/:username', removeBenefitFromUser );
 

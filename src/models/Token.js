@@ -13,7 +13,7 @@ token: {
 createdAt: {
         type: Date,
         required: true,
-        default: Date.now,
+        default: new Date().getTime(),
         expires: 43200
         }
 }, {timestamps: true});

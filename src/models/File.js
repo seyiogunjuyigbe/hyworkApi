@@ -11,7 +11,11 @@ export const fileSchema = new Schema({
   fileLocationUrl: {
     type: String,
     required: true
-  }, 
+  },
+  department: {
+    type: Schema.Types.ObjectId,
+    ref: 'Department'
+  },
   uploadedBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',

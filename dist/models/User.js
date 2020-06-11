@@ -3,13 +3,14 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.User = void 0;
+exports.User = exports.userSchema = undefined;
+
+var _ref,
+    _this = void 0;
 
 var _Token = require("./Token");
 
 var _constants = require("../config/constants");
-
-var _ref;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -25,7 +26,7 @@ var Schema = mongoose.Schema;
 
 var passportLocalMongoose = require('passport-local-mongoose');
 
-var userSchema = new Schema((_ref = {
+var userSchema = exports.userSchema = new Schema((_ref = {
   username: {
     type: String,
     trim: true,
@@ -70,8 +71,7 @@ var userSchema = new Schema((_ref = {
   },
   maritalStatus: {
     type: String,
-    "enum": ['single', 'married', 'divorced'],
-    "default": 'single'
+    "enum": ['single', 'married', 'divorced']
   },
   category: {
     type: String
@@ -181,6 +181,13 @@ var userSchema = new Schema((_ref = {
     type: Schema.Types.ObjectId,
     ref: "TimeLog"
   }],
+  jobLogs: [{
+    job_id: String,
+    hours: {
+      type: Number,
+      "default": 0
+    }
+  }],
   projects: [{
     type: Schema.Types.ObjectId,
     ref: "Project"
@@ -203,13 +210,13 @@ var userSchema = new Schema((_ref = {
 }]), _defineProperty(_ref, "isVerified", {
   type: Boolean,
   "default": false
-}), _defineProperty(_ref, "resetPasswordToken", {
+}), _defineProperty(_ref, "tempPassword", String), _defineProperty(_ref, "resetPasswordToken", {
   type: String,
   required: false
 }), _defineProperty(_ref, "resetPasswordExpires", {
   type: Date,
   required: false
-}), _ref), {
+}), _defineProperty(_ref, "token", String), _ref), {
   timestamps: true
 });
 userSchema.plugin(passportLocalMongoose); // userSchema.methods.comparePassword = function(password) {
@@ -229,5 +236,8 @@ userSchema.methods.generateVerificationToken = function () {
   return new _Token.Token(payload);
 };
 
-var User = mongoose.model('User', userSchema);
-exports.User = User;
+userSchema.methods.generateUsername = function () {
+  _this.username = _this.firstName[0] + _this.firstName[_this.firstName.length - 1] + "." + _this.lastName;
+};
+
+var User = exports.User = mongoose.model('User', userSchema);

@@ -5,8 +5,9 @@ const { check, validationResult } = require('express-validator');
 // import {Leave} from '../models/TenantModels';
 // import {Department} from '../models/TenantModels';
 const nodemailer = require('nodemailer');
+const sgTransport = require('nodemailer-sendgrid-transport');
 const response = require('../middlewares/response');
-import { MAIL_PASS, MAIL_SENDER, MAIL_SERVICE, MAIL_USER } from '../config/constants';
+import { MAIL_PASS, MAIL_SENDER, MAIL_SERVICE, MAIL_USER, SENDGRID_USERNAME, SENDGRID_PASSWORD } from '../config/constants';
 
 export const createLeaveRequest = (req, res) => {
   const { Leave, Department, TenantOrganization } = req.dbModels;
@@ -40,22 +41,23 @@ export const createLeaveRequest = (req, res) => {
                 leave.save();
                 org['leaves'].push(leave)
                 org.save();
-                Department.findOne({ employees: { $in: req.user._id } }).populate('manager').exec((err, department) => {
+                Department.findById(req.params.deptId).populate('manager').exec((err, department) => {
                   if (err) return response.error(res, 500, err.message)
                   else if (!department) response.error(res, 404, 'Department not found')
-                  else if (!department.employees.includes(req.user._id)) {
-                    return response.error(res, 401, 'You do not belong to any department in this organization')
-                  }
+                  // else if (!department.employees.includes(req.user._id)) {
+                  //   return response.error(res, 401, 'You do not belong to any department in this organization')
+                  // }
                   else {
                     if (!department.manager) return response.error(res, 404, 'Manager not found')
                     else {
-                      let transporter = nodemailer.createTransport({
-                        service: MAIL_SERVICE,
+                      const options = {
                         auth: {
-                          user: MAIL_USER,
-                          pass: MAIL_PASS
+                          api_user: SENDGRID_USERNAME,
+                          api_key: SENDGRID_PASSWORD
                         }
-                      });
+                      };
+                      
+                      const transporter = nodemailer.createTransport(sgTransport(options));
                       let mailOptions = {
                         from: MAIL_SENDER,
                         to: department.manager.email,
@@ -109,13 +111,14 @@ export const approveLeave = (req, res) => {
             if (err) return response.error(res, 500, err.message);
             else if (!applicant) return response.error(res, 404, 'Leave applicant not found');
             else {
-              let transporter = nodemailer.createTransport({
-                service: MAIL_SERVICE,
+              const options = {
                 auth: {
-                  user: MAIL_USER,
-                  pass: MAIL_PASS
+                  api_user: SENDGRID_USERNAME,
+                  api_key: SENDGRID_PASSWORD
                 }
-              });
+              };
+              
+              const transporter = nodemailer.createTransport(sgTransport(options));
               let mailOptions = {
                 from: MAIL_SENDER,
                 to: applicant.email,
@@ -166,13 +169,14 @@ export const declineLeave = (req, res) => {
             if (err) return response.error(res, 500, err.message);
             else if (!applicant) return response.error(res, 404, 'Leave applicant not found');
             else {
-              let transporter = nodemailer.createTransport({
-                service: MAIL_SERVICE,
+              const options = {
                 auth: {
-                  user: MAIL_USER,
-                  pass: MAIL_PASS
+                  api_user: SENDGRID_USERNAME,
+                  api_key: SENDGRID_PASSWORD
                 }
-              });
+              };
+              
+              const transporter = nodemailer.createTransport(sgTransport(options));
               let mailOptions = {
                 from: MAIL_SENDER,
                 to: applicant.email,
@@ -199,4 +203,116 @@ export const declineLeave = (req, res) => {
     }
   })
 
+}
+
+export const fetchMyLeaveRecords = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({applicant:req.user._id})
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
+
+export const fetchAllLeaveRecords = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({})
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
+
+export const fetchLeaveRecordsForUser=(req,res)=>{
+  const {Leave} = req.dbModels;
+  const {username} = req.query;
+  if(!username){
+    return response.error(res,400,'Please specify employee')
+  }
+  var leaveArr=[];
+  Leave.find({}).populate('applicant', 'username -_id')
+  .then(records=>{
+    records.forEach(record=>{
+      if(String(record.applicant)==String(username)){
+        leaveArr.push(leave)
+      }
+    })
+    return response.success(res,200,leaveArr)
+  })
+  .catch(err=>{
+    return response.error(res,500,err.message)
+  })
+}
+
+export const fetchLeaveRecordsByDept=(req,res)=>{
+  const {Leave,Department} = req.dbModels;
+  const {deptId} = req.params
+  var leaveArr=[];
+  Department.findById(deptId)
+  .then(dept=>{
+  Leave.find({}).populate('applicant', 'username department -_id').sort('username')
+  .then(records=>{
+    records.forEach(record=>{
+      if(String(record.applicant.department)==String(dept._id)){
+        leaveArr.push(leave)
+      }
+    })
+    return response.success(res,200,leaveArr)
+  })
+})
+  .catch(err=>{
+    return response.error(res,500,err.message)
+  })
+
+}
+
+export const fetchApprovedLeaveRequests = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({approvalStatus:'Approved'}).sort('username')
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
+
+export const fetchDeclinedLeaveRequests = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({approvalStatus:'Declined'}).sort('username')
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
+}
+export const fetchPendingLeaveRequests = (req,res)=>{
+  const {Leave} = req.dbModels;
+  Leave.find({approvalStatus:'Pending'}).sort('username')
+  .then(records=>{
+    if (records.length>0) return response.success(res,200,records)
+    else{
+      return response.success(res,204,records)
+    }
+   })
+   .catch(err=>{
+     if(err) return response.error(res,500,err.message)
+   })
 }

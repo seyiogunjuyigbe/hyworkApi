@@ -17,5 +17,5 @@ router.post('/:urlname/case/new', [check('title').isString().not().isEmpty().wit
 router.post('/:urlname/case/:case_id/comment/new', check('notes').not().isEmpty().withMessage('Your comment can not be empty'), validate, _middleware.authUser, _organization.LoggedUserisEmployee, _case.respondToCase);
 router.get('/:urlname/case/:case_id/view', _middleware.authUser, _organization.LoggedUserisEmployee, _case.fethThiscase);
 router.post('/:urlname/case/:case_id/status/change', check('status').not().isEmpty().withMessage('Please specify new case status'), validate, _middleware.authUser, _organization.LoggedUserisEmployee, _case.changeCaseStatus);
-router.post('/:urlname/case/:case_id/respondents/new', check('respondents').isArray().not().isEmpty().withMessage('Please specify a minimum of 1 new respondent'), validate, _middleware.authUser, _organization.LoggedUserisEmployee, _case.inviteRespondentToCase);
+router.post('/:urlname/case/:case_id/respondents/new', check('newRespondents').isArray().not().isEmpty().withMessage('Please specify a minimum of 1 new respondent'), validate, _middleware.authUser, _organization.LoggedUserisEmployee, _case.inviteRespondentToCase);
 module.exports = router;

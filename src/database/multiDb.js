@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const dbMigration = require('./db.migrations');
+import { TENANT_DATABASE_POOL }  from '../config/constants';
+
 
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
@@ -17,7 +19,7 @@ const DATABASE_URL = 'mongodb://localhost:27017'
 let _pool = {};
 
 const connect = async () => mongoose.createConnection(
-    `${DATABASE_URL}`, mongooseConfig, (err, client) => {
+    `${TENANT_DATABASE_POOL}`, mongooseConfig, (err, client) => {
         if (err) {
             console.error('DATABASE connection failed');
             process.exit(1);

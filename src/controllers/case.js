@@ -81,7 +81,7 @@ export const respondToCase = (req, res) => {
             Case.findById(req.params.case_id).populate('comments').exec((err, thisCase) => {
                 if (err) response.error(res, 500, err.message)
                 else if (!thisCase) return response.error(res, 404, 'Case not found');
-                else if (thisCase.createdBy !== req.user._id && !thisCase.respondents.includes(req.user.username)) {
+                else if (thisCase.createdBy !== req.user.username && !thisCase.respondents.includes(req.user.username)) {
                     return response.error(res, 403, 'You are not authorized as you are neither the creator of this case nor are you one of the respondents')
                 }
                 else {
@@ -116,7 +116,7 @@ export const respondToCase = (req, res) => {
                                             `,
                         };
                         sendMailToTheseUsers(req, res, mailOptions);
-                        console.log({ thisCase })
+                        response.success(res, 200, `Response received`);
                     })
                         .catch(err => response.error(res, 500, err.message))
                 }
@@ -185,6 +185,7 @@ export const inviteRespondentToCase = (req, res) => {
             var list = [];
             var emailList = []
             org.employees.forEach(employee => list.push(employee.username));
+            console.log(list)
             if (!list.includes(...req.body.newRespondents)) {
                 return response.error(res, 422, 'You have included a respondent who is not an employee of this organization');
             }
@@ -223,8 +224,7 @@ export const inviteRespondentToCase = (req, res) => {
                                     `,
                                 };
                                 sendMailToTheseUsers(req, res, mailOptions);
-                                console.log({ thisCase })
-                                return response.success(res, 200, 'Respondents have been notified to join this thread')
+                                return response.success(res, 200, 'Respondent have been notified to join this thread')
                             }
                         });
                     }
@@ -232,4 +232,15 @@ export const inviteRespondentToCase = (req, res) => {
             }
         }
     })
+
+
+}
+
+
+export const getAllCases = (req, res) => {
+    const { Cases } = req.dbModels;
+    Cases.find({}, (err, cases) => {
+        if (err) { response.error(res, 404, 'Could not fetch cases') }
+        response.success(res, 200, cases);
+    });
 }

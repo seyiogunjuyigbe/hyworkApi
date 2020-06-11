@@ -3,11 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchAttendance = void 0;
+exports.fetchAttendance = undefined;
 
 var _Attendance = require("../models/Attendance");
 
-var fetchAttendance = function fetchAttendance(user, startDate, endDate) {
+var fetchAttendance = exports.fetchAttendance = function fetchAttendance(user, startDate, endDate) {
   // getEach date from  employee's join date till date
   var today = new Date(endDate);
 
@@ -61,5 +61,3 @@ var fetchAttendance = function fetchAttendance(user, startDate, endDate) {
     }
   });
 };
-
-exports.fetchAttendance = fetchAttendance;

@@ -1,4 +1,4 @@
-import { Location } from "../models/TenantModels";
-import { crudControllers } from "../../utils/crud";
+// import { Location } from "../models/Location";
+// import { crudControllers } from "../utils/crud";
 
-export default crudControllers(Location);
+// export default crudControllers(Location);

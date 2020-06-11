@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.declineTravelRequest = exports.approveTravelRequest = exports.updateTravelRecord = exports.createTravelRecord = void 0;
+exports.declineTravelRequest = exports.approveTravelRequest = exports.updateTravelRecord = exports.createTravelRecord = undefined;
 
 var _Travel = require("../models/Travel");
 
@@ -26,21 +26,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var response = require('../middlewares/response');
 
 // Create a travel request record
-var createTravelRecord = function createTravelRecord(req, res) {
+var createTravelRecord = exports.createTravelRecord = function createTravelRecord(req, res) {
+  var _req$dbModels = req.dbModels,
+      Travel = _req$dbModels.Travel,
+      TenantOrganization = _req$dbModels.TenantOrganization,
+      User = _req$dbModels.User;
+
   if (new Date(req.body.departureDate).getTime() >= new Date(req.body.arrivalDate).getTime()) {
     return response.error(res, 422, 'arrival date must be later than departure date');
   } else if (new Date(req.body.departureDate).getTime() <= new Date().getTime()) {
     return response.error(res, 422, 'departure date can not be earlier than today');
+  } else if (!!req.body.isBillableToCustomer && Boolean(req.body.isBillableToCustomer) == true && !req.body.customerName) {
+    return response.error(res, 422, 'Please fill in customer name');
   }
 
-  _Organization.Organization.findOne({
+  TenantOrganization.findOne({
     urlname: req.params.urlname
   }).then(function (org) {
-    _User.User.findOne({
+    User.findOne({
       username: req.body.requestor
     }, function (err, thisUser) {
       if (err) return response.error(res, 500, err.message);else if (!thisUser || !org.employees.includes(thisUser._id)) return response.error(res, 404, 'User not found');else {
-        _Travel.Travel.create(_objectSpread({}, req.body, {
+        Travel.create(_objectSpread({}, req.body, {
           createdBy: req.user,
           createdAt: new Date().toTimeString(),
           numberOfDays: (0, _middleware.getDIfferenceinDays)(req.body.departureDate, req.body.arrivalDate)
@@ -62,91 +69,99 @@ var createTravelRecord = function createTravelRecord(req, res) {
 }; // Update travel request records
 
 
-exports.createTravelRecord = createTravelRecord;
-
-var updateTravelRecord = function updateTravelRecord(req, res) {
-  _User.User.findOne({
-    username: travel.requestor
-  }).then(function (thisUser) {
+var updateTravelRecord = exports.updateTravelRecord = function updateTravelRecord(req, res) {
+  var _req$dbModels2 = req.dbModels,
+      Travel = _req$dbModels2.Travel,
+      TenantOrganization = _req$dbModels2.TenantOrganization,
+      User = _req$dbModels2.User;
+  User.findOne({
+    username: req.body.requestor
+  }).then(function (user) {
     if (!user) response.error(res, 404, 'User not found for this travel record');else {
-      if (user.username !== travel.requestor || travel.approvalStatus !== 'Pending') return response.error(res, 403, 'You cannot edit this request as it has been attended to');else {
-        _Travel.Travel.findByIdAndUpdate(req.params.travel_id, _objectSpread({}, req.body, {
-          numberOfDays: (0, _middleware.getDIfferenceinDays)(req.body.departureDate, req.body.arrivalDate),
-          modifiedBy: req.user,
-          modifiedAt: new Date().toTimeString()
-        }), function (err, travel) {
-          if (err) return response.error(res, 500, err.message);else if (!travel) response.error(res, 404, 'Travel record not found');else if (travel.createdBy !== req.user.username) {
-            return response.error(res, 403, "You're not authorized to do so");
-          } else {
-            travel.save();
-            return response.success(res, 200, 'Travel record updated sucessfully');
-          }
-        });
-      }
-    }
-  });
-};
-
-exports.updateTravelRecord = updateTravelRecord;
-
-var approveTravelRequest = function approveTravelRequest(req, res) {
-  _Travel.Travel.findById(req.params.travel_id, function (err, travel) {
-    if (err) return response.error(res, 500, err.message);else if (!travel) response.error(res, 404, 'Travel record not found');else {
-      _User.User.findOne({
-        username: travel.requestor
-      }).then(function (thisUser) {
-        if (!user) response.error(res, 404, 'User not found for this travel record');else {
-          if (user.username == travel.requestor) return response.error(res, 403, 'You are not authorized to accept this request');else {
-            travel.approvalStatus = 'Approved';
-            travel.modifiedBy = req.user;
-            travel.modifiedAt = new Date().toTimeString();
-            travel.save();
-            var mailOptions = {
-              from: _constants.MAIL_SENDER,
-              to: thisUser.email,
-              subject: "Your travel request has been approved",
-              html: " Dear ".concat(thisUser.firstName, " ").concat(thisUser.lastName, ", your travel request has been approved!        \n                            <a href=\"http://").concat(req.headers.host, "/org/").concat(org.urlname, "/travel/").concat(travel._id, "/view\" style=\"font-family:candara;font-size:1.2em\">Click to view travel details</a>\n                                ")
-            };
-            (0, _mail.sendMailToTheseUsers)(req, res, mailOptions);
-            return response.success(res, 200, 'Travel record approved');
-          }
+      Travel.findByIdAndUpdate(req.params.travel_id, _objectSpread({}, req.body, {
+        numberOfDays: (0, _middleware.getDIfferenceinDays)(req.body.departureDate, req.body.arrivalDate),
+        modifiedBy: req.user,
+        modifiedAt: new Date().toTimeString()
+      }), function (err, travel) {
+        if (err) return response.error(res, 500, err.message);else if (!travel) response.error(res, 404, 'Travel record not found');else {
+          travel.save();
+          return response.success(res, 200, 'Travel record updated sucessfully');
         }
-      })["catch"](function (err) {
-        return response.error(res, 500, err.message);
       });
     }
   });
 };
 
-exports.approveTravelRequest = approveTravelRequest;
-
-var declineTravelRequest = function declineTravelRequest(req, res) {
-  _Travel.Travel.findById(req.params.travel_id, function (err, travel) {
-    if (err) return response.error(res, 500, err.message);else if (!travel) response.error(res, 404, 'Travel record not found');else {
-      _User.User.findOne({
-        username: travel.requestor
-      }).then(function (thisUser) {
-        if (!user) response.error(res, 404, 'User not found for this travel record');else {
-          if (user.username == travel.requestor) return response.error(res, 403, 'You are not authorized to accept this request');else {
-            travel.approvalStatus = 'Declined';
-            travel.modifiedBy = req.user;
-            travel.modifiedAt = new Date().toTimeString();
-            travel.save();
-            var mailOptions = {
-              from: _constants.MAIL_SENDER,
-              to: thisUser.email,
-              subject: "Your travel request has been declined",
-              html: " Dear ".concat(thisUser.firstName, " ").concat(thisUser.lastName, ", your travel request has been declined!        \n                            <a href=\"http://").concat(req.headers.host, "/org/").concat(org.urlname, "/travel/").concat(travel._id, "/view\" style=\"font-family:candara;font-size:1.2em\">Click to view travel details</a>\n                                ")
-            };
-            (0, _mail.sendMailToTheseUsers)(req, res, mailOptions);
-            return response.success(res, 200, 'Travel record declined');
-          }
+var approveTravelRequest = exports.approveTravelRequest = function approveTravelRequest(req, res) {
+  var _req$dbModels3 = req.dbModels,
+      Travel = _req$dbModels3.Travel,
+      TenantOrganization = _req$dbModels3.TenantOrganization,
+      User = _req$dbModels3.User;
+  TenantOrganization.findOne({
+    urlname: req.params.urlname
+  }, function (err, org) {
+    if (err) return response.error(res, 500, err.message);else if (!org) return response.error(res, 404, 'Organization not found');else {
+      Travel.findById(req.params.travel_id, function (err, travel) {
+        if (err) return response.error(res, 500, err.message);else if (!travel) response.error(res, 404, 'Travel record not found');else if (travel.approvalStatus !== 'Pending') return response.error(res, 403, 'This request has been responded to already');else {
+          User.findOne({
+            username: travel.requestor
+          }).then(function (thisUser) {
+            if (!thisUser) response.error(res, 404, 'User not found for this travel record');else if (thisUser.username == req.user.username) return response.error(res, 403, 'You are not authorized to accept this request');else {
+              travel.approvalStatus = 'Approved';
+              travel.modifiedBy = req.user;
+              travel.modifiedAt = new Date().toTimeString();
+              travel.save();
+              var mailOptions = {
+                from: _constants.MAIL_SENDER,
+                to: thisUser.email,
+                subject: "Your travel request has been approved",
+                html: " Dear ".concat(thisUser.firstName, " ").concat(thisUser.lastName, ", your travel request has been approved!        \n                            <a href=\"http://").concat(req.headers.host, "/org/").concat(org.urlname, "/travel/").concat(travel._id, "/view\" style=\"font-family:candara;font-size:1.2em\">Click to view travel details</a>\n                                ")
+              };
+              (0, _mail.sendMailToTheseUsers)(req, res, mailOptions);
+              return response.success(res, 200, 'Travel record approved');
+            }
+          })["catch"](function (err) {
+            return response.error(res, 500, err.message);
+          });
         }
-      })["catch"](function (err) {
-        return response.error(res, 500, err.message);
       });
     }
   });
 };
 
-exports.declineTravelRequest = declineTravelRequest;
+var declineTravelRequest = exports.declineTravelRequest = function declineTravelRequest(req, res) {
+  var _req$dbModels4 = req.dbModels,
+      Travel = _req$dbModels4.Travel,
+      TenantOrganization = _req$dbModels4.TenantOrganization,
+      User = _req$dbModels4.User;
+  TenantOrganization.findOne({
+    urlname: req.params.urlname
+  }, function (err, org) {
+    if (err) return response.error(res, 500, err.message);else if (!org) return response.error(res, 404, 'Organization not found');else {
+      Travel.findById(req.params.travel_id, function (err, travel) {
+        if (err) return response.error(res, 500, err.message);else if (!travel) response.error(res, 404, 'Travel record not found');else if (travel.approvalStatus !== 'Pending') return response.error(res, 403, 'This request has been responded to already');else {
+          User.findOne({
+            username: travel.requestor
+          }).then(function (thisUser) {
+            if (!thisUser) response.error(res, 404, 'User not found for this travel record');else if (thisUser.username == req.user.username) return response.error(res, 403, 'You are not authorized to accept this request');else {
+              travel.approvalStatus = 'Declined';
+              travel.modifiedBy = req.user;
+              travel.modifiedAt = new Date().toTimeString();
+              travel.save();
+              var mailOptions = {
+                from: _constants.MAIL_SENDER,
+                to: thisUser.email,
+                subject: "Your travel request has been declined",
+                html: " Dear ".concat(thisUser.firstName, " ").concat(thisUser.lastName, ",sorry, your travel request has been declined...        \n                            <a href=\"http://").concat(req.headers.host, "/org/").concat(org.urlname, "/travel/").concat(travel._id, "/view\" style=\"font-family:candara;font-size:1.2em\">Click to view travel details</a>\n                                ")
+              };
+              (0, _mail.sendMailToTheseUsers)(req, res, mailOptions);
+              return response.success(res, 200, 'Travel record declined');
+            }
+          })["catch"](function (err) {
+            return response.error(res, 500, err.message);
+          });
+        }
+      });
+    }
+  });
+};

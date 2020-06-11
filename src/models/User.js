@@ -5,7 +5,8 @@ const crypto = require('crypto');
 const Schema = mongoose.Schema;
 import {Token} from './Token';
 import {SECRET_KEY} from '../config/constants';
-const passportLocalMongoose = require('passport-local-mongoose')
+const passportLocalMongoose = require('passport-local-mongoose');
+
 export const userSchema = new Schema(
   {
     username: {
@@ -53,7 +54,6 @@ export const userSchema = new Schema(
     maritalStatus: {
       type: String,
       enum: ['single', 'married', 'divorced'],
-      default: 'single'
     },
     category: {
       type: String
@@ -104,6 +104,10 @@ export const userSchema = new Schema(
         ref: "Dependent"
       }
     ],
+    role: {
+      type: Schema.Types.ObjectId,
+      ref: "Role"
+    },
     travels: {
       type: Schema.Types.ObjectId,
       ref: "Travel"
@@ -114,6 +118,10 @@ export const userSchema = new Schema(
         ref: "User"
       }
     ],
+    kras:[{
+      type: Schema.Types.ObjectId,
+      ref: 'Kra'
+    }],
     skills: [],
     benefits: [
       {
@@ -232,7 +240,7 @@ export const userSchema = new Schema(
       type: Boolean,
       default: false
   },
-  
+  tempPassword:String,
   resetPasswordToken: {
       type: String,
       required: false
@@ -241,7 +249,8 @@ export const userSchema = new Schema(
   resetPasswordExpires: {
       type: Date,
       required: false
-  }
+  },
+  token: String
   },
   { timestamps: true }
 );
@@ -256,6 +265,7 @@ userSchema.methods.generatePasswordReset = function() {
 };
 
 userSchema.methods.generateVerificationToken = function() {
+  
   let payload = {
       userId: this._id,
       token: crypto.randomBytes(20).toString('hex')

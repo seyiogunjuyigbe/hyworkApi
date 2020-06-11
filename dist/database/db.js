@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.startDb = void 0;
+exports.startDb = undefined;
 
 var _constants = require("../config/constants");
 
@@ -11,7 +11,7 @@ var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-var startDb = function startDb() {
+var startDb = exports.startDb = function startDb() {
   var DB_URL;
 
   if (_constants.MODE == 'LOCAL') {
@@ -37,5 +37,3 @@ var startDb = function startDb() {
     }
   });
 };
-
-exports.startDb = startDb;

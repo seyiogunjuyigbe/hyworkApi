@@ -3,13 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.MAIL_USER = exports.MAIL_PASS = exports.MAIL_SENDER = exports.MAIL_SERVICE = exports.TWITTER_CONSUMER_SECRET = exports.TWITTER_CONSUMER_KEY = exports.FACEBOOK_APP_SECRET = exports.FACEBOOK_APP_ID = exports.GOOGLE_CLIENT_SECRET = exports.GOOGLE_CLIENT_ID = exports.CLOUDINARY_API_SECRET = exports.CLOUDINARY_API_KEY = exports.CLOUDINARY_CLOUD_NAME = exports.CLOUDINARY_FOLDER = exports.PROD_DB_URL = exports.TEST_DB_URL = exports.LOCAL_DB_URL = exports.MODE = exports.SITE_URL = exports.DEV_DB_URL = exports.SECRET_KEY = exports.PORT = void 0;
+exports.TENANT_DATABASE_POOL = exports.MAIL_USER = exports.MAIL_PASS = exports.MAIL_SENDER = exports.MAIL_SERVICE = exports.TWITTER_CONSUMER_SECRET = exports.TWITTER_CONSUMER_KEY = exports.FACEBOOK_APP_SECRET = exports.FACEBOOK_APP_ID = exports.GOOGLE_CLIENT_SECRET = exports.GOOGLE_CLIENT_ID = exports.CLOUDINARY_API_SECRET = exports.CLOUDINARY_API_KEY = exports.CLOUDINARY_CLOUD_NAME = exports.CLOUDINARY_FOLDER = exports.PROD_DB_URL = exports.TEST_DB_URL = exports.LOCAL_DB_URL = exports.MODE = exports.SITE_URL = exports.DEV_DB_URL = exports.SECRET_KEY = exports.PORT = undefined;
 
-var _dotenv = _interopRequireDefault(require("dotenv"));
+var _dotenv = require("dotenv");
+
+var _dotenv2 = _interopRequireDefault(_dotenv);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-_dotenv["default"].config();
+_dotenv2["default"].config();
 
 var _process$env = process.env,
     PORT = _process$env.PORT,
@@ -33,26 +35,28 @@ var _process$env = process.env,
     MAIL_SERVICE = _process$env.MAIL_SERVICE,
     MAIL_SENDER = _process$env.MAIL_SENDER,
     MAIL_PASS = _process$env.MAIL_PASS,
-    MAIL_USER = _process$env.MAIL_USER;
-exports.MAIL_USER = MAIL_USER;
-exports.MAIL_PASS = MAIL_PASS;
-exports.MAIL_SENDER = MAIL_SENDER;
-exports.MAIL_SERVICE = MAIL_SERVICE;
-exports.TWITTER_CONSUMER_SECRET = TWITTER_CONSUMER_SECRET;
-exports.TWITTER_CONSUMER_KEY = TWITTER_CONSUMER_KEY;
-exports.FACEBOOK_APP_SECRET = FACEBOOK_APP_SECRET;
-exports.FACEBOOK_APP_ID = FACEBOOK_APP_ID;
-exports.GOOGLE_CLIENT_SECRET = GOOGLE_CLIENT_SECRET;
-exports.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID;
-exports.CLOUDINARY_API_SECRET = CLOUDINARY_API_SECRET;
-exports.CLOUDINARY_API_KEY = CLOUDINARY_API_KEY;
-exports.CLOUDINARY_CLOUD_NAME = CLOUDINARY_CLOUD_NAME;
-exports.CLOUDINARY_FOLDER = CLOUDINARY_FOLDER;
-exports.PROD_DB_URL = PROD_DB_URL;
-exports.TEST_DB_URL = TEST_DB_URL;
-exports.LOCAL_DB_URL = LOCAL_DB_URL;
-exports.MODE = MODE;
-exports.SITE_URL = SITE_URL;
-exports.DEV_DB_URL = DEV_DB_URL;
-exports.SECRET_KEY = SECRET_KEY;
+    MAIL_USER = _process$env.MAIL_USER,
+    TENANT_DATABASE_POOL = _process$env.TENANT_DATABASE_POOL;
 exports.PORT = PORT;
+exports.SECRET_KEY = SECRET_KEY;
+exports.DEV_DB_URL = DEV_DB_URL;
+exports.SITE_URL = SITE_URL;
+exports.MODE = MODE;
+exports.LOCAL_DB_URL = LOCAL_DB_URL;
+exports.TEST_DB_URL = TEST_DB_URL;
+exports.PROD_DB_URL = PROD_DB_URL;
+exports.CLOUDINARY_FOLDER = CLOUDINARY_FOLDER;
+exports.CLOUDINARY_CLOUD_NAME = CLOUDINARY_CLOUD_NAME;
+exports.CLOUDINARY_API_KEY = CLOUDINARY_API_KEY;
+exports.CLOUDINARY_API_SECRET = CLOUDINARY_API_SECRET;
+exports.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID;
+exports.GOOGLE_CLIENT_SECRET = GOOGLE_CLIENT_SECRET;
+exports.FACEBOOK_APP_ID = FACEBOOK_APP_ID;
+exports.FACEBOOK_APP_SECRET = FACEBOOK_APP_SECRET;
+exports.TWITTER_CONSUMER_KEY = TWITTER_CONSUMER_KEY;
+exports.TWITTER_CONSUMER_SECRET = TWITTER_CONSUMER_SECRET;
+exports.MAIL_SERVICE = MAIL_SERVICE;
+exports.MAIL_SENDER = MAIL_SENDER;
+exports.MAIL_PASS = MAIL_PASS;
+exports.MAIL_USER = MAIL_USER;
+exports.TENANT_DATABASE_POOL = TENANT_DATABASE_POOL;
