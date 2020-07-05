@@ -70,7 +70,7 @@ export const renderLoginPage = (req,res)=>{
         if(status) message = messageList[status]
         return res.status(200).render('login', {url:"http://" + req.headers.host, err:null,message})
     } 
-    else res.send('Hey, ' + req.user.username + ', You are already logged in')
+    else res.send('/org')
 }
 
 
