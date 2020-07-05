@@ -13,7 +13,7 @@ const {LoggedUserisAdmin,orgExists} = require('../middlewares/organization');
 const router = Router({mergeParams: true});
 
 // render page to add new organization
-router.get('/', renderCreateOrgPage)
+router.get('/', authUser, renderCreateOrgPage)
 
 // Create an organization
 router.post('/', authUser, [

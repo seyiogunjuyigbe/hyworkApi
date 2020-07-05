@@ -16,7 +16,6 @@ const errors = [];
 module.exports = {
   // Render page to create new organization
   renderCreateOrgPage(req, res) {
-    if (!req.user) return res.status(403).redirect('/auth/login?redirect=/org/new');
     var orgid = req.user.createdOrganizations[0]||req.user.affiliatedOrg
     if (orgid !== undefined) {
       // return res.status(403).render('403', { message: 'You are not permitted to create more organizations' })

@@ -16,7 +16,7 @@ export const authUser = (req, res, next) => {
     if(req.user) {
         return next();
     }else {
-        return res.redirect('/auth/login')
+        return res.redirect('/auth/login?redirect='+req.originalUrl)
     }
 }
 

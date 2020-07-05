@@ -60,15 +60,16 @@ export const registerNewUser = (req, res) => {
 // Render Login Page
 // @ROUTE GET /auth/login
 export const renderLoginPage = (req,res)=>{
+
     var messageList={
         verified: 'Email Verified. Login to continue',
         alreadyVerified: 'This user has already been verified... Login to continue'
     }
-    let {status} = req.query
+    let {status,redirect} = req.query
     if(!req.user){
         var message;
         if(status) message = messageList[status]
-        return res.status(200).render('login', {url:"http://" + req.headers.host, err:null,message})
+        return res.status(200).render('login', {url:"http://" + req.headers.host, err:null,message,redirect})
     } 
     else res.send('/org')
 }
@@ -116,6 +117,10 @@ export const renderLoginPage = (req,res)=>{
    }
    }
 export const loginCb = (req,res)=>{
+    if(req.body.redirect !== undefined){
+return res.status(200).redirect(req.body.redirect)
+
+    }
 return res.status(200).redirect('/org')
 }
 // Logout User
