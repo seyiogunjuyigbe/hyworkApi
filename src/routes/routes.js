@@ -15,10 +15,11 @@ const taskRouter = require('./taskRoutes');
 const assetRouter = require('./assetRoutes');
 const travelRouter = require('./travelRoutes')
 const jobRouter = require ('./jobRoutes');
-const ratingRouter = require('./rating')
+const ratingRouter = require('./rating');
+import {authUser} from '../middlewares/middleware'
 export const initRoutes = app => {
-    app.get('/', (req,res)=>{
-        res.send('Hello World!')
+    app.get('/', authUser, (req,res)=>{
+        return res.redirect('/org')
     });
     app.use('/auth', authRouter);
     app.use('/org', organizationRouter);

@@ -1,5 +1,5 @@
 <%- include ('./partials/header') -%>
-<title>Touchcore HRM | Sign In</title>
+<title>Hywork App | Sign In</title>
   </head>
   <body>
         <div id="wrapper">
@@ -7,7 +7,7 @@
                     <div class="vertical-align-middle auth-main">
                         <div class="auth-box">
                             <div class="top">
-                                <img src="/images/touchcore-logo-white.png" alt="Touchcore HRM">
+                                <a class="navbar-brand" href="/" style="color: #fff;">Hywork App</a>
                             </div>
                             <div class="card">
                                 <div class="header">
@@ -23,6 +23,9 @@
                                             <label for="signin-password" class="control-label sr-only">Password</label>
                                             <input type="password" class="form-control" name="password" id="signin-password" placeholder="Password" required>
                                         </div>
+                                        <%if(redirect){ %>
+                                            <input type="text" class="form-control" name="redirect" value="<%=redirect%>" style="display: none;">
+                                       <% } %>
                                         <% if(err !== null){ %>
                                             <p class="text-danger text-center"><%=err%></p>
                                       <%  } %>

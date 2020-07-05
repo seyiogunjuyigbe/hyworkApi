@@ -15,6 +15,7 @@ export const userSchema = new Schema(
       unique: true,
       // required: 'You must have a username'
     },
+    avatar: String,
     firstName: {
       type: String,
       trim: true,
@@ -53,7 +54,6 @@ export const userSchema = new Schema(
     },
     maritalStatus: {
       type: String,
-      enum: ['single', 'married', 'divorced'],
     },
     category: {
       type: String
@@ -63,7 +63,6 @@ export const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'manager', 'admin']
     },
     joinDate: {
       type: Date
@@ -104,10 +103,6 @@ export const userSchema = new Schema(
         ref: "Dependent"
       }
     ],
-    role: {
-      type: Schema.Types.ObjectId,
-      ref: "Role"
-    },
     travels: {
       type: Schema.Types.ObjectId,
       ref: "Travel"

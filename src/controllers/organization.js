@@ -11,17 +11,21 @@ import { passportConfig } from '../config/passport';
 import { MAIL_SENDER } from '../config/constants';
 const { validationResult } = require('express-validator');
 passportConfig(passport);
-
-
-const baseUrl = "http://localhost:3000";
-
 const errors = [];
 
 module.exports = {
   // Render page to create new organization
   renderCreateOrgPage(req, res) {
-    if (!req.user) return res.status(403).redirect('/auth/login?redirect=/org/new');
-    else if (req.user.createdOrganizations.length >= 10 || req.user.role == 'user') return res.status(403).render('403', { message: 'You are not permitted to create more organizations' })
+    var orgid = req.user.createdOrganizations[0]||req.user.affiliatedOrg
+    if (orgid !== undefined) {
+      // return res.status(403).render('403', { message: 'You are not permitted to create more organizations' })
+      Organization.findById (orgid)
+      .then(org=>{
+        if(org){
+          return res.redirect(`/org/${org.urlname}`)
+        }
+      })
+    }
     else return res.status(200).render('organization/new', {
       user: req.user, baseUrl: `http://${req.headers.host}/org/`
     })
@@ -50,7 +54,8 @@ module.exports = {
         user.role = 'admin';
         user.createdOrganizations.push(newOrg._id);
         user.save();
-        sendCreateOrganisationEmail(user, newOrg, req, res);
+        // sendCreateOrganisationEmail(user, newOrg, req, res);
+        return res.redirect('/org/'+newOrg.urlname)
       } else {
         return res.status(500).render('error/500', { message: errors })
       }
@@ -77,6 +82,8 @@ module.exports = {
                 return response.error(res, 500, err.message);
               } else if (!updatedOrganization) return response.error(res, 404, 'Organization not found')
               updatedOrganization.employees.push(user._id);
+              user.affiliatedOrg = updatedOrganization._id;
+              user.save()
               updatedOrganization.save(err => {
                 if (err) {
                   return response.error(res, 500, `User could not be added to organization`);
@@ -98,7 +105,7 @@ module.exports = {
     const { TenantOrganization } = req.dbModels;
     TenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
       if (org) {
-        return res.status(200).render('organization/adminDashboard', { admin: req.user, org, org })
+        return res.status(200).render('organization/adminDashboard', { user: req.user, org,})
       }
 
       if (err) {
