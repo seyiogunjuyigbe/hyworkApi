@@ -11,17 +11,22 @@ import { passportConfig } from '../config/passport';
 import { MAIL_SENDER } from '../config/constants';
 const { validationResult } = require('express-validator');
 passportConfig(passport);
-
-
-const baseUrl = "http://localhost:3000";
-
 const errors = [];
 
 module.exports = {
   // Render page to create new organization
   renderCreateOrgPage(req, res) {
     if (!req.user) return res.status(403).redirect('/auth/login?redirect=/org/new');
-    else if (req.user.createdOrganizations.length >= 10 || req.user.role == 'user') return res.status(403).render('403', { message: 'You are not permitted to create more organizations' })
+    var orgid = req.user.createdOrganizations[0]||req.user.affiliatedOrg
+    if (orgid !== undefined) {
+      // return res.status(403).render('403', { message: 'You are not permitted to create more organizations' })
+      Organization.findById (orgid)
+      .then(org=>{
+        if(org){
+          return res.redirect(`/org/${org.urlname}`)
+        }
+      })
+    }
     else return res.status(200).render('organization/new', {
       user: req.user, baseUrl: `http://${req.headers.host}/org/`
     })
@@ -77,6 +82,8 @@ module.exports = {
                 return response.error(res, 500, err.message);
               } else if (!updatedOrganization) return response.error(res, 404, 'Organization not found')
               updatedOrganization.employees.push(user._id);
+              user.affiliatedOrg = updatedOrganization._id;
+              user.save()
               updatedOrganization.save(err => {
                 if (err) {
                   return response.error(res, 500, `User could not be added to organization`);
