@@ -7,7 +7,7 @@
                     <div class="vertical-align-middle auth-main">
                         <div class="auth-box">
                             <div class="top">
-                                <h3 style="color: #fff;">Hywork App</h3>   
+                                <a class="navbar-brand" href="/" style="color: #fff;">Hywork App</a>   
                             </div>
                             <div class="card">
                                 <div class="header">
@@ -70,6 +70,8 @@
                 uniqueUrl = document.querySelector('#uniqueUrl'),
                 checkStatus = document.querySelector('#status');
             urlname.addEventListener('keyup', function(){
+                urlname.value = urlname.value.trim();
+                urlname.value= urlname.value.replace(/[^a-z0-9]/, '')
                 axios.get(`${baseUrl}check/${urlname.value.toLowerCase()}`)
                 .then((resp)=>{
                     console.log(resp)

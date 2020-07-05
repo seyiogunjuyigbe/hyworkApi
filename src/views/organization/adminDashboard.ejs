@@ -16,11 +16,7 @@
             </div>
 
             <div class="navbar-brand">
-                <a href="/">
-                    <p>
-                        Hywork App
-                    </p>                
-                </a>                
+                <a href="/">Hywork App</a>                
             </div>
             
             <div class="navbar-right">
@@ -123,7 +119,12 @@
     <div id="left-sidebar" class="sidebar">
         <div class="sidebar-scroll">
             <div class="user-account">
-                <img src="/images/user.png" class="rounded-circle user-photo" alt="User Profile Picture">
+                <%if(user.avatar == "" || user.avatar == undefined){ %>
+                    <img src="/images/user.png" class="rounded-circle user-photo" alt="User Profile Picture">
+
+               <% } else{ %>
+               <img src="<%=user.avatar%>" class="rounded-circle user-photo" alt="User Profile Picture">
+               <% } %>
                 <div class="dropdown">
                     <span>Welcome,</span>
                     <a href="javascript:void(0);" class="dropdown-toggle user-name" data-toggle="dropdown"><strong><%=admin.firstName%> <%=admin.lastName%></strong></a>                    

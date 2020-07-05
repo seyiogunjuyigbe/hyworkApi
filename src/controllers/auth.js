@@ -35,7 +35,7 @@ export const registerNewUser = (req, res) => {
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
-                // role: 'admin'
+                role: 'admin'
             });
             newUser.username = req.body.username;
             User.register(newUser, req.body.password, function(err,user){
@@ -98,12 +98,6 @@ export const renderLoginPage = (req,res)=>{
                     } else if(found){
                         req.login(user, function(err) {
                             if(err){return res.status(500).render('error/500',{message: err.message})}
-                            // else if (!user.isVerified){
-                            //     return res.status(200).json({
-                            //         success: true,
-                            //         message: 'Unverified account... please check your mail for verification link'
-                            //     })
-                            // }
                             req.session.userId = user._id;
                             req.session.save()
                             next();

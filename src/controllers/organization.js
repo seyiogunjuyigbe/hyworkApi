@@ -54,7 +54,8 @@ module.exports = {
         user.role = 'admin';
         user.createdOrganizations.push(newOrg._id);
         user.save();
-        sendCreateOrganisationEmail(user, newOrg, req, res);
+        // sendCreateOrganisationEmail(user, newOrg, req, res);
+        return res.redirect('/org/'+newOrg.urlname)
       } else {
         return res.status(500).render('error/500', { message: errors })
       }
@@ -104,7 +105,7 @@ module.exports = {
     const { TenantOrganization } = req.dbModels;
     TenantOrganization.findOne({ urlname: req.params.urlname }, (err, org) => {
       if (org) {
-        return res.status(200).render('organization/adminDashboard', { admin: req.user, org, org })
+        return res.status(200).render('organization/adminDashboard', { user: req.user, org,})
       }
 
       if (err) {
