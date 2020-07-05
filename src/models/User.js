@@ -53,7 +53,6 @@ export const userSchema = new Schema(
     },
     maritalStatus: {
       type: String,
-      enum: ['single', 'married', 'divorced'],
     },
     category: {
       type: String

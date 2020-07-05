@@ -35,7 +35,7 @@ export const registerNewUser = (req, res) => {
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
-                role: 'admin'
+                // role: 'admin'
             });
             newUser.username = req.body.username;
             User.register(newUser, req.body.password, function(err,user){
