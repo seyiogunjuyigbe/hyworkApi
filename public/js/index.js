@@ -43,7 +43,7 @@ $(function() {
     });
 
     // =================    
-    $('.sparkbar').sparkline('html', { type: 'bar' });
+    // $('.sparkbar').sparkline('html', { type: 'bar' });
 
     // notification popup
     // toastr.options.closeButton = true;
