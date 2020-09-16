@@ -1,5 +1,5 @@
 {
-  "name": "zohoproject",
+  "name": "Hywork",
   "version": "1.0.0",
   "description": "Human Resource Management Application",
   "main": "src/app.js",
@@ -16,7 +16,7 @@
       "/node_modules/"
     ]
   },
-  "author": "Touchcore Team",
+  "author": "Seyi Ogunjuyigbe",
   "license": "ISC",
   "dependencies": {
     "@babel/cli": "^7.10.4",
